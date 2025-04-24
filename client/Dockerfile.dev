@@ -1,0 +1,17 @@
+# node image
+FROM node:20-alpine 
+WORKDIR /app/client
+
+# copy package.json
+COPY package.json .
+
+# install all our package
+RUN npm install
+
+# copy all our remaining files
+COPY . .
+
+## EXPOSE [Port you mentioned in the vite.config file]
+EXPOSE 3000
+
+CMD ["npm", "run", "build"]
