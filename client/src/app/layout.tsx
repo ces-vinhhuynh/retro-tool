@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <ReactQueryProvider>
-          {children}
+          <div className="px-10">{children}</div>
           <Toaster />
         </ReactQueryProvider>
       </body>
