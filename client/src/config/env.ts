@@ -1,17 +1,14 @@
 import * as z from 'zod';
-import 'dotenv/config';
 
 const createEnv = () => {
   const EnvSchema = z.object({
     SUPABASE_URL: z.string(),
     SUPABASE_ANON_KEY: z.string().optional().default(''),
-    SUPABASE_BASE_KEY: z.string().optional().default(''),
   });
 
   const envVars = {
-    SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-    SUPABASE_BASE_KEY: process.env.SUPABASE_BASE_KEY,
+    SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   };
 
   const parsedEnv = EnvSchema.safeParse(envVars);

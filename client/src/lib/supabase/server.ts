@@ -9,7 +9,7 @@ async function createClient() {
 
   return createServerClient<Database>(
     env.SUPABASE_URL ?? '',
-    env.SUPABASE_BASE_KEY ?? '',
+    env.SUPABASE_ANON_KEY ?? '',
     {
       cookies: {
         getAll() {
