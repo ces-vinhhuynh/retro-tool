@@ -53,8 +53,8 @@
   --primary-text: #1e1e1e;
   --secondary-text: #555555;
   --background: #f7f7f7;
-  --font-Roboto: Roboto, "serif";
-  --font-Inter: Inter, "sans-serif";
+  --font-Roboto: Roboto, 'serif';
+  --font-Inter: Inter, 'sans-serif';
 }
 
 @theme inline {
@@ -112,7 +112,6 @@
   --font-heading: var(--font-Roboto);
   --font-body: var(--font-Inter);
 }
-
 
 .dark {
   --background: oklch(0.12 0 0);
