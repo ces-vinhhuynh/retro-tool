@@ -35,4 +35,20 @@ export const authService = {
     if (error) throw error;
     return user;
   },
+
+  signUp: async (
+    email: string,
+    password: string,
+    full_name: string,
+  ): Promise<User | null> => {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name },
+      },
+    });
+    if (error) throw error;
+    return data.user;
+  },
 };

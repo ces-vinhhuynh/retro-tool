@@ -1,10 +1,12 @@
+import Image from 'next/image';
+
+import logo from '@/assets/images/logo.png';
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
 interface AuthCardProps {
   children: React.ReactNode;
   title: string;
@@ -13,14 +15,22 @@ interface AuthCardProps {
 
 export function AuthCard({ children, title, description }: AuthCardProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F7F7F7] p-4">
+    <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-center text-2xl font-bold text-[#E15D2F] uppercase">
+        <CardHeader className="gap-y-1">
+          <Image
+            src={logo}
+            alt="logo"
+            width={200}
+            height={200}
+            className="mx-auto pb-6"
+          />
+
+          <CardTitle className="text-primary text-center text-2xl font-bold uppercase">
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className="text-center text-[#555555]">
+            <CardDescription className="text-secondary text-center">
               {description}
             </CardDescription>
           )}
