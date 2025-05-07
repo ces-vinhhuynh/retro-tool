@@ -1,6 +1,8 @@
 'use client';
 
-import SurveyTab from '@/features/health-check/components/survey-tab';
+import _groupBy from 'lodash.groupby';
+
+import { SurveyTab } from '@/features/health-check/components/survey-tab';
 import { useHealthCheckTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { Question } from '@/features/health-check/types/health-check';
 
@@ -14,20 +16,10 @@ export default function HealthCheckPage() {
   );
 
   const questions: Question[] = (template?.questions as Question[]) || [];
-  const grouped = questions.reduce<GroupedQuestions>((acc, question) => {
-    const { section } = question;
 
-    if (!acc[section]) {
-      acc[section] = [];
-    }
-
-    acc[section].push(question);
-
-    return acc;
-  }, {});
+  const grouped = _groupBy(questions, 'section');
 
   const sections = Object.keys(grouped);
-  const groupedQuestions = grouped;
 
   if (isLoading || !template) {
     return (
@@ -41,7 +33,7 @@ export default function HealthCheckPage() {
     <div className="container mx-auto px-4 py-6">
       <SurveyTab
         sections={sections}
-        groupedQuestions={groupedQuestions}
+        groupedQuestions={grouped}
         minScore={template.min_value}
         maxScore={template.max_value}
       />

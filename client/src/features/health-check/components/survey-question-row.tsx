@@ -4,9 +4,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Score } from '@/features/health-check/types/health-check';
 import { cn } from '@/utils/cn';
+import { HINT_SCORE } from '@/utils/constant';
 
-
-import { getScoreColor } from './helpers';
+import { getScoreColor } from '../utils/color';
 
 // Dummy current user data (replace with actual user info in a real app)
 const currentUser = {
@@ -37,8 +37,8 @@ export const SurveyQuestionRow = ({
   onValueChange,
   onCommentChange,
   disabled,
-  minScore = { value: 1, context: 'Never / Poor performance' },
-  maxScore = { value: 10, context: 'Always / Excellent performance' },
+  minScore = { value: 1, context: HINT_SCORE.MIN },
+  maxScore = { value: 10, context: HINT_SCORE.MAX },
 }: SurveyQuestionRowProps) => {
   return (
     <div className="relative my-6 flex flex-col gap-4 p-6">

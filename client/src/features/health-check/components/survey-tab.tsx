@@ -14,10 +14,10 @@ import {
 } from '@/features/health-check/types/health-check';
 import { ADDITIONAL_QUESTIONS } from '@/utils/constant';
 
-interface Answers {
+type Answers = {
   responses: Record<string, number>;
   comments: Record<string, string>;
-}
+};
 
 type SurveyTabProps = {
   sections: string[];
