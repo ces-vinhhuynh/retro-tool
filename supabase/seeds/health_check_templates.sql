@@ -16,8 +16,14 @@ insert into health_check_templates (
     'Comprehensive health check template for Scrum teams focusing on sprint delivery and team health',
     'scrum',
     null,
-    1,
-    10,
+    jsonb_build_object(
+        'value', 1,
+        'context', 'Never / Poor performance'
+    ),
+    jsonb_build_object(
+        'value', 10,
+        'context', 'Always / Excellent performance'
+    ),
     jsonb_build_array(
         -- Section 1: Delivery Metrics
         jsonb_build_object(
@@ -98,8 +104,14 @@ insert into health_check_templates (
     'Comprehensive health check template for Kanban and Hybrid teams focusing on flow-based delivery and team health',
     'kanban',
     null,
-    1,
-    10,
+    jsonb_build_object(
+        'value', 1,
+        'context', 'Never / Poor performance'
+    ),
+    jsonb_build_object(
+        'value', 10,
+        'context', 'Always / Excellent performance'
+    ),
     jsonb_build_array(
         -- Section 1: Delivery Metrics
         jsonb_build_object(

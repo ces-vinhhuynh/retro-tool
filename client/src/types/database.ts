@@ -97,8 +97,8 @@ export type Database = {
           description: string | null;
           id: string;
           is_custom: boolean | null;
-          max_value: number;
-          min_value: number;
+          max_value: Json;
+          min_value: Json;
           name: string;
           original_id: string | null;
           questions: Json;
@@ -111,8 +111,8 @@ export type Database = {
           description?: string | null;
           id?: string;
           is_custom?: boolean | null;
-          max_value: number;
-          min_value: number;
+          max_value: Json;
+          min_value: Json;
           name: string;
           original_id?: string | null;
           questions: Json;
@@ -125,8 +125,8 @@ export type Database = {
           description?: string | null;
           id?: string;
           is_custom?: boolean | null;
-          max_value?: number;
-          min_value?: number;
+          max_value?: Json;
+          min_value?: Json;
           name?: string;
           original_id?: string | null;
           questions?: Json;
