@@ -1,0 +1,29 @@
+'use client';
+
+import { cn } from '@/utils/cn';
+
+interface ScoreMetricProps {
+  label: string;
+  value: string | number;
+  unit?: string;
+  colorClass?: string;
+}
+
+export default function ScoreMetric({
+  label,
+  value,
+  unit = '/10',
+  colorClass = 'text-orange-500',
+}: ScoreMetricProps) {
+  return (
+    <div
+      className={cn(
+        'flex items-center gap-2 rounded-lg border bg-[#FAFAFB] px-3 py-2',
+      )}
+    >
+      <span className="text-[15px] font-medium text-gray-500">{label}:</span>
+      <span className={cn('text-md font-bold', colorClass)}>{value}</span>
+      {unit && <span className="text-gray-500">{unit}</span>}
+    </div>
+  );
+}

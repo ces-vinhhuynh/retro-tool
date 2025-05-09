@@ -4,14 +4,17 @@ export type HealthCheck = Tables<'health_checks'>;
 export type Response = Tables<'responses'>;
 export type ActionItem = Tables<'action_items'>;
 
-export type HealthCheckTemplate = Omit<Tables<'health_check_templates'>, 'min_value' | 'max_value'> & {
+export type HealthCheckTemplate = Omit<
+  Tables<'health_check_templates'>,
+  'min_value' | 'max_value'
+> & {
   min_value: Score;
   max_value: Score;
-}
+};
 
 export type GroupedQuestions = {
   [section: string]: Question[];
-}
+};
 
 export type HealthCheckWithTemplate = HealthCheck & {
   template: HealthCheckTemplate & {
@@ -22,7 +25,7 @@ export type HealthCheckWithTemplate = HealthCheck & {
 export type Score = {
   value: number;
   context: string;
-}
+};
 
 export type AverageScores = {
   [questionId: string]: {
@@ -65,4 +68,10 @@ export enum ActionPriority {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
+}
+
+export enum Section {
+  DeliveryExecution = 'Delivery & Execution',
+  TeamCollaboration = 'Team Collaboration',
+  AdditionalQuestions = 'Additional Questions',
 }

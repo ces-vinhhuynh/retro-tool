@@ -1,4 +1,5 @@
 import {
+  HealthCheck,
   HealthCheckTemplate,
   Score,
 } from '@/features/health-check/types/health-check';
@@ -27,5 +28,26 @@ export const healthCheckService = {
       min_value: data.min_value as Score,
       max_value: data.max_value as Score,
     };
+  },
+
+  async getHealthCheck(id: string): Promise<HealthCheck> {
+    const { data, error } = await supabaseClient
+      .from('health_checks')
+      .select(
+        `
+        *,
+        template:health_check_templates (
+          id,
+          name,
+          description,
+          questions
+        )
+      `,
+      )
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    return data;
   },
 };
