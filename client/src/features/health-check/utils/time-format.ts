@@ -15,3 +15,7 @@ export function formatDate(date: Date) {
   const month = format(date, 'MMMM').toUpperCase();
   return `${day} ${dayNum} ${month}`;
 }
+
+export function formatDateTime(date: Date) {
+  return format(date, 'MM/dd/yyyy');
+}

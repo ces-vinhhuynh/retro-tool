@@ -23,7 +23,7 @@ import {
 interface ActionItemsProps {
   actionItems: ActionItem[];
   healthCheckId: string;
-  questionId: string;
+  questionId?: string;
 }
 
 export default function ActionItems({
@@ -139,14 +139,14 @@ export default function ActionItems({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white">
       <ActionItemForm
         register={register}
         onSubmit={onSubmit}
         isDisabled={isSubmitting || isCreating}
       />
 
-      <div className="mt-2 bg-[#fffef7]">
+      <div>
         {items.length === 0 ? (
           <div className="py-4 text-center text-sm text-gray-400">
             no actions yet
