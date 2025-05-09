@@ -1,13 +1,14 @@
-create type action_item_status as enum ('todo', 'in_progress', 'done');
+create type action_item_status as enum ('todo', 'in_progress', 'done', 'blocked');
 create type action_item_priority as enum ('high', 'medium', 'low');
 
 create table action_items (
     id uuid default gen_random_uuid() primary key,
     health_check_id uuid references health_checks(id) on delete cascade not null,
     team_id uuid,
-    question_id uuid not null,
+    question_id uuid,
     title text not null,
     description text,
+    due_date timestamp with time zone,
     status action_item_status default 'todo',
     priority action_item_priority,
     assigned_to uuid references public.users(id) on delete set null,
