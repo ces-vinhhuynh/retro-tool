@@ -1,10 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Accordion } from '@/components/ui/accordion';
+import ChartDialog from '@/features/health-check/components/chart-dialog';
 import QuestionAccordionItem from '@/features/health-check/components/question-accordion-item';
 import {
+  ActionItem,
+  HealthCheck,
   Question,
   Response,
   Section,
@@ -12,55 +15,50 @@ import {
 import { getCommentsByQuestionId } from '@/features/health-check/utils/comment';
 import { getRatings } from '@/features/health-check/utils/rating';
 
-import ChartDialog from './chart-dialog';
-
 interface HealthCheckQuestionsProps {
   responses: Response[];
   questions: Question[];
   allOpen: boolean;
+  actionItems: ActionItem[];
+  healthCheck: HealthCheck;
 }
 
 export default function HealthCheckQuestions({
   responses,
   questions,
   allOpen,
+  actionItems,
+  healthCheck,
 }: HealthCheckQuestionsProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const visibleQuestions = useMemo(
-    () => questions.filter((q) => q.section !== Section.AdditionalQuestions),
-    [questions],
+
+  const visibleQuestions = questions.filter(
+    (q) => q.section !== Section.AdditionalQuestions,
   );
 
-  const openItems = useMemo(
-    () => (allOpen ? visibleQuestions.map((q) => q.id) : []),
-    [allOpen, visibleQuestions],
-  );
+  const openItems = allOpen ? visibleQuestions.map((q) => q.id) : [];
 
-  const chartData = useMemo(
-    () =>
-      visibleQuestions.map((question) => {
-        const ratings = getRatings(responses, question.id);
-        const comments = getCommentsByQuestionId(responses, question.id);
-        const total = ratings.reduce((sum, r) => sum + r.count, 0);
-        const avgScore = total
-          ? ratings.reduce((sum, r) => sum + r.score * r.count, 0) / total
-          : 0;
+  const chartData = visibleQuestions.map((question) => {
+    const ratings = getRatings(responses, question.id);
+    const comments = getCommentsByQuestionId(responses, question.id);
+    const total = ratings.reduce((sum, r) => sum + r.count, 0);
+    const avgScore = total
+      ? ratings.reduce((sum, r) => sum + r.score * r.count, 0) / total
+      : 0;
 
-        return {
-          id: question.id,
-          subject: question.title,
-          value: avgScore,
-          fullTitle: question.title,
-          description: question.description,
-          comments: comments.map((c) => ({
-            comment: c.comment,
-            created_at: c.created_at || new Date().toISOString(),
-          })),
-        };
-      }),
-    [visibleQuestions, responses],
-  );
+    return {
+      id: question.id,
+      subject: question.title,
+      value: avgScore,
+      fullTitle: question.title,
+      description: question.description,
+      comments: comments.map((c) => ({
+        comment: c.comment,
+        created_at: c.created_at || new Date().toISOString(),
+      })),
+    };
+  });
 
   const handleQuestionClick = (index: number) => {
     setSelectedIndex(index);
@@ -90,6 +88,8 @@ export default function HealthCheckQuestions({
           data={chartData}
           currentIndex={selectedIndex}
           setCurrentIndex={setSelectedIndex}
+          healthCheck={healthCheck}
+          actionItems={actionItems}
         />
       )}
     </div>

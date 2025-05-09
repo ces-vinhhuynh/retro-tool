@@ -9,6 +9,7 @@ import TopChallenges from '@/features/health-check/components/challenges';
 import HealthCheckQuestions from '@/features/health-check/components/health-check-questions';
 import TeamHealthChart from '@/features/health-check/components/team-health-chart';
 import {
+  ActionItem,
   HealthCheckWithTemplate,
   Question,
   Response,
@@ -18,12 +19,14 @@ interface DiscussPhaseProps {
   healthCheck: HealthCheckWithTemplate;
   questions: Question[];
   responses: Response[];
+  actionItems: ActionItem[];
 }
 
 export default function DiscussPhase({
   healthCheck,
   questions,
   responses,
+  actionItems,
 }: DiscussPhaseProps) {
   const [allOpen, setAllOpen] = useState(false);
 
@@ -35,8 +38,9 @@ export default function DiscussPhase({
             <CardContent className="p-6">
               <TeamHealthChart
                 responses={responses}
-                averageScores={healthCheck?.average_score}
+                healthCheck={healthCheck}
                 questions={questions}
+                actionItems={actionItems}
               />
               <div className="rounded-lg bg-white p-6">
                 <div className="flex flex-wrap items-center justify-between">
@@ -70,6 +74,8 @@ export default function DiscussPhase({
                   responses={responses}
                   questions={questions}
                   allOpen={allOpen}
+                  actionItems={actionItems}
+                  healthCheck={healthCheck}
                 />
                 <TopChallenges questions={questions} responses={responses} />
               </div>

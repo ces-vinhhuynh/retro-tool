@@ -8,3 +8,10 @@ export function formatCommentDate(dateString: string): string {
 
   return format(date, 'dd-MMMM').toUpperCase();
 }
+
+export function formatDate(date: Date) {
+  const day = format(date, 'EEE').toUpperCase();
+  const dayNum = format(date, 'd');
+  const month = format(date, 'MMMM').toUpperCase();
+  return `${day} ${dayNum} ${month}`;
+}

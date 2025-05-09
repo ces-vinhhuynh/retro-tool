@@ -5,7 +5,7 @@ import { healthCheckService } from '../api/health-check';
 export const useHealthCheck = (id: string) => {
   const { data, isLoading } = useQuery({
     queryKey: ['health-check', id],
-    queryFn: () => healthCheckService.getHealthCheck(id),
+    queryFn: () => healthCheckService.getById(id),
   });
 
   return {

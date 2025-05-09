@@ -6,10 +6,10 @@ interface SurveyResponsesProps {
 
 export default function SurveyResponses({ comments }: SurveyResponsesProps) {
   return (
-    <div className="mt-4">
+    <div className="gap-4">
       {comments && comments.length > 0 && (
-        <div className="mt-4">
-          <h3 className="mb-2 text-sm uppercase">Survey Responses</h3>
+        <div className="pt-4">
+          <h3 className="text-sm uppercase">Survey Responses</h3>
           {comments.map((comment, index) => (
             <div className="flex items-center py-1" key={index}>
               <div className="flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1">

@@ -5,7 +5,7 @@ import { responseService } from '../api/response';
 export const useResponse = (healthCheckId: string) => {
   const { data, isLoading } = useQuery({
     queryKey: ['responses', healthCheckId],
-    queryFn: () => responseService.getResponses(healthCheckId),
+    queryFn: () => responseService.getByHealthCheckId(healthCheckId),
   });
 
   return {

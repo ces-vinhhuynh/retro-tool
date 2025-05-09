@@ -39,6 +39,7 @@ export type Database = {
           assigned_to: string | null;
           created_at: string | null;
           description: string | null;
+          due_date: string | null;
           health_check_id: string;
           id: string;
           priority: Database['public']['Enums']['action_item_priority'] | null;
@@ -52,6 +53,7 @@ export type Database = {
           assigned_to?: string | null;
           created_at?: string | null;
           description?: string | null;
+          due_date?: string | null;
           health_check_id: string;
           id?: string;
           priority?: Database['public']['Enums']['action_item_priority'] | null;
@@ -65,6 +67,7 @@ export type Database = {
           assigned_to?: string | null;
           created_at?: string | null;
           description?: string | null;
+          due_date?: string | null;
           health_check_id?: string;
           id?: string;
           priority?: Database['public']['Enums']['action_item_priority'] | null;
@@ -273,8 +276,8 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      action_item_priority: 'high' | 'medium' | 'low';
-      action_item_status: 'todo' | 'in_progress' | 'done';
+      action_item_priority: 'high' | 'medium' | 'low' | 'none';
+      action_item_status: 'todo' | 'in_progress' | 'done' | 'blocked';
       health_check_status: 'in progress' | 'done';
     };
     CompositeTypes: {
@@ -394,8 +397,8 @@ export const Constants = {
   },
   public: {
     Enums: {
-      action_item_priority: ['high', 'medium', 'low'],
-      action_item_status: ['todo', 'in_progress', 'done'],
+      action_item_priority: ['high', 'medium', 'low', 'none'],
+      action_item_status: ['todo', 'in_progress', 'done', 'blocked'],
       health_check_status: ['in progress', 'done'],
     },
   },

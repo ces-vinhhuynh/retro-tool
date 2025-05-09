@@ -4,9 +4,12 @@ import { useState } from 'react';
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
 
 import { ChartContainer } from '@/components/ui/chart';
+import ChartDialog from '@/features/health-check/components/chart-dialog';
 import ScoreMetric from '@/features/health-check/components/score-metric';
 import {
+  ActionItem,
   AverageScores,
+  HealthCheck,
   Question,
   Response,
   Section,
@@ -20,23 +23,23 @@ import {
   calcAverage,
   calcSectionAverage,
 } from '@/features/health-check/utils/score';
-import { Json } from '@/types/database';
 import { cn } from '@/utils/cn';
 
-import ChartDialog from './chart-dialog';
 
 interface TeamHealthChartProps {
-  averageScores: Json;
+  healthCheck: HealthCheck;
   questions: Question[];
   responses: Response[];
+  actionItems: ActionItem[];
 }
 
 export default function TeamHealthChart({
-  averageScores,
+  healthCheck,
   questions,
   responses,
+  actionItems,
 }: TeamHealthChartProps) {
-  const scores = averageScores as AverageScores;
+  const scores = healthCheck.average_score as AverageScores;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -167,10 +170,12 @@ export default function TeamHealthChart({
         {dialogOpen && (
           <ChartDialog
             open={dialogOpen}
+            healthCheck={healthCheck}
             onOpenChange={setDialogOpen}
             data={chartData}
             currentIndex={selectedIndex}
             setCurrentIndex={setSelectedIndex}
+            actionItems={actionItems}
           />
         )}
       </div>

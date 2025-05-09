@@ -30,7 +30,7 @@ export const healthCheckService = {
     };
   },
 
-  async getHealthCheck(id: string): Promise<HealthCheck> {
+  async getById(id: string): Promise<HealthCheck> {
     const { data, error } = await supabaseClient
       .from('health_checks')
       .select(

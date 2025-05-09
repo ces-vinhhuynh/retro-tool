@@ -3,7 +3,7 @@ import supabaseClient from '@/lib/supabase/client';
 import { Response } from '../types/health-check';
 
 export const responseService = {
-  async getResponses(healthCheckId: string): Promise<Response[]> {
+  async getByHealthCheckId(healthCheckId: string): Promise<Response[]> {
     const { data, error } = await supabaseClient
       .from('responses')
       .select(

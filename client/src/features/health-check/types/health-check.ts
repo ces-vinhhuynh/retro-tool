@@ -56,6 +56,12 @@ export enum HealthCheckStatus {
   DONE = 'done',
 }
 
+export enum Section {
+  DeliveryExecution = 'Delivery & Execution',
+  TeamCollaboration = 'Team Collaboration',
+  AdditionalQuestions = 'Additional Questions',
+}
+
 export enum ActionStatus {
   TODO = 'todo',
   IN_PROGRESS = 'in_progress',
@@ -68,10 +74,4 @@ export enum ActionPriority {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-}
-
-export enum Section {
-  DeliveryExecution = 'Delivery & Execution',
-  TeamCollaboration = 'Team Collaboration',
-  AdditionalQuestions = 'Additional Questions',
 }

@@ -35,7 +35,7 @@ export default function QuestionAccordionItem({
       key={question.id}
       value={question.id}
       className={cn(
-        'rounded-lg border transition-colors duration-500',
+        'cursor-pointer rounded-lg border transition-colors duration-500',
         colors?.bg,
       )}
       onClick={() => handleQuestionClick(question.id)}
