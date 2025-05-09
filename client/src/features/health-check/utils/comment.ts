@@ -40,3 +40,26 @@ export function getTopChallenges(responses: Response[], questions: Question[]) {
   });
   return challenges;
 }
+
+export function getCommentsByQuestionId(
+  responses: Response[],
+  questionId: string,
+) {
+  return responses.reduce<{ comment: string; created_at: string }[]>(
+    (acc, response) => {
+      const answer = (response.answers as Answer)[questionId];
+      const createdAt = response.created_at ?? '';
+      if (!answer?.comment) return acc;
+
+      if (Array.isArray(answer.comment)) {
+        answer.comment.forEach((comment) => {
+          acc.push({ comment, created_at: createdAt });
+        });
+      } else {
+        acc.push({ comment: answer.comment, created_at: createdAt });
+      }
+      return acc;
+    },
+    [],
+  );
+}

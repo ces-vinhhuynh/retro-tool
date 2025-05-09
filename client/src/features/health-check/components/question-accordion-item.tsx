@@ -7,13 +7,17 @@ import { getCommentCount } from '@/features/health-check/utils/comment';
 import { getRatings } from '@/features/health-check/utils/rating';
 import { cn } from '@/utils/cn';
 
+interface QuestionAccordionItemProps {
+  question: Question;
+  responses: Response[];
+  handleQuestionClick: (questionId: string) => void;
+}
+
 export default function QuestionAccordionItem({
   question,
   responses,
-}: {
-  question: Question;
-  responses: Response[];
-}) {
+  handleQuestionClick,
+}: QuestionAccordionItemProps) {
   const ratings = getRatings(responses, question.id);
   const commentCount = getCommentCount(responses, question.id);
   const hasScore = ratings.length > 0;
@@ -34,6 +38,7 @@ export default function QuestionAccordionItem({
         'rounded-lg border transition-colors duration-500',
         colors?.bg,
       )}
+      onClick={() => handleQuestionClick(question.id)}
     >
       <div className="px-4 hover:no-underline [&[data-state=open]>div]:pb-2">
         <div className="flex w-full items-start justify-between gap-4 py-4">

@@ -8,12 +8,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import TopChallenges from '@/features/health-check/components/challenges';
 import HealthCheckQuestions from '@/features/health-check/components/health-check-questions';
 import TeamHealthChart from '@/features/health-check/components/team-health-chart';
-
 import {
   HealthCheckWithTemplate,
   Question,
   Response,
-} from '../types/health-check';
+} from '@/features/health-check/types/health-check';
 
 interface DiscussPhaseProps {
   healthCheck: HealthCheckWithTemplate;

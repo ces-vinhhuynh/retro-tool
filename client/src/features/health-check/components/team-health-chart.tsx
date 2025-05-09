@@ -1,8 +1,10 @@
 'use client';
 import { MessageSquare } from 'lucide-react';
+import { useState } from 'react';
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
 
 import { ChartContainer } from '@/components/ui/chart';
+import ScoreMetric from '@/features/health-check/components/score-metric';
 import {
   AverageScores,
   Question,
@@ -12,6 +14,7 @@ import {
 import {
   calcTotalComments,
   getCommentCount,
+  getCommentsByQuestionId,
 } from '@/features/health-check/utils/comment';
 import {
   calcAverage,
@@ -20,7 +23,7 @@ import {
 import { Json } from '@/types/database';
 import { cn } from '@/utils/cn';
 
-import ScoreMetric from './score-metric';
+import ChartDialog from './chart-dialog';
 
 interface TeamHealthChartProps {
   averageScores: Json;
@@ -34,6 +37,9 @@ export default function TeamHealthChart({
   responses,
 }: TeamHealthChartProps) {
   const scores = averageScores as AverageScores;
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const overallAvg = calcAverage(questions, scores);
   const deliveryAvg = calcSectionAverage(
     Section.DeliveryExecution,
@@ -50,11 +56,13 @@ export default function TeamHealthChart({
   const chartData = questions
     .filter((q) => q.section !== Section.AdditionalQuestions)
     .map((q) => ({
+      id: q.id,
       subject: q.title,
       value: scores[q.id]?.average_score ?? 0,
       fullTitle: `${q.title} (${q.section})`,
-      id: q.id,
       commentCount: getCommentCount(responses, q.id),
+      description: q.description,
+      comments: getCommentsByQuestionId(responses, q.id),
     }));
 
   const chartConfig = {
@@ -62,7 +70,7 @@ export default function TeamHealthChart({
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderPolarAngleAxis = ({ payload, x, y, cx }: any) => {
+  const renderPolarAngleAxis = ({ payload, x, y, cx, index }: any) => {
     const subject = payload.value;
     const point = chartData.find((item) => item.subject === subject);
     const commentCount = point?.commentCount ?? 0;
@@ -97,6 +105,8 @@ export default function TeamHealthChart({
           textAnchor={x > cx ? 'start' : x < cx ? 'end' : 'middle'}
           fill="#555555"
           fontSize={12}
+          onClick={() => handleClick(index)}
+          className="cursor-pointer"
         >
           <tspan x={x} dy="1.2em">
             {payload.value}
@@ -104,6 +114,11 @@ export default function TeamHealthChart({
         </text>
       </g>
     );
+  };
+
+  const handleClick = (index: number) => {
+    setSelectedIndex(index);
+    setDialogOpen(true);
   };
 
   return (
@@ -149,6 +164,15 @@ export default function TeamHealthChart({
             />
           </RadarChart>
         </ChartContainer>
+        {dialogOpen && (
+          <ChartDialog
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            data={chartData}
+            currentIndex={selectedIndex}
+            setCurrentIndex={setSelectedIndex}
+          />
+        )}
       </div>
     </div>
   );
