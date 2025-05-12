@@ -107,7 +107,7 @@
   --color-ces-orange-900: var(--ces-orange-900);
   --color-ces-orange-950: var(--ces-orange-950);
   --color-primary-text: var(--primary-text);
-  --color-secondary-text: var(--secondary-text);
+  --color-secondary: var(--secondary-text);
   --color-background: var(--background);
   --font-heading: var(--font-Roboto);
   --font-body: var(--font-Inter);
