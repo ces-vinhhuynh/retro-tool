@@ -28,7 +28,7 @@ export function AuthFormField<T extends FieldValues>({
   onTogglePassword,
 }: AuthFormFieldProps<T>) {
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-y-2">
       <Label htmlFor={id}>{label}</Label>
       <div className="relative">
         <Input
@@ -41,7 +41,7 @@ export function AuthFormField<T extends FieldValues>({
           <button
             type="button"
             onClick={onTogglePassword}
-            className="absolute top-2 right-2 text-gray-400"
+            className="absolute top-2.5 right-2 text-gray-400"
           >
             {showPassword ? (
               <EyeOff className="h-5 w-5" />

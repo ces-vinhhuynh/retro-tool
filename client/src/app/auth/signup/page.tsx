@@ -41,10 +41,10 @@ export default function RegisterPage() {
         >
           <AuthFormField
             label="Full Name"
-            id="full_name"
+            id="fullName"
             type="text"
             placeholder="Enter your name"
-            error={errors.full_name?.message}
+            error={errors.fullName?.message}
             register={register}
           />
 

@@ -1,6 +1,6 @@
-// src/features/auth/hooks/use-social-auth.ts
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { authService } from '../api/auth';
 
@@ -16,7 +16,9 @@ export function useSocialAuth() {
         }
       },
       onError: (error) => {
-        console.error(error);
+        toast.error('Error signing in with Google', {
+          description: error.message,
+        });
       },
     });
 

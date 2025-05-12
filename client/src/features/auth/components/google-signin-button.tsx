@@ -25,13 +25,7 @@ export function GoogleSignInButton({
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
-        <Image
-          src="/google.svg"
-          alt="Google"
-          width={16}
-          height={16}
-          className=""
-        />
+        <Image src="/google.svg" alt="Google" width={16} height={16} />
       )}
       {text || 'Sign in with Google'}
     </Button>

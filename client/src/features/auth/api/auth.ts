@@ -39,13 +39,13 @@ export const authService = {
   signUp: async (
     email: string,
     password: string,
-    full_name: string,
+    fullName: string,
   ): Promise<User | null> => {
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: {
-        data: { full_name },
+        data: { full_name: fullName },
       },
     });
     if (error) throw error;
