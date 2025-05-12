@@ -51,4 +51,41 @@ export const authService = {
     if (error) throw error;
     return data.user;
   },
+
+  signInWithEmail: async (
+    email: string,
+    password: string,
+    rememberMe: boolean = false,
+  ): Promise<User | null> => {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+
+    if (rememberMe) {
+      localStorage.setItem('rememberMe', 'true');
+
+      await supabaseClient.auth.refreshSession();
+    } else {
+      localStorage.removeItem('rememberMe');
+    }
+
+    return data.user;
+  },
+
+  forgotPassword: async (email: string): Promise<void> => {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/update-password`,
+    });
+    if (error) throw error;
+  },
+
+  updatePassword: async (password: string): Promise<void> => {
+    const { error } = await supabaseClient.auth.updateUser({
+      password,
+    });
+    if (error) throw error;
+  },
 };

@@ -33,7 +33,10 @@ export default function RegisterPage() {
   });
 
   return (
-    <AuthCard title="Create an account">
+    <AuthCard
+      title="Create an account"
+      description="Enter your information to create an account"
+    >
       <CardContent>
         <form
           onSubmit={handleSubmit((data) => signUp(data))}
@@ -105,7 +108,10 @@ export default function RegisterPage() {
       <CardFooter className="justify-center">
         <p className="text-secondary text-sm">
           Already have an account?{' '}
-          <Link href="/auth/signin" className="text-primary font-medium">
+          <Link
+            href="/auth/signin"
+            className="text-ces-orange-500 hover:text-ces-orange-600 font-medium"
+          >
             Sign in
           </Link>
         </p>
