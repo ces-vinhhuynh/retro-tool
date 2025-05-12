@@ -1,8 +1,4 @@
-import { Tables } from '@/types/database';
-
-export type HealthCheck = Tables<'health_checks'>;
-export type Response = Tables<'responses'>;
-export type ActionItem = Tables<'action_items'>;
+import { Tables, TablesInsert, TablesUpdate } from '@/types/database';
 
 export type HealthCheckTemplate = Omit<
   Tables<'health_check_templates'>,
@@ -11,6 +7,11 @@ export type HealthCheckTemplate = Omit<
   min_value: Score;
   max_value: Score;
 };
+export type HealthCheck = Tables<'health_checks'>;
+export type HealthCheckInsert = TablesInsert<'health_checks'>;
+export type HealthCheckUpdate = TablesUpdate<'health_checks'>;
+export type Response = Tables<'responses'>;
+export type ActionItem = Tables<'action_items'>;
 
 export type GroupedQuestions = {
   [section: string]: Question[];

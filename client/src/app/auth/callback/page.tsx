@@ -15,7 +15,7 @@ export default function AuthCallbackPage() {
     const handleOAuthRedirect = async () => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
-      const next = params.get('next') || '/';
+      const next = params.get('next') || '/health-checks';
 
       if (code) {
         try {

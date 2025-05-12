@@ -1,15 +1,71 @@
-import { useQuery } from '@tanstack/react-query';
+'use client';
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 import { healthCheckService } from '../api/health-check';
+import { HealthCheckUpdate, HealthCheck, HealthCheckInsert } from '../types/health-check';
 
-export const useHealthCheck = (id: string) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['health-check', id],
-    queryFn: () => healthCheckService.getById(id),
+export function useHealthChecks() {
+  return useQuery({
+    queryKey: ['healthChecks'],
+    queryFn: healthCheckService.getHealthChecks,
+  });
+}
+
+export function useHealthCheck(id: string) {
+  return useQuery({
+    queryKey: ['healthCheck', id],
+    queryFn: () => healthCheckService.getHealthCheck(id),
+    enabled: !!id,
+  });
+}
+
+export function useHealthCheckMutations() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutate: createHealthCheck, isPending: isCreating } = useMutation({
+    mutationFn: (healthCheck: HealthCheckInsert) => healthCheckService.create(healthCheck),
+    onSuccess: (data: HealthCheck) => {
+      queryClient.invalidateQueries({ queryKey: ['healthChecks'] });
+      router.push(`/health-checks/${data.id}`);
+    },
+    onError: (error) => {
+      // TODO: Handle show toast notification
+      console.error('Error creating health check:', error);
+    },
+  });
+
+  const { mutate: updateHealthCheck, isPending: isUpdating } = useMutation({
+    mutationFn: ({ id, healthCheck }: { id: string; healthCheck: HealthCheckUpdate }) =>
+      healthCheckService.update(id, healthCheck),
+    onSuccess: (data: HealthCheck) => {
+      queryClient.invalidateQueries({ queryKey: ['healthCheck', data.id] });
+      queryClient.invalidateQueries({ queryKey: ['healthChecks'] });
+    },
+    onError: (error) => {
+      // TODO: Handle show toast notification
+      console.error('Error updating health check:', error);
+    },
+  });
+
+  const { mutate: deleteHealthCheck, isPending: isDeleting } = useMutation({
+    mutationFn: (id: string) => healthCheckService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['healthChecks'] });
+      router.push('/health-checks');
+    },
+    onError: (error) => {
+      // TODO: Handle show toast notification
+      console.error('Error deleting health check:', error);
+    },
   });
 
   return {
-    healthCheck: data,
-    isLoading,
+    createHealthCheck,
+    updateHealthCheck,
+    deleteHealthCheck,
+    isLoading: isCreating || isUpdating || isDeleting,
   };
-};
+}

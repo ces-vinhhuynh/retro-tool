@@ -1,11 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { healthCheckService } from '../api/health-check';
+import { templateService } from '../api/templates';
 
-export function useHealthCheckTemplates(id: string) {
+export function useTemplates() {
   return useQuery({
-    queryKey: ['health-check-template', id],
-    queryFn: () => healthCheckService.getHealthCheckTemplatesById(id),
+    queryKey: ['templates'],
+    queryFn: () => templateService.getAll(),
+  });
+}
+
+export function useTemplateById(id: string) {
+  return useQuery({
+    queryKey: ['template', id],
+    queryFn: () => (templateService.getById(id)),
     enabled: !!id,
   });
 }

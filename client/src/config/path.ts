@@ -3,6 +3,13 @@ export const paths = {
     getHref: () => '/',
   },
 
+  healthChecks: {
+    getHref: () => '/health-checks',
+    detail: {
+      getHref: (id: string) => `/health-checks/${id}`,
+    },
+  },
+
   auth: {
     register: {
       getHref: (redirectTo?: string | null | undefined) =>

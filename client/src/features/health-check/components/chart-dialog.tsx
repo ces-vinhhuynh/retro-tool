@@ -105,7 +105,9 @@ export default function ChartDialog({
                 className={cn(
                   'h-3 w-3 cursor-pointer rounded-full px-0 py-0',
                   circle,
-                  currentIndex === index && 'ring-2 ring-black',
+                  {
+                    'ring-2 ring-black': currentIndex === index,
+                  }
                 )}
               />
             );

@@ -75,8 +75,10 @@ export const SurveyQuestionRow = ({
                 size="icon"
                 className={cn(
                   `h-8 w-8 rounded-full font-bold text-white transition hover:cursor-pointer`,
-                  scoreSelected === score && 'scale-110',
                   buttonColor,
+                  {
+                    'scale-110': scoreSelected === score,
+                  }
                 )}
                 disabled={disabled}
                 onClick={() => onValueChange(score)}

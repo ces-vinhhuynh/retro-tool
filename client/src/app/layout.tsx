@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <ReactQueryProvider>
-          <div className="px-10">{children}</div>
+          {children}
           <Toaster />
         </ReactQueryProvider>
       </body>

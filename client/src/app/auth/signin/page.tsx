@@ -16,7 +16,7 @@ export default function SignInPage() {
       title="Retro Health Check"
       description="Sign in to access your account"
     >
-      <CardContent className="space-y-4">
+      <CardContent className="py-4">
         <Button
           variant="outline"
           className="h-12 w-full"
@@ -25,7 +25,7 @@ export default function SignInPage() {
         >
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <Loader2 className="pr-2 h-5 w-5 animate-spin" />
               Signing in...
             </>
           ) : (
@@ -35,7 +35,7 @@ export default function SignInPage() {
                 alt="Google"
                 width={20}
                 height={20}
-                className="mr-2"
+                className="pr-2"
               />
               Sign in with Google
             </>

@@ -1,33 +1,34 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-import DiscussPhase from '@/features/health-check/components/discuss-phase';
-import { useGetActionItems } from '@/features/health-check/hooks/use-get-action-items';
-import { useHealthCheck } from '@/features/health-check/hooks/use-health-check';
-import { useResponse } from '@/features/health-check/hooks/use-response';
-import { HealthCheckWithTemplate } from '@/features/health-check/types/health-check';
+import { Layout } from '@/components/layout/layout';
+import { Button } from '@/components/ui/button';
 
-export default function HealthCheckPage() {
-  const { id } = useParams<{ id: string }>();
-  const { healthCheck } = useHealthCheck(id);
-  const { responses } = useResponse(id);
-  const { data: actionItems } = useGetActionItems(id);
-
-  const data = healthCheck as HealthCheckWithTemplate;
-
-  if (!data || !responses) {
-    return <div>Loading...</div>;
-  }
+export default function HealthCheckPage({
+  params: _params,
+}: {
+  params: { id: string };
+}) {
+  const router = useRouter();
 
   return (
-    <div>
-      <DiscussPhase
-        healthCheck={data}
-        questions={data?.template?.questions}
-        responses={responses}
-        actionItems={actionItems ?? []}
-      />
-    </div>
+    <Layout>
+      <div className="py-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Health Check</h1>
+          <Button
+            variant="outline"
+            onClick={() => router.push('/health-checks')}
+          >
+            Back to Health Checks
+          </Button>
+        </div>
+
+        <div className="py-12 text-center text-gray-500">
+          <p>Health check details will be implemented later.</p>
+        </div>
+      </div>
+    </Layout>
   );
 }

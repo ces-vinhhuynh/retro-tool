@@ -37,9 +37,9 @@ export async function middleware(request: NextRequest) {
 
   if (user) {
     if (request.nextUrl.pathname.startsWith('/auth')) {
-      // user is logged in, potentially respond by redirecting the user to the home page
+      // user is logged in, redirect to the health-checks page
       const url = request.nextUrl.clone();
-      url.pathname = '/';
+      url.pathname = '/health-checks';
       return NextResponse.redirect(url);
     }
   } else {
