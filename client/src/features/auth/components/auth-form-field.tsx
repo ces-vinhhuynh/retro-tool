@@ -44,7 +44,7 @@ export function AuthFormField<T extends FieldValues>({
             className="absolute top-2.5 right-2 text-gray-400"
           >
             {showPassword ? (
-              <EyeOff className="h-5 w-5" />
+              <EyeOff className="h-4 w-5" />
             ) : (
               <Eye className="h-5 w-5" />
             )}
