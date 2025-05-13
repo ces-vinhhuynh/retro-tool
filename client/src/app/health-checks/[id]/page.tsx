@@ -5,13 +5,24 @@ import React from 'react';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
-import { useHealthCheck, useHealthCheckMutations } from '@/features/health-check/hooks/use-health-check';
+import {
+  useHealthCheck,
+  useHealthCheckMutations,
+} from '@/features/health-check/hooks/use-health-check';
 import { useHealthCheckSubscription } from '@/features/health-check/hooks/use-health-check-subscription';
+
+export const STEPS = {
+  survey: { key: 1, value: 'Survey' },
+  discuss: { key: 2, value: 'Discuss' },
+  review: { key: 3, value: 'Review' },
+  close: { key: 4, value: 'Close' },
+};
+const FIRST_STEP = STEPS['survey'];
 
 export default function HealthCheckPage() {
   const { id } = useParams();
   const { healthCheck, isLoading, error } = useHealthCheckSubscription(
-    id as string
+    id as string,
   );
 
   const { data: currentUser } = useCurrentUser();
@@ -19,6 +30,19 @@ export default function HealthCheckPage() {
   const { updateHealthCheck } = useHealthCheckMutations();
 
   const isFacilitator = currentUser?.id === healthCheckData?.facilitator_id;
+
+  const handleChangeStep = (newStep: keyof typeof STEPS) => {
+    if (!isFacilitator || !healthCheckData) return;
+
+    if (STEPS[newStep].key === healthCheck?.current_step) return;
+
+    updateHealthCheck({
+      id: healthCheckData.id,
+      healthCheck: {
+        current_step: STEPS[newStep].key,
+      },
+    });
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -34,12 +58,11 @@ export default function HealthCheckPage() {
 
   return (
     <div className="py-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <HealthCheckSteps
-          currentStep={healthCheck.current_step || 1}
-          healthCheckId={healthCheck.id}
+          currentStep={healthCheck.current_step || FIRST_STEP.key}
           isFacilitator={isFacilitator}
-          updateHealthCheck={updateHealthCheck}
+          handleChangeStep={handleChangeStep}
         />
       </div>
     </div>
