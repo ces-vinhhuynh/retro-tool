@@ -1,4 +1,4 @@
-create table projects (
+create table teams (
     id uuid default gen_random_uuid() primary key,
     workspace_id uuid references workspaces(id) on delete cascade not null,
     name text not null,
@@ -7,50 +7,50 @@ create table projects (
     updated_at timestamp with time zone default now()
 );
 
-alter table projects enable row level security;
+alter table teams enable row level security;
 
--- Workspace members can view projects
-create policy "Workspace members can view projects"
-on projects for select
+-- Workspace members can view teams
+create policy "Workspace members can view teams"
+on teams for select
 using (
   exists (
     select 1 from workspace_users
-    where workspace_users.workspace_id = projects.workspace_id
+    where workspace_users.workspace_id = teams.workspace_id
       and workspace_users.user_id = auth.uid()
   )
 );
 
--- Only owner/admin can create projects
-create policy "Owner/Admin can create projects"
-on projects for insert
+-- Only owner/admin can create teams
+create policy "Owner/Admin can create teams"
+on teams for insert
 with check (
   exists (
     select 1 from workspace_users
-    where workspace_users.workspace_id = projects.workspace_id
+    where workspace_users.workspace_id = teams.workspace_id
       and workspace_users.user_id = auth.uid()
       and workspace_users.role in ('owner', 'admin')
   )
 );
 
--- Only owner/admin can update projects
-create policy "Owner/Admin can update projects"
-on projects for update
+-- Only owner/admin can update teams
+create policy "Owner/Admin can update teams"
+on teams for update
 using (
   exists (
     select 1 from workspace_users
-    where workspace_users.workspace_id = projects.workspace_id
+    where workspace_users.workspace_id = teams.workspace_id
       and workspace_users.user_id = auth.uid()
       and workspace_users.role in ('owner', 'admin')
   )
 );
 
--- Only owner/admin can delete projects
-create policy "Owner/Admin can delete projects"
-on projects for delete
+-- Only owner/admin can delete teams
+create policy "Owner/Admin can delete teams"
+on teams for delete
 using (
   exists (
     select 1 from workspace_users
-    where workspace_users.workspace_id = projects.workspace_id
+    where workspace_users.workspace_id = teams.workspace_id
       and workspace_users.user_id = auth.uid()
       and workspace_users.role in ('owner', 'admin')
   )
@@ -58,5 +58,5 @@ using (
 
 
 -- Triggers for updated_at
-create trigger handle_updated_at before update on projects
+create trigger handle_updated_at before update on teams
     for each row execute procedure moddatetime (updated_at);

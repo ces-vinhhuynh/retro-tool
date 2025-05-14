@@ -5,7 +5,7 @@ create table health_checks (
     title text not null,
     description text,
     facilitator_id uuid references public.users(id) on delete set null,
-    project_id uuid references projects(id) on delete set null,
+    team_id uuid references teams(id) on delete set null,
     current_step integer default 1,
     template_id uuid references health_check_templates(id) on delete set null,
     status health_check_status default 'in progress',

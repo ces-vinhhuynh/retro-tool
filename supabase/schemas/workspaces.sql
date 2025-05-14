@@ -13,11 +13,11 @@ alter table workspaces enable row level security;
 create trigger handle_updated_at before update on workspaces
     for each row execute procedure moddatetime (updated_at);
 
-create or replace function public.create_workspace_and_project(
+create or replace function public.create_workspace_and_team(
   ws_id uuid,
   ws_name text,
-  proj_id uuid,
-  proj_name text
+  team_id uuid,
+  team_name text
 )
 returns void
 language plpgsql
@@ -28,8 +28,8 @@ begin
   insert into workspaces (id, name)
   values (ws_id, ws_name);
 
-  -- Insert project
-  insert into projects (id, workspace_id, name)
-  values (proj_id, ws_id, proj_name);
+  -- Insert team
+  insert into teams (id, workspace_id, name)
+  values (team_id, ws_id, team_name);
 end;
 $$;

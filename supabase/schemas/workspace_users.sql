@@ -13,15 +13,10 @@ create table workspace_users (
 
 alter table workspace_users enable row level security;
 
--- Members can view workspace users
-create policy "Workspace members can view workspace users"
+create policy "Users can see their own workspace_users rows"
 on workspace_users for select
 using (
-  exists (
-    select 1 from workspace_users wu2
-    where wu2.workspace_id = workspace_users.workspace_id
-      and wu2.user_id = auth.uid()
-  )
+  user_id = auth.uid()
 );
 
 -- Only owner/admin can create workspace users
