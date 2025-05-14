@@ -1,5 +1,3 @@
-create extension if not exists moddatetime schema extensions;
-
 create table health_check_templates (
     id uuid default gen_random_uuid() primary key,
     name text not null,
