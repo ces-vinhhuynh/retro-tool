@@ -1,34 +1,62 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
-import { Layout } from '@/components/layout/layout';
-import { Button } from '@/components/ui/button';
+import { FIRST_STEP, STEPS } from '@/features/health-check/constants/health-check';
+import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
+import {
+  useHealthCheck,
+  useHealthCheckMutations,
+} from '@/features/health-check/hooks/use-health-check';
+import { useHealthCheckSubscription } from '@/features/health-check/hooks/use-health-check-subscription';
 
-export default function HealthCheckPage({
-  params: _params,
-}: {
-  params: { id: string };
-}) {
-  const router = useRouter();
+export default function HealthCheckPage() {
+  const { id } = useParams();
+  const { healthCheck, isLoading, error } = useHealthCheckSubscription(
+    id as string,
+  );
+
+  const { data: currentUser } = useCurrentUser();
+  const { data: healthCheckData } = useHealthCheck(id as string);
+  const { updateHealthCheck } = useHealthCheckMutations();
+
+  const isFacilitator = currentUser?.id === healthCheckData?.facilitator_id;
+
+  const handleChangeStep = (newStep: keyof typeof STEPS) => {
+    if (!isFacilitator || !healthCheckData) return;
+
+    if (STEPS[newStep].key === healthCheck?.current_step) return;
+
+    updateHealthCheck({
+      id: healthCheckData.id,
+      healthCheck: {
+        current_step: STEPS[newStep].key,
+      },
+    });
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!healthCheck) {
+    return <div>Health check not found</div>;
+  }
 
   return (
-    <Layout>
-      <div className="py-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Health Check</h1>
-          <Button
-            variant="outline"
-            onClick={() => router.push('/health-checks')}
-          >
-            Back to Health Checks
-          </Button>
-        </div>
-
-        <div className="py-12 text-center text-gray-500">
-          <p>Health check details will be implemented later.</p>
-        </div>
+    <div className="py-6">
+      <div className="flex items-center justify-between">
+        <HealthCheckSteps
+          currentStep={healthCheck.current_step || FIRST_STEP.key}
+          isFacilitator={isFacilitator}
+          handleChangeStep={handleChangeStep}
+        />
       </div>
-    </Layout>
+    </div>
   );
 }
