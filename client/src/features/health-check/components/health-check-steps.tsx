@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 
-import { STEPS } from '@/app/health-checks/[id]/page';
+import { STEPS } from '@/features/health-check/constants/health-check';
 import { cn } from '@/utils/cn';
 
 interface HealthCheckStepsProps {
