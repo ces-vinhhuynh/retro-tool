@@ -1,12 +1,12 @@
 import {
   HealthCheck,
   HealthCheckInsert,
-  HealthCheckUpdate
+  HealthCheckUpdate,
 } from '@/features/health-check/types/health-check';
 import supabaseClient from '@/lib/supabase/client';
 
 class HealthCheckService {
-  async getById(id: string): Promise<HealthCheck> {
+  async getWithTemplateById(id: string): Promise<HealthCheck> {
     const { data, error } = await supabaseClient
       .from('health_checks')
       .select(
@@ -60,7 +60,10 @@ class HealthCheckService {
     return data;
   }
 
-  async update(id: string, healthCheck: HealthCheckUpdate): Promise<HealthCheck> {
+  async update(
+    id: string,
+    healthCheck: HealthCheckUpdate,
+  ): Promise<HealthCheck> {
     const { data, error } = await supabaseClient
       .from('health_checks')
       .update(healthCheck)

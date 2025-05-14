@@ -1,20 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
 
-import {
-  ActionItem,
-  HealthCheckWithTemplate,
-  Question,
-  Response,
-} from '../types/health-check';
+import { ActionItem, HealthCheckWithTemplate } from '../types/health-check';
 import { formatDateTime } from '../utils/time-format';
 
 import ActionItems from './action-items';
 
 interface ReviewPhaseProps {
   healthCheck: HealthCheckWithTemplate;
-  questions: Question[];
-  responses: Response[];
   actionItems: ActionItem[];
 }
 

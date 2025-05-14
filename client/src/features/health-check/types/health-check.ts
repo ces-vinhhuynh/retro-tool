@@ -11,6 +11,7 @@ export type HealthCheck = Tables<'health_checks'>;
 export type HealthCheckInsert = TablesInsert<'health_checks'>;
 export type HealthCheckUpdate = TablesUpdate<'health_checks'>;
 export type Response = Tables<'responses'>;
+export type ResponseInsert = TablesInsert<'responses'>;
 export type ActionItem = Tables<'action_items'>;
 
 export type GroupedQuestions = {
@@ -41,15 +42,16 @@ export type Question = {
   description: string;
 };
 
-export type Answer = {
-  [questionId: string]: {
-    length: number;
-    rating: number;
-    comment: string[];
-    vote: number;
-    created_at: string;
-    updated_at: string;
-  };
+export type QuestionAnswer = {
+  rating: number | null;
+  comment: string[];
+  vote: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Answers = {
+  [questionId: string]: QuestionAnswer;
 };
 
 export enum HealthCheckStatus {

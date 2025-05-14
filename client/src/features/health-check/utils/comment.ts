@@ -1,9 +1,9 @@
-import { Answer, Question, Response, Section } from '../types/health-check';
+import { Answers, QuestionAnswer, Question, Response, Section } from '../types/health-check';
 
 export const getCommentCount = (responses: Response[], questionId: string) => {
   return responses.reduce((count, response) => {
-    const answer = (response.answers as Answer)[questionId];
-    return count + (answer?.comment?.length || 0);
+    const answer = (response.answers as Answers)[questionId];
+    return count + (answer?.comment?.length ?? 0);
   }, 0);
 };
 
@@ -17,7 +17,7 @@ export function calcTotalComments(
       total +
       Object.entries(response?.answers ?? {}).reduce(
         (sum, [qid, ans]) =>
-          sum + (validIds.has(qid) ? (ans as Answer)?.comment?.length || 0 : 0),
+          sum + (validIds.has(qid) ? (ans as QuestionAnswer)?.comment?.length || 0 : 0),
         0,
       ),
     0,
@@ -32,7 +32,7 @@ export function getTopChallenges(responses: Response[], questions: Question[]) {
   const challenges: string[] = [];
   responses.forEach((response) => {
     additionalQuestionIds.forEach((qid) => {
-      const answer = (response.answers as Answer)[qid];
+      const answer = (response.answers as Answers)[qid];
       if (answer?.comment) {
         challenges.push(...answer.comment);
       }
@@ -47,7 +47,7 @@ export function getCommentsByQuestionId(
 ) {
   return responses.reduce<{ comment: string; created_at: string }[]>(
     (acc, response) => {
-      const answer = (response.answers as Answer)[questionId];
+      const answer = (response.answers as Answers)[questionId];
       const createdAt = response.created_at ?? '';
       if (!answer?.comment) return acc;
 

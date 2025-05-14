@@ -1,9 +1,9 @@
-import { Answer, Response } from '../types/health-check';
+import { Answers, Response } from '../types/health-check';
 
 export function getRatings(responses: Response[], questionId: string) {
   const ratingMap = new Map<number, number>();
   for (const response of responses) {
-    const rating = (response.answers as Answer)?.[questionId]?.rating;
+    const rating = (response.answers as Answers)?.[questionId]?.rating;
     if (typeof rating === 'number') {
       ratingMap.set(rating, (ratingMap.get(rating) || 0) + 1);
     }

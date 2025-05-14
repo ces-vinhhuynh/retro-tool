@@ -1,7 +1,6 @@
 import supabaseClient from '@/lib/supabase/client';
-import { Template } from '@/lib/types';
 
-import { QuestionData, TemplateResponse } from '../types/templates';
+import { Question, Template } from '../types/templates';
 
 class TemplateService {
   async getAll(): Promise<Template[]> {
@@ -12,25 +11,27 @@ class TemplateService {
 
     if (error) throw error;
 
-    return (data as TemplateResponse[]).map((template) => {
+    return (data as unknown as Template[]).map((template) => {
       // Parse the questions JSON if it's a string
-      const questions = typeof template.questions === 'string'
-        ? JSON.parse(template.questions)
-        : template.questions;
+      const questions =
+        typeof template.questions === 'string'
+          ? JSON.parse(template.questions)
+          : template.questions;
 
       return {
         id: template.id,
         name: template.name,
         description: template.description ?? '',
-        questions: (questions as QuestionData[]).map((q) => ({
+        questions: (questions as Question[]).map((q) => ({
           id: q.id,
           title: q.title,
-          text: q.text,
           section: q.section,
           description: q.description,
-          type: q.type as 'scale' | 'text' | 'choice',
+          type: q.type,
           options: q.options,
         })),
+        min_value: template.min_value,
+        max_value: template.max_value,
       };
     });
   }
@@ -45,29 +46,28 @@ class TemplateService {
     if (error) return null;
     if (!data) return null;
 
-    const template = data as TemplateResponse;
+    const template = data as unknown as Template;
 
     // Parse the questions JSON if it's a string
-    const questions = typeof template.questions === 'string'
-      ? JSON.parse(template.questions)
-      : template.questions;
+    const questions =
+      typeof template.questions === 'string'
+        ? JSON.parse(template.questions)
+        : template.questions;
 
     return {
       id: template.id,
       name: template.name,
       description: template.description ?? '',
-      questions: (questions as QuestionData[]).filter(
-        (q): q is QuestionData =>
-          !!q.title && !!q.text && !!q.section && !!q.description && !!q.type && !!q.options
-      ).map((q) => ({
+      questions: (questions as Question[]).map((q) => ({
         id: q.id,
         title: q.title,
-        text: q.text,
         section: q.section,
         description: q.description,
-        type: q.type as 'scale' | 'text' | 'choice',
+        type: q.type,
         options: q.options,
       })),
+      min_value: template.min_value,
+      max_value: template.max_value,
     };
   }
 }

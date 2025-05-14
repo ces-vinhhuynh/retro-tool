@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/popover';
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import { getAvatarCharacters } from '@/features/health-check/utils/user';
 import { cn } from '@/lib/utils';
 
 type User = {
@@ -29,15 +30,6 @@ export function Header() {
   const router = useRouter();
   const { data: currentUser, isLoading } = useCurrentUser();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const getAvatarInitials = (user: User) => {
-    return (user.user_metadata?.full_name ?? user.email ?? 'U')
-      .split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const handleSignOut = async () => {
     try {
@@ -88,7 +80,11 @@ export function Header() {
                     />
                   ) : (
                     <AvatarFallback>
-                      {getAvatarInitials(currentUser)}
+                      {getAvatarCharacters(
+                        currentUser.user_metadata?.full_name ??
+                          currentUser.email ??
+                          'U',
+                      )}
                     </AvatarFallback>
                   )}
                 </Avatar>

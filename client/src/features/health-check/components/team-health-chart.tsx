@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
 
 import { ChartContainer } from '@/components/ui/chart';
-import ChartDialog from '@/features/health-check/components/chart-dialog';
-import ScoreMetric from '@/features/health-check/components/score-metric';
+import { cn } from '@/utils/cn';
+
 import {
   ActionItem,
   AverageScores,
@@ -13,18 +13,16 @@ import {
   Question,
   Response,
   Section,
-} from '@/features/health-check/types/health-check';
+} from '../types/health-check';
 import {
   calcTotalComments,
   getCommentCount,
   getCommentsByQuestionId,
-} from '@/features/health-check/utils/comment';
-import {
-  calcAverage,
-  calcSectionAverage,
-} from '@/features/health-check/utils/score';
-import { cn } from '@/utils/cn';
+} from '../utils/comment';
+import { calcAverage, calcSectionAverage } from '../utils/score';
 
+import ChartDialog from './chart-dialog';
+import ScoreMetric from './score-metric';
 
 interface TeamHealthChartProps {
   healthCheck: HealthCheck;
@@ -39,10 +37,10 @@ export default function TeamHealthChart({
   responses,
   actionItems,
 }: TeamHealthChartProps) {
-  const scores = healthCheck.average_score as AverageScores;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const scores = healthCheck?.average_score as AverageScores;
   const overallAvg = calcAverage(questions, scores);
   const deliveryAvg = calcSectionAverage(
     Section.DeliveryExecution,
@@ -91,9 +89,11 @@ export default function TeamHealthChart({
             <div
               className={cn(
                 'mt-2 flex items-center text-[12px] font-bold text-[#555555]',
-                x < cx && 'justify-start',
-                x > cx && 'justify-end',
-                x === cx && 'justify-center',
+                {
+                  'justify-start': x < cx,
+                  'justify-end': x > cx,
+                  'justify-center': x === cx,
+                },
               )}
             >
               <MessageSquare size={14} className="mr-1" />
@@ -127,11 +127,11 @@ export default function TeamHealthChart({
   return (
     <div className="rounded-lg bg-white p-6">
       <h2 className="text-2xl font-bold text-gray-900">Team Health Summary</h2>
-      <p className="text-gray-500">
+      <p className="mb-6 text-gray-500">
         Average scores from all participants for health check sprint
       </p>
 
-      <div className="flex items-start gap-4 pt-6">
+      <div className="mb-2 flex items-start gap-4">
         <div className="space-y-2">
           <ScoreMetric label="Avg. Score" value={overallAvg} />
           <ScoreMetric label="Avg. Delivery & Execution" value={deliveryAvg} />
@@ -169,7 +169,7 @@ export default function TeamHealthChart({
         </ChartContainer>
         {dialogOpen && (
           <ChartDialog
-            open={dialogOpen}
+            open
             healthCheck={healthCheck}
             onOpenChange={setDialogOpen}
             data={chartData}

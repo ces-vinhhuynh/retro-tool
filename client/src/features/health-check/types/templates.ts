@@ -1,18 +1,17 @@
-export type TemplateResponse = {
+export type Template = {
   id: string;
   name: string;
   description: string | null;
-  questions: unknown;
-  min_value: number;
-  max_value: number;
+  questions: Question[];
+  min_value: { value: number; context: string };
+  max_value: { value: number; context: string };
 };
 
-export interface QuestionData {
+export interface Question {
   id: string;
   title: string;
-  text: string;
-  section: string;
   description: string;
-  type: string;
-  options: string[];
+  section: string;
+  type: 'scale' | 'text' | 'choice';
+  options?: string[];
 }

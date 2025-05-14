@@ -1,52 +1,40 @@
-'use client';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
-import { useEffect, useState } from 'react';
+import supabaseClient from '@/lib/supabase/client';
 
-import supabase from '@/lib/supabase/client';
+import { HealthCheck } from '../types/health-check';
 
-import {HealthCheck} from '../types/health-check';
-
-import {useHealthCheck} from './use-health-check';
-
-export function useHealthCheckSubscription(id: string) {
-  const { data: healthCheck, isLoading, error } = useHealthCheck(id);
-  const [subscribedHealthCheck, setSubscribedHealthCheck] = useState<HealthCheck | null>(null);
+export const useHealthCheckSubscription = (healthCheckId: string) => {
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!id) return;
-
-    const channel = supabase
-      .channel(`health_check:${id}`)
+    const subscription = supabaseClient
+      .channel(`health_check_${healthCheckId}`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
           table: 'health_checks',
-          filter: `id=eq.${id}`,
+          filter: `id=eq.${healthCheckId}`,
         },
         (payload) => {
-          if (payload.new) {
-            setSubscribedHealthCheck(payload.new as HealthCheck);
+          if (payload.eventType === 'UPDATE') {
+            const updatedHealthCheck = payload.new as HealthCheck;
+
+            // Update the health check data in the query cache
+            queryClient.setQueryData(
+              ['healthCheck', healthCheckId],
+              updatedHealthCheck,
+            );
           }
-        }
+        },
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      subscription.unsubscribe();
     };
-  }, [id]);
-
-  useEffect(() => {
-    if (healthCheck) {
-      setSubscribedHealthCheck(healthCheck);
-    }
-  }, [healthCheck]);
-
-  return {
-    healthCheck: subscribedHealthCheck || healthCheck,
-    isLoading,
-    error,
-  };
-}
+  }, [healthCheckId, queryClient]);
+};

@@ -4,7 +4,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 import { healthCheckService } from '../api/health-check';
-import { HealthCheckUpdate, HealthCheck, HealthCheckInsert } from '../types/health-check';
+import {
+  HealthCheckUpdate,
+  HealthCheck,
+  HealthCheckInsert,
+} from '../types/health-check';
 
 export function useHealthChecks() {
   return useQuery({
@@ -21,12 +25,21 @@ export function useHealthCheck(id: string) {
   });
 }
 
+export function useHealthCheckWithTemplate(id: string) {
+  return useQuery({
+    queryKey: ['healthCheck', id],
+    queryFn: () => healthCheckService.getWithTemplateById(id),
+    enabled: !!id,
+  });
+}
+
 export function useHealthCheckMutations() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const { mutate: createHealthCheck, isPending: isCreating } = useMutation({
-    mutationFn: (healthCheck: HealthCheckInsert) => healthCheckService.create(healthCheck),
+    mutationFn: (healthCheck: HealthCheckInsert) =>
+      healthCheckService.create(healthCheck),
     onSuccess: (data: HealthCheck) => {
       queryClient.invalidateQueries({ queryKey: ['healthChecks'] });
       router.push(`/health-checks/${data.id}`);
@@ -38,8 +51,13 @@ export function useHealthCheckMutations() {
   });
 
   const { mutate: updateHealthCheck, isPending: isUpdating } = useMutation({
-    mutationFn: ({ id, healthCheck }: { id: string; healthCheck: HealthCheckUpdate }) =>
-      healthCheckService.update(id, healthCheck),
+    mutationFn: ({
+      id,
+      healthCheck,
+    }: {
+      id: string;
+      healthCheck: HealthCheckUpdate;
+    }) => healthCheckService.update(id, healthCheck),
     onSuccess: (data: HealthCheck) => {
       queryClient.invalidateQueries({ queryKey: ['healthCheck', data.id] });
       queryClient.invalidateQueries({ queryKey: ['healthChecks'] });
