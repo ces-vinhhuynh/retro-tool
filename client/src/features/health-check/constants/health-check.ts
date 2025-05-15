@@ -5,3 +5,4 @@ export const STEPS = {
   close: { key: 4, value: 'Close' },
 };
 export const FIRST_STEP = STEPS['survey'];
+export const LAST_STEP = STEPS['close'];

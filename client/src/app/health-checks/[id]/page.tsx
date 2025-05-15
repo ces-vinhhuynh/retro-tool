@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { Layout } from '@/components/layout/layout';
+import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import DiscussPhase from '@/features/health-check/components/discuss-phase';
 import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
@@ -14,7 +15,8 @@ import SurveyTab from '@/features/health-check/components/survey-tab';
 import UserSidebar from '@/features/health-check/components/user-sidebar';
 import {
   FIRST_STEP,
-  STEPS
+  LAST_STEP,
+  STEPS,
 } from '@/features/health-check/constants/health-check';
 import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
 import { useGetActionItems } from '@/features/health-check/hooks/use-get-action-items';
@@ -243,6 +245,16 @@ export default function HealthCheckPage() {
     return averageScores;
   };
 
+  const getNextPhaseButtonText = () => {
+    if (healthCheck?.current_step === LAST_STEP.key) return;
+    if (healthCheck?.current_step === STEPS['survey'].key)
+      return STEPS['discuss'].value;
+    if (healthCheck?.current_step === STEPS['discuss'].key)
+      return STEPS['review'].value;
+    if (healthCheck?.current_step === STEPS['review'].key)
+      return STEPS['close'].value;
+  };
+
   const isLoading =
     isLoadingUser ||
     isLoadingHealthCheck ||
@@ -316,6 +328,23 @@ export default function HealthCheckPage() {
           />
         )}
       </div>
+      {isFacilitator && healthCheck?.current_step !== LAST_STEP.key && (
+        <div className="mx-auto flex w-[50%] py-5">
+          <Button
+            className="ml-auto w-full bg-[#E15D2F] text-white hover:bg-[#eeaa83] sm:w-auto"
+            onClick={() =>
+              updateHealthCheck({
+                id: healthCheck?.id ?? '',
+                healthCheck: {
+                  current_step: (healthCheck?.current_step || 1) + 1,
+                },
+              })
+            }
+          >
+            {getNextPhaseButtonText()}
+          </Button>
+        </div>
+      )}
     </Layout>
   );
 }
