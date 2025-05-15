@@ -9,14 +9,16 @@ import ActionItems from './action-items';
 interface ReviewPhaseProps {
   healthCheck: HealthCheckWithTemplate;
   actionItems: ActionItem[];
+  teamSize: number;
 }
 
-export default function ReviewPhase({
+const ReviewPhase = ({
   actionItems,
   healthCheck,
-}: ReviewPhaseProps) {
+  teamSize = 0,
+}: ReviewPhaseProps) => {
   return (
-    <div className="container mx-auto max-w-screen-2xl flex-grow rounded-lg bg-white p-5 sm:p-8">
+    <div className="container mx-auto max-w-7xl lg:w-2/3 flex-grow rounded-lg bg-white p-5 sm:p-8">
       <div className="space-y-4 p-4 sm:p-8">
         <h3 className="text-lg font-medium">Session Summary</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
@@ -47,9 +49,7 @@ export default function ReviewPhase({
           </div>
           <div className="space-y-1">
             <div className="text-sm text-gray-500">Participants</div>
-            <div className="font-medium">
-              {(healthCheck.participants as string[])?.length ?? 0} team members
-            </div>
+            <div className="font-medium">{teamSize} team members</div>
           </div>
         </div>
       </div>
@@ -77,4 +77,6 @@ export default function ReviewPhase({
       </div>
     </div>
   );
-}
+};
+
+export default ReviewPhase;

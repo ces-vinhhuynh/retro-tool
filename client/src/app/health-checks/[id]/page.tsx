@@ -11,26 +11,32 @@ import HealthCheckSteps from '@/features/health-check/components/health-check-st
 import ReviewPhase from '@/features/health-check/components/review-phase';
 import { WelcomeModal } from '@/features/health-check/components/sessions/welcome-modal';
 import SurveyTab from '@/features/health-check/components/survey-tab';
+import UserSidebar from '@/features/health-check/components/user-sidebar';
 import {
   FIRST_STEP,
-  STEPS,
+  STEPS
 } from '@/features/health-check/constants/health-check';
+import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
 import { useGetActionItems } from '@/features/health-check/hooks/use-get-action-items';
+import { useGetParticipants } from '@/features/health-check/hooks/use-get-participants';
 import {
-  useHealthCheckWithTemplate,
   useHealthCheckMutations,
+  useHealthCheckWithTemplate,
 } from '@/features/health-check/hooks/use-health-check';
 import { useHealthCheckSubscription } from '@/features/health-check/hooks/use-health-check-subscription';
 import { useTemplateById } from '@/features/health-check/hooks/use-health-check-templates';
+import { useParticipantsSubscription } from '@/features/health-check/hooks/use-participants-subscription';
 import {
   useCreateResponse,
   useResponse,
   useResponses,
 } from '@/features/health-check/hooks/use-response';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
+import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckWithTemplate,
   Question,
+  User,
 } from '@/features/health-check/types/health-check';
 
 export type GroupedQuestions = {
@@ -38,8 +44,21 @@ export type GroupedQuestions = {
 };
 
 export default function HealthCheckPage() {
-  const params = useParams();
-  const healthCheckId = params.id as string;
+  const { id: healthCheckId } = useParams<{ id: string }>();
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const {
+    isOpen: isWelcomeModalOpen,
+    open: openWelcomeModal,
+    close: closeWelcomeModal,
+    hasSeenModal,
+    markAsSeen,
+  } = useWelcomeModalStore();
 
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: healthCheck, isLoading: isLoadingHealthCheck } =
@@ -53,13 +72,39 @@ export default function HealthCheckPage() {
     useResponses(healthCheckId);
   const { data: actionItems, isLoading: isLoadingActionItems } =
     useGetActionItems(healthCheckId);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  const { data: participants, isLoading: isLoadingParticipants } =
+    useGetParticipants(healthCheckId);
+
+  const { mutate: createParticipant } = useCreateParticipant();
+
+  useEffect(() => {
+    if (!isLoadingParticipants && !isLoadingUser && currentUser) {
+      const isUserParticipant = participants?.some(
+        (participant) => participant.user_id === currentUser.id,
+      );
+      if (!isUserParticipant) {
+        createParticipant({
+          healthCheckId,
+          userId: currentUser.id,
+        });
+      }
+    }
+  }, [
+    isLoadingParticipants,
+    isLoadingUser,
+    participants,
+    currentUser,
+    createParticipant,
+    healthCheckId,
+  ]);
+  // Subscribe to real-time updates for the health check and responses
+  useHealthCheckSubscription(healthCheckId);
+  useResponsesSubscription(healthCheckId);
+  useParticipantsSubscription(healthCheckId);
 
   const { updateHealthCheck } = useHealthCheckMutations();
   const { mutate: createResponse } = useCreateResponse();
-
-  useHealthCheckSubscription(healthCheckId);
-  useResponsesSubscription(healthCheckId);
 
   const questions: Question[] = template?.questions || [];
   const grouped = _groupBy(questions, 'section');
@@ -101,25 +146,21 @@ export default function HealthCheckPage() {
       currentUser.id === healthCheck.facilitator_id &&
       (healthCheck.current_step === 1 || healthCheck.current_step === null)
     ) {
-      const modalShownKey = `welcome-modal-shown-${healthCheckId}`;
-      const hasSeenModal = localStorage.getItem(modalShownKey);
-
-      if (!hasSeenModal) {
-        setShowWelcomeModal(true);
-        localStorage.setItem(modalShownKey, 'true');
+      if (!hasSeenModal(healthCheckId)) {
+        openWelcomeModal(healthCheckId);
+        markAsSeen(healthCheckId);
       }
     }
   }, [
     currentUser,
+    openWelcomeModal,
+    hasSeenModal,
+    markAsSeen,
     healthCheck,
     isLoadingUser,
     isLoadingHealthCheck,
     healthCheckId,
   ]);
-
-  const handleCloseWelcomeModal = () => {
-    setShowWelcomeModal(false);
-  };
 
   const handleChangeStep = (newStep: keyof typeof STEPS) => {
     if (!isFacilitator) return;
@@ -222,48 +263,59 @@ export default function HealthCheckPage() {
 
   return (
     <Layout>
-      <div className="py-6">
-        <div className="flex items-center justify-center">
-          <HealthCheckSteps
-            currentStep={healthCheck.current_step || FIRST_STEP.key}
-            isFacilitator={isFacilitator}
-            handleChangeStep={handleChangeStep}
-          />
+      <div className="flex w-full">
+        <div className="mx-auto w-full">
+          <div className="pb-6">
+            <div className="flex items-center justify-center">
+              <HealthCheckSteps
+                currentStep={healthCheck.current_step || FIRST_STEP.key}
+                isFacilitator={isFacilitator}
+                handleChangeStep={handleChangeStep}
+              />
+            </div>
+          </div>
+          {healthCheck.current_step === STEPS['survey'].key && (
+            <SurveyTab
+              sections={sections}
+              currentUser={currentUser as unknown as User}
+              groupedQuestions={grouped}
+              minScore={template?.min_value}
+              maxScore={template?.max_value}
+              response={response}
+            />
+          )}
+          {healthCheck.current_step === STEPS['discuss'].key && (
+            <DiscussPhase
+              healthCheck={healthCheck as HealthCheckWithTemplate}
+              questions={questions}
+              responses={responses || []}
+              actionItems={actionItems || []}
+            />
+          )}
+          {healthCheck.current_step === STEPS['review'].key && (
+            <ReviewPhase
+              healthCheck={healthCheck as HealthCheckWithTemplate}
+              actionItems={actionItems || []}
+              teamSize={participants?.length || 0}
+            />
+          )}
+          {healthCheck.current_step === STEPS['close'].key}
         </div>
-      </div>
-      {healthCheck.current_step === STEPS['survey'].key && (
-        <SurveyTab
-          sections={sections}
-          groupedQuestions={grouped}
-          minScore={template?.min_value.value}
-          maxScore={template?.max_value.value}
-          response={response}
-        />
-      )}
-      {healthCheck.current_step === STEPS['discuss'].key && (
-        <DiscussPhase
-          healthCheck={healthCheck as HealthCheckWithTemplate}
-          questions={questions}
-          responses={responses || []}
-          actionItems={actionItems || []}
-        />
-      )}
-      {healthCheck.current_step === STEPS['review'].key && (
-        <ReviewPhase
-          healthCheck={healthCheck as HealthCheckWithTemplate}
-          actionItems={actionItems || []}
-        />
-      )}
-      {healthCheck.current_step === STEPS['close'].key}
-
-      {healthCheck && (
-        <WelcomeModal
-          isOpen={showWelcomeModal}
-          onClose={handleCloseWelcomeModal}
+        <UserSidebar
           healthCheck={healthCheck}
-          template={template}
+          isOpen={sidebarOpen}
+          toggleSidebar={toggleSidebar}
+          healthCheckId={healthCheckId}
         />
-      )}
+        {healthCheck && (
+          <WelcomeModal
+            isOpen={isWelcomeModalOpen}
+            onClose={closeWelcomeModal}
+            healthCheck={healthCheck}
+            template={template}
+          />
+        )}
+      </div>
     </Layout>
   );
 }

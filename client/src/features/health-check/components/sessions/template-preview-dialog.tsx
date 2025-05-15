@@ -10,7 +10,8 @@ import {
   DialogDescription,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Template } from '@/lib/types';
+
+import { Template } from '../../types/templates';
 
 interface TemplatePreviewDialogProps {
   open: boolean;

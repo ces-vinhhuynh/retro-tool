@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { responseService } from '../api/response';
 import { Response, ResponseInsert } from '../types/health-check';
-import { toast } from 'sonner';
 
 export function useResponses(healthCheckId: string) {
   return useQuery({

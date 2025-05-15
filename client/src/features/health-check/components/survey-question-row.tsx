@@ -8,12 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { cn } from '@/utils/cn';
 
+import { Score } from '../types/health-check';
 import { getAvatarCharacters } from '../utils/user';
-
-const SCORE_LABELS = {
-  min: 'Never / Poor performance',
-  max: 'Always / Excellent performance',
-} as const;
 
 // Updated color mapping to handle different scales
 const SCORE_COLORS = {
@@ -43,8 +39,8 @@ export interface SurveyQuestionRowProps {
   onValueChange: (value: number) => void;
   onCommentChange: (comment: string) => void | Promise<void>;
   disabled?: boolean;
-  minValue?: number;
-  maxValue?: number;
+  minScore: Score;
+  maxScore: Score;
 }
 
 function getScoreColor(
@@ -64,16 +60,16 @@ function getScoreColor(
     : 'bg-muted';
 }
 
-export default function SurveyQuestionRow({
+const SurveyQuestionRow = ({
   question,
   value,
   comment,
   onValueChange,
   onCommentChange,
   disabled,
-  minValue = 1,
-  maxValue = 10,
-}: SurveyQuestionRowProps) {
+  minScore,
+  maxScore,
+}: SurveyQuestionRowProps) => {
   // Get current user data
   const { data: currentUser } = useCurrentUser();
 
@@ -115,10 +111,10 @@ export default function SurveyQuestionRow({
       <div className="flex items-center gap-8">
         <div className="flex gap-2">
           {Array.from(
-            { length: maxValue - minValue + 1 },
-            (_, i) => i + minValue,
+            { length: maxScore.value - minScore.value + 1 },
+            (_, i) => i + minScore.value,
           ).map((score) => {
-            const buttonColor = getScoreColor(value, score, maxValue);
+            const buttonColor = getScoreColor(value, score, maxScore.value);
 
             return (
               <Button
@@ -141,10 +137,10 @@ export default function SurveyQuestionRow({
 
         <div className="text-muted-foreground hidden text-xs sm:flex sm:flex-col">
           <span>
-            {minValue}: {SCORE_LABELS.min}
+            {minScore.value}: {minScore.context}
           </span>
           <span>
-            {maxValue}: {SCORE_LABELS.max}
+            {maxScore.value}: {maxScore.context}
           </span>
         </div>
       </div>
@@ -152,17 +148,17 @@ export default function SurveyQuestionRow({
       <div className="relative w-full">
         <Avatar className="absolute -top-0 -left-3 z-10 h-8 w-8 border">
           <AvatarImage
-            src={currentUser?.user_metadata?.avatar_url || ''}
+            src={currentUser?.user_metadata?.avatar_url ?? ''}
             alt={
-              currentUser?.user_metadata?.full_name ||
-              currentUser?.email ||
+              currentUser?.user_metadata?.full_name ??
+              currentUser?.email ??
               'User'
             }
           />
           <AvatarFallback>
             {getAvatarCharacters(
-              currentUser?.user_metadata?.full_name ||
-                currentUser?.email?.split('@')[0] ||
+              currentUser?.user_metadata?.full_name ??
+                currentUser?.email?.split('@')[0] ??
                 'User',
             )}
           </AvatarFallback>
@@ -187,4 +183,6 @@ export default function SurveyQuestionRow({
       </div>
     </div>
   );
-}
+};
+
+export default SurveyQuestionRow;

@@ -30,11 +30,13 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useHealthCheckMutations } from '@/features/health-check/hooks/use-health-check';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { useSession } from '@/lib/context/session-context';
-import { Template } from '../../types/templates';
 import {
   AUTHENTICATION_REQUIRED,
   AUTHENTICATION_REQUIRED_DESCRIPTION,
 } from '@/utils/messages';
+
+import { Template } from '../../types/templates';
+
 
 import { TemplatePreviewDialog } from './template-preview-dialog';
 

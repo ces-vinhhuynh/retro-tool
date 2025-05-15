@@ -1,7 +1,8 @@
 'use client';
 
 import { Plus, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,7 +11,14 @@ import { Progress } from '@/components/ui/progress';
 import SurveyQuestionRow from '@/features/health-check/components/survey-question-row';
 
 import { useUpdateResponse } from '../hooks/use-response';
-import { GroupedQuestions, Question, Response } from '../types/health-check';
+import { useUpdateParticipant } from '../hooks/use-update-participant';
+import {
+  GroupedQuestions,
+  Question,
+  Response,
+  Score,
+  User,
+} from '../types/health-check';
 
 interface Answers {
   responses: Record<string, number>;
@@ -28,20 +36,23 @@ interface QuestionAnswer {
 
 type SurveyTabProps = {
   sections: string[];
+  currentUser: User | null;
   groupedQuestions: GroupedQuestions;
-  minScore: number;
-  maxScore: number;
+  minScore: Score;
+  maxScore: Score;
   response: Response | null | undefined;
 };
 
-export default function SurveyTab({
+const SurveyTab = ({
   sections,
+  currentUser,
   groupedQuestions,
   minScore,
   maxScore,
   response,
-}: SurveyTabProps) {
-  const { mutate: updateQuestionAnswer } = useUpdateResponse();
+}: SurveyTabProps) => {
+  const { id: healthCheckId } = useParams<{ id: string }>();
+
   const [currentTab, setCurrentTab] = useState<string>('');
   const [additionalItems, setAdditionalItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState('');
@@ -50,8 +61,14 @@ export default function SurveyTab({
     comments: {},
   });
 
+  const { mutate: updateQuestionAnswer } = useUpdateResponse();
+  const { mutate: updateParticipant } = useUpdateParticipant();
+
   const currentQuestions = groupedQuestions[currentTab] || [];
-  const additionalQuestions = groupedQuestions['Additional Questions'] || [];
+  const additionalQuestions = useMemo(
+    () => groupedQuestions['Additional Questions'] || [],
+    [groupedQuestions],
+  );
 
   const saveAdditionalItemsImmediate = async (items: string[]) => {
     if (response && additionalQuestions.length > 0) {
@@ -165,6 +182,22 @@ export default function SurveyTab({
   const progress =
     totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
 
+  useEffect(() => {
+    const updateParticipantProgress = async () => {
+      if (currentUser?.id && healthCheckId) {
+        updateParticipant({
+          healthCheckId: healthCheckId,
+          userId: currentUser.id,
+          updates: {
+            progress: Math.round(progress),
+          },
+        });
+      }
+    };
+
+    updateParticipantProgress();
+  }, [progress, currentUser?.id, healthCheckId, updateParticipant]);
+
   const additionalTitle = additionalQuestions[0]?.title ?? 'Title';
   const additionalDescription = additionalQuestions[0]?.description ?? '';
 
@@ -205,7 +238,7 @@ export default function SurveyTab({
   };
 
   return (
-    <Card className="mx-auto w-full max-w-4xl lg:w-2/3">
+    <Card className="mx-auto w-full max-w-7xl lg:w-2/3">
       <CardContent className="space-y-8 p-6">
         {/* Progress Section */}
         <div className="w-full space-y-2 sm:w-1/3 lg:w-1/5">
@@ -235,8 +268,8 @@ export default function SurveyTab({
                   comment={answers.comments[question.id] || ''}
                   onValueChange={(val) => onResponseChange(question.id, val)}
                   onCommentChange={(val) => onCommentChange(question.id, val)}
-                  minValue={minScore}
-                  maxValue={maxScore}
+                  minScore={minScore}
+                  maxScore={maxScore}
                 />
               ))}
             </div>
@@ -338,4 +371,6 @@ export default function SurveyTab({
       </CardContent>
     </Card>
   );
-}
+};
+
+export default SurveyTab;

@@ -7,26 +7,32 @@ export type HealthCheckTemplate = Omit<
   min_value: Score;
   max_value: Score;
 };
-export type HealthCheck = Tables<'health_checks'>;
 export type HealthCheckInsert = TablesInsert<'health_checks'>;
 export type HealthCheckUpdate = TablesUpdate<'health_checks'>;
+export type HealthCheck = Tables<'health_checks'>;
+
 export type Response = Tables<'responses'>;
 export type ResponseInsert = TablesInsert<'responses'>;
-export type ActionItem = Tables<'action_items'>;
+export type ResponseUpdate = TablesUpdate<'responses'>;
+export type User = Tables<'users'>;
 
-export type GroupedQuestions = {
-  [section: string]: Question[];
-};
-
-export type HealthCheckWithTemplate = HealthCheck & {
-  template: HealthCheckTemplate & {
-    questions: Question[];
-  };
+export type Participant = Tables<'participants'>;
+export type ParticipantWithUser = Omit<Participant, 'user'> & {
+  user: User;
 };
 
 export type Score = {
   value: number;
   context: string;
+};
+
+export type GroupedQuestions = Record<string, Question[]>;
+export type ActionItem = Tables<'action_items'>;
+
+export type HealthCheckWithTemplate = HealthCheck & {
+  template: HealthCheckTemplate & {
+    questions: Question[];
+  };
 };
 
 export type AverageScores = {

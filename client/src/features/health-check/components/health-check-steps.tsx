@@ -1,7 +1,8 @@
 import { Check } from 'lucide-react';
 
-import { STEPS } from '@/features/health-check/constants/health-check';
 import { cn } from '@/utils/cn';
+
+import { STEPS } from '../utils/constants';
 
 interface HealthCheckStepsProps {
   currentStep: number;
