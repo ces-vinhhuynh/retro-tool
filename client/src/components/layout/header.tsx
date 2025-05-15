@@ -1,11 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import Logo from '@/assets/images/logo.png';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,17 +14,17 @@ import {
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { getAvatarCharacters } from '@/features/health-check/utils/user';
+import WorkspaceLogo from '@/features/workspace/components/workspace-logo';
+import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { cn } from '@/lib/utils';
 
-type User = {
-  email?: string;
-  user_metadata?: {
-    full_name?: string;
-    avatar_url?: string;
-  };
-};
+import { SidebarTrigger } from '../ui/sidebar';
 
-export function Header() {
+interface HeaderProps {
+  currentWorkspace: WorkspaceUserWithWorkspace;
+}
+
+export function Header({ currentWorkspace }: HeaderProps) {
   const router = useRouter();
   const { data: currentUser, isLoading } = useCurrentUser();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -43,18 +41,20 @@ export function Header() {
     }
   };
   return (
-    <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-      <div className="max-w-screen-3xl container mx-auto flex w-full items-center justify-between px-4 py-4">
-        <Link href="/health-checks" className="flex items-center px-2">
-          <Image
-            src={Logo}
-            alt="Logo"
-            width={180}
-            height={40}
-            className="mr-2"
-          />
-        </Link>
-        {/* Current user info */}
+    <header className="relative border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+      <SidebarTrigger className="absolute top-1/2 -translate-y-1/2" />
+      <div className="max-w-screen-3xl container mx-auto flex w-full items-center justify-between py-4">
+        <div className="flex items-center gap-2">
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg font-bold text-white">
+            <WorkspaceLogo name={String(currentWorkspace?.workspace?.name)} />
+          </div>
+          <div className="">
+            <span className="px-2 text-xl font-semibold">
+              {currentWorkspace?.workspace?.name}
+            </span>
+          </div>
+        </div>
+
         {isLoading && (
           <div className="h-9 w-36 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
         )}

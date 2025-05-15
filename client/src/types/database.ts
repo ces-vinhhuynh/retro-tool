@@ -191,6 +191,13 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'health_checks_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'health_checks_template_id_fkey';
             columns: ['template_id'];
             isOneToOne: false;
@@ -283,6 +290,83 @@ export type Database = {
           },
         ];
       };
+      team_users: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          role: Database['public']['Enums']['team_role'] | null;
+          team_id: string;
+          updated_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          role?: Database['public']['Enums']['team_role'] | null;
+          team_id: string;
+          updated_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          role?: Database['public']['Enums']['team_role'] | null;
+          team_id?: string;
+          updated_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'team_users_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'team_users_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      teams: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          logo_url: string | null;
+          name: string;
+          updated_at: string | null;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          logo_url?: string | null;
+          name: string;
+          updated_at?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          logo_url?: string | null;
+          name?: string;
+          updated_at?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'teams_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       users: {
         Row: {
           avatar_url: string | null;
@@ -310,17 +394,90 @@ export type Database = {
         };
         Relationships: [];
       };
+      workspace_users: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          role: Database['public']['Enums']['workspace_role'] | null;
+          updated_at: string | null;
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          role?: Database['public']['Enums']['workspace_role'] | null;
+          updated_at?: string | null;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          role?: Database['public']['Enums']['workspace_role'] | null;
+          updated_at?: string | null;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'workspace_users_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'workspace_users_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      workspaces: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          name: string;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          name: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          name?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      create_workspace_and_team: {
+        Args: {
+          ws_id: string;
+          ws_name: string;
+          team_id: string;
+          team_name: string;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       action_item_priority: 'high' | 'medium' | 'low';
       action_item_status: 'todo' | 'in_progress' | 'done' | 'blocked';
       health_check_status: 'in progress' | 'done';
+      team_role: 'admin' | 'member';
+      workspace_role: 'owner' | 'admin' | 'member';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -442,6 +599,8 @@ export const Constants = {
       action_item_priority: ['high', 'medium', 'low'],
       action_item_status: ['todo', 'in_progress', 'done', 'blocked'],
       health_check_status: ['in progress', 'done'],
+      team_role: ['admin', 'member'],
+      workspace_role: ['owner', 'admin', 'member'],
     },
   },
 } as const;

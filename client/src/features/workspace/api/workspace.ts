@@ -32,6 +32,17 @@ class WorkspaceService {
     if (error) throw error;
     return data;
   }
+
+  async getById(id: string): Promise<Workspace> {
+    const { data, error } = await supabaseClient
+      .from('workspaces')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
 }
 
 export const workspaceService = new WorkspaceService();

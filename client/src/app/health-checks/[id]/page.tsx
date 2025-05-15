@@ -278,7 +278,7 @@ export default function HealthCheckPage() {
       <div className="flex w-full">
         <div className="mx-auto w-full">
           <div className="pb-6">
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center pt-3">
               <HealthCheckSteps
                 currentStep={healthCheck.current_step || FIRST_STEP.key}
                 isFacilitator={isFacilitator}

@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/auth')) {
       // user is logged in, redirect to the health-checks page
       const url = request.nextUrl.clone();
-      url.pathname = '/health-checks';
+      url.pathname = '/';
       return NextResponse.redirect(url);
     }
   } else {
