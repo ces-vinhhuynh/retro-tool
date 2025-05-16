@@ -33,3 +33,12 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure public.handle_new_user();
+
+-- Enable RLS
+alter table public.users enable row level security;
+
+-- Create policy for users to view other users' details
+create policy "Authenticated users can view other users' details"
+on public.users for select
+using (auth.uid() is not null);
+
