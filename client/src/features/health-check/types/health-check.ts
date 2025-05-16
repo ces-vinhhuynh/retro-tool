@@ -79,8 +79,13 @@ export enum ActionStatus {
 }
 
 export enum ActionPriority {
-  NONE = 'none',
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
 }
+
+export type Challenge = {
+  text: string;
+  response: Response;
+  additionalQuestionId: string;
+};

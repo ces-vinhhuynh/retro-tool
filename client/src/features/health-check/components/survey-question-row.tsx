@@ -37,7 +37,7 @@ export interface SurveyQuestionRowProps {
   value: number | undefined;
   comment: string;
   onValueChange: (value: number) => void;
-  onCommentChange: (comment: string) => void | Promise<void>;
+  onCommentChange: (comment: string[]) => void | Promise<void>;
   disabled?: boolean;
   minScore: Score;
   maxScore: Score;
@@ -74,6 +74,7 @@ const SurveyQuestionRow = ({
   const { data: currentUser } = useCurrentUser();
 
   const [showSaved, setShowSaved] = useState(false);
+  const [localComment, setLocalComment] = useState(comment);
 
   // Handle save indicator
   useEffect(() => {
@@ -85,7 +86,14 @@ const SurveyQuestionRow = ({
 
   const handleCommentChange = async (newComment: string) => {
     try {
-      await onCommentChange(newComment);
+      setLocalComment(newComment);
+      // Split by newlines and filter empty lines
+      const comments = newComment
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      await onCommentChange(comments);
       setShowSaved(true);
     } catch {
       toast.error('Failed to save comment');
@@ -167,18 +175,22 @@ const SurveyQuestionRow = ({
         <div className="relative">
           <Textarea
             id={'comment_' + question.id}
-            placeholder="Add a comment (optional)..."
+            placeholder="Add comments (one per line)..."
             className="resize-none pl-12 font-sans"
-            value={comment}
+            value={localComment}
             onChange={(e) => handleCommentChange(e.target.value)}
             disabled={disabled}
-            maxLength={256}
+            rows={3}
           />
           {showSaved && (
             <span className="absolute right-2 bottom-[-24] text-sm font-medium text-green-600">
               Saved
             </span>
           )}
+          <p className="text-muted-foreground mt-1 text-xs">
+            Press Enter for new line. Each line will be saved as a separate
+            comment.
+          </p>
         </div>
       </div>
     </div>

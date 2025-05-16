@@ -1,4 +1,4 @@
-import { SCORE_COLORS } from '@/utils/color';
+import { SCORE_COLORS, TAG_COLORS } from '@/utils/color';
 
 type GetScoreColorParams = {
   scoreSelected?: number;
@@ -39,4 +39,21 @@ export const scoreColorMap: Record<number, { bg: string; circle: string }> = {
 export function getScoreColors(score: number) {
   const rounded = Math.max(1, Math.min(10, Math.round(score)));
   return scoreColorMap[rounded];
+}
+
+export function generateTagColors(max: number) {
+  const tagColors: Record<string, { bg: string; text: string }> = {
+    TBD: {
+      bg: 'bg-gray-100',
+      text: 'text-gray-800',
+    },
+  };
+
+  Array.from({ length: max }, (_, i) => {
+    const index = i + 1;
+    const color = TAG_COLORS[i % TAG_COLORS.length];
+    tagColors[String(index)] = color;
+  });
+
+  return tagColors;
 }

@@ -104,15 +104,15 @@ const SurveyTab = ({
     });
   };
 
-  const onCommentChange = (questionId: string, value: string) => {
+  const onCommentChange = (questionId: string, value: string[]) => {
     setAnswers((prev) => {
-      const newComments = { ...prev.comments, [questionId]: value };
+      const newComments = { ...prev.comments, [questionId]: value.join('\n') };
       if (response) {
         updateQuestionAnswer({
           id: response.id,
           questionId,
           answer: {
-            comment: value ? [value] : [],
+            comment: value,
           },
         });
       }

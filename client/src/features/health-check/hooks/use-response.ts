@@ -71,3 +71,30 @@ export const useUpdateResponse = () => {
 
   return { mutate, isPending };
 };
+
+export const useMoveTagAdditionalAnswer = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (response: {
+      responseId: string;
+      additionalQuestionId: string;
+      questionId: string;
+      commentText: string;
+      commentIndex: number;
+    }) => responseService.moveTagAdditionalAnswer(response),
+    onSuccess: (data: Response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['response', data.health_check_id, data.user_id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['responses', data.health_check_id],
+      });
+    },
+    onError: () => {
+      toast.error('Error moving tag additional answer');
+    },
+  });
+
+  return { mutate, isPending };
+};

@@ -1,4 +1,11 @@
-import { Answers, QuestionAnswer, Question, Response, Section } from '../types/health-check';
+import {
+  Answers,
+  QuestionAnswer,
+  Question,
+  Response,
+  Section,
+  Challenge,
+} from '../types/health-check';
 
 export const getCommentCount = (responses: Response[], questionId: string) => {
   return responses.reduce((count, response) => {
@@ -17,7 +24,10 @@ export function calcTotalComments(
       total +
       Object.entries(response?.answers ?? {}).reduce(
         (sum, [qid, ans]) =>
-          sum + (validIds.has(qid) ? (ans as QuestionAnswer)?.comment?.length || 0 : 0),
+          sum +
+          (validIds.has(qid)
+            ? (ans as QuestionAnswer)?.comment?.length || 0
+            : 0),
         0,
       ),
     0,
@@ -29,12 +39,19 @@ export function getTopChallenges(responses: Response[], questions: Question[]) {
     .filter(({ section }) => section === Section.AdditionalQuestions)
     .map(({ id }) => id);
 
-  const challenges: string[] = [];
+  const challenges: Challenge[] = [];
   responses.forEach((response) => {
     additionalQuestionIds.forEach((qid) => {
       const answer = (response.answers as Answers)[qid];
-      if (answer?.comment) {
-        challenges.push(...answer.comment);
+      const comments = answer?.comment;
+      if (comments) {
+        comments.forEach((comment) => {
+          challenges.push({
+            additionalQuestionId: qid,
+            text: comment,
+            response: response,
+          });
+        });
       }
     });
   });
