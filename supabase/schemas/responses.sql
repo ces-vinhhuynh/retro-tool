@@ -25,7 +25,7 @@ using (
 
 create policy "Responses can be updated by their creators"
 on responses for update
-using (auth.uid() = user_id);
+using (auth.uid() is not null);
 
 create policy "Responses can be deleted by their creators"
 on responses for delete
