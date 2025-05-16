@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { cn } from '@/utils/cn';
+import { getAvatarCharacters } from '@/utils/user';
 
 import { Score } from '../types/health-check';
-import { getAvatarCharacters } from '../utils/user';
 
 // Updated color mapping to handle different scales
 const SCORE_COLORS = {

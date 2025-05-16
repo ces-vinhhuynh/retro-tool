@@ -13,10 +13,10 @@ import {
 } from '@/components/ui/popover';
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import { getAvatarCharacters } from '@/features/health-check/utils/user';
 import WorkspaceLogo from '@/features/workspace/components/workspace-logo';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { cn } from '@/lib/utils';
+import { getAvatarCharacters } from '@/utils/user';
 
 import { SidebarTrigger } from '../ui/sidebar';
 
