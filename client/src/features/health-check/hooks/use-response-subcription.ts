@@ -28,9 +28,6 @@ export const useResponsesSubscription = (healthCheckId: string) => {
               queryKey: ['responses', healthCheckId],
             });
             queryClient.invalidateQueries({
-              queryKey: ['responses-with-users', healthCheckId],
-            });
-            queryClient.invalidateQueries({
               queryKey: ['response', healthCheckId],
             });
           }

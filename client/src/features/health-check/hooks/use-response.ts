@@ -30,9 +30,6 @@ export const useCreateResponse = () => {
       queryClient.invalidateQueries({
         queryKey: ['response', data.health_check_id, data.user_id],
       });
-      queryClient.invalidateQueries({
-        queryKey: ['responses', data.health_check_id],
-      });
     },
     onError: (error) => {
       console.error('Error creating response:', error);
@@ -59,9 +56,6 @@ export const useUpdateResponse = () => {
     onSuccess: (data: Response) => {
       queryClient.invalidateQueries({
         queryKey: ['response', data.health_check_id, data.user_id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['responses', data.health_check_id],
       });
     },
     onError: () => {
