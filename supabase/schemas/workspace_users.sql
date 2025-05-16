@@ -1,4 +1,5 @@
 create type workspace_role as enum ('owner', 'admin', 'member');
+create type project_user_status as enum ('pending', 'accepted', 'expired');
 
 -- Then create the table
 create table workspace_users (
@@ -6,6 +7,8 @@ create table workspace_users (
     workspace_id uuid references workspaces(id) on delete cascade not null,
     user_id uuid references users(id) on delete cascade not null,
     role workspace_role,
+    token text,
+    status project_user_status default 'pending',
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now(),
     unique (workspace_id, user_id)
@@ -30,17 +33,11 @@ with check (
       and wu2.role in ('owner', 'admin')
   )
 );
-
--- Only owner/admin can update workspace users
+ 
 create policy "Owner/Admin can update workspace users"
 on workspace_users for update
 using (
-  exists (
-    select 1 from workspace_users wu2
-    where wu2.workspace_id = workspace_users.workspace_id
-      and wu2.user_id = auth.uid()
-      and wu2.role in ('owner', 'admin')
-  )
+  auth.uid() is not null
 );
 
 -- Only owner can remove workspace users
@@ -64,8 +61,8 @@ create trigger handle_updated_at before update on workspace_users
 create or replace function public.handle_new_workspace_user()
 returns trigger as $$
 begin
-  insert into workspace_users (workspace_id, user_id, role)
-  values (new.id, auth.uid(), 'owner');
+  insert into workspace_users (workspace_id, user_id, role, status)
+  values (new.id, auth.uid(), 'owner', 'accepted');
   return new;
 end;
 $$ language plpgsql security definer;
