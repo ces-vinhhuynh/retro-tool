@@ -2,23 +2,24 @@
 
 import { format } from 'date-fns';
 import { CalendarIcon, Eye } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Card,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
@@ -37,7 +38,6 @@ import {
 
 import { Template } from '../../types/templates';
 
-
 import { TemplatePreviewDialog } from './template-preview-dialog';
 
 interface SessionTemplateDialogProps {
@@ -49,6 +49,7 @@ export function SessionTemplateDialog({
   open,
   onOpenChange,
 }: SessionTemplateDialogProps) {
+  const {id: team_id} = useParams<{id: string}>()
   const [step, setStep] = useState<'choose' | 'form'>('choose');
   const { data: templates, isLoading: isLoadingTemplates } = useTemplates();
 
@@ -105,6 +106,7 @@ export function SessionTemplateDialog({
       createHealthCheck({
         title: sessionName,
         description: '',
+        team_id,
         template_id: selectedTemplate.id,
         facilitator_id: currentUser.id,
         status: 'in progress',

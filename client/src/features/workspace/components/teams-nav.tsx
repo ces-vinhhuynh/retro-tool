@@ -1,6 +1,7 @@
 'use client';
 
 import { Users } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
@@ -17,7 +18,9 @@ interface NavTeamsProps {
   teams: Team[];
 }
 
-export function NavTeams({ teams }: NavTeamsProps) {
+const NavTeams = ({ teams }: NavTeamsProps) => {
+  const router = useRouter();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Teams</SidebarGroupLabel>
@@ -31,7 +34,11 @@ export function NavTeams({ teams }: NavTeamsProps) {
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={team.name}>
+                <SidebarMenuButton
+                  onClick={() => router.push(`/team/${team.id}`)}
+                  tooltip={team.name}
+                  className="cursor-pointer"
+                >
                   <Users />
                   <span>{team.name}</span>
                 </SidebarMenuButton>
@@ -42,4 +49,6 @@ export function NavTeams({ teams }: NavTeamsProps) {
       </SidebarMenu>
     </SidebarGroup>
   );
-}
+};
+
+export default NavTeams;

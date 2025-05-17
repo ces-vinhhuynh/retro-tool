@@ -1,9 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
-import { cn } from '@/utils/cn';
-
 import {
   AverageScores,
   FormattedHealthCheck,
@@ -11,27 +7,22 @@ import {
   Response,
   Section,
 } from '../types/health-check';
-import { getScoreColors } from '../utils/color';
 import { getRatings } from '../utils/rating';
-import { formatDateTime } from '../utils/time-format';
 
+import HealthCheckColumn from './health-check-column';
 import QuestionRow from './question-row';
-import ScoreTooltip from './rating-tooltip';
 
 interface ScrumHealthCheckProps {
   scrumHealthChecks: HealthCheckWithTemplate[];
   scrumResponses: Response[];
+  isShowAddNew?: boolean;
 }
 
-export default function ScrumHealthCheck({
+const ScrumHealthCheck = ({
   scrumHealthChecks,
   scrumResponses,
-}: ScrumHealthCheckProps) {
-  const [hoveredScore, setHoveredScore] = useState<{
-    questionId: string;
-    healthCheckId: string;
-  } | null>(null);
-
+  isShowAddNew = false,
+}: ScrumHealthCheckProps) => {
   const formattedData: FormattedHealthCheck[] = scrumHealthChecks?.map(
     (healthCheck) => ({
       id: healthCheck.id,
@@ -57,12 +48,12 @@ export default function ScrumHealthCheck({
 
   const getHealthCheckRatings = (healthCheckId: string, questionId: string) => {
     if (!scrumResponses) return [];
-
-    const healthCheckResponses = scrumResponses.filter(
-      (response) => response.health_check_id === healthCheckId,
+    return getRatings(
+      scrumResponses.filter(
+        (response) => response.health_check_id === healthCheckId,
+      ),
+      questionId,
     );
-
-    return getRatings(healthCheckResponses, questionId);
   };
 
   return (
@@ -83,68 +74,23 @@ export default function ScrumHealthCheck({
           ))}
         </div>
 
-        {formattedData?.map((healthCheck, checkIndex) => (
-          <div
-            key={checkIndex}
-            className="flex w-[100px] flex-col border transition-transform duration-200 hover:scale-105 sm:w-[140px] md:w-[210px]"
-          >
-            <div className="flex h-24 flex-col items-center justify-center gap-1 border-b bg-gray-50">
-              <h2 className="text-lg font-bold">{healthCheck.title}</h2>
-              <p className="text-sm text-gray-500">
-                {formatDateTime(new Date(String(healthCheck?.createdAt)))}
-              </p>
-              <div className="rounded bg-gray-200 px-2 text-xs capitalize">
-                {healthCheck.status}
-              </div>
-            </div>
-            {healthCheck.questions.map((item) => {
-              const { bg } = getScoreColors(item.averageScore);
-              const ratings = getHealthCheckRatings(healthCheck.id, item.id);
-              const hasScore = item.averageScore > 0;
-
-              return (
-                <div
-                  key={item.id}
-                  className={cn(
-                    'relative flex h-16 items-center justify-center border-gray-200',
-                    bg,
-                  )}
-                  onMouseEnter={() =>
-                    setHoveredScore({
-                      questionId: item.id,
-                      healthCheckId: healthCheck.id,
-                    })
-                  }
-                  onMouseLeave={() => setHoveredScore(null)}
-                >
-                  <span
-                    className={cn(
-                      'text-xl font-bold',
-                      !hasScore && 'text-gray-400',
-                    )}
-                  >
-                    {hasScore ? item.averageScore.toFixed(1) : '-'}
-                  </span>
-
-                  {hoveredScore?.questionId === item.id &&
-                    hoveredScore?.healthCheckId === healthCheck.id &&
-                    (ratings.length > 0 ? (
-                      <ScoreTooltip ratings={ratings} />
-                    ) : (
-                      <div className="absolute bottom-full left-1/2 w-auto -translate-x-1/2">
-                        <div className="flex rounded-lg border bg-white p-3 shadow-lg">
-                          <span className="text-sm text-gray-600">
-                            No ratings yet
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              );
-            })}
-          </div>
+        {formattedData?.map((healthCheck) => (
+          <HealthCheckColumn
+            key={healthCheck.id}
+            healthCheck={healthCheck}
+            getHealthCheckRatings={getHealthCheckRatings}
+          />
         ))}
+        {isShowAddNew && (
+          <HealthCheckColumn
+            healthCheck={formattedData[0]}
+            getHealthCheckRatings={getHealthCheckRatings}
+            isShowAddNew={isShowAddNew}
+          />
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default ScrumHealthCheck;
