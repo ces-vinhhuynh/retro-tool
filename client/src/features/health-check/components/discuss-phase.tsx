@@ -31,12 +31,14 @@ export default function DiscussPhase({
   const [allOpen, setAllOpen] = useState(false);
 
   return (
-    <div className="container mx-auto max-w-7xl lg:w-2/3 flex-grow px-4">
+    <div className="mx-auto w-full max-w-7xl lg:w-3/4">
       <div className="flex flex-col gap-6 md:flex-row">
         <div className="relative min-w-0 flex-1">
           <Card>
             <CardContent className="p-6">
               <TeamHealthChart
+                isClosePhase={false}
+                title="Team Health Summary"
                 responses={responses}
                 healthCheck={healthCheck}
                 questions={questions}

@@ -18,8 +18,8 @@ const ReviewPhase = ({
   teamSize = 0,
 }: ReviewPhaseProps) => {
   return (
-    <div className="container mx-auto max-w-7xl lg:w-2/3 flex-grow rounded-lg bg-white p-5 sm:p-8">
-      <div className="space-y-4 p-4 sm:p-8">
+    <Card className="mx-auto w-full max-w-7xl lg:w-3/4">
+      <CardContent className="space-y-4 p-4 sm:p-8">
         <h3 className="text-lg font-medium">Session Summary</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
           <div className="space-y-1">
@@ -52,7 +52,7 @@ const ReviewPhase = ({
             <div className="font-medium">{teamSize} team members</div>
           </div>
         </div>
-      </div>
+      </CardContent>
 
       <div className="space-y-6 p-4 sm:p-6">
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
@@ -75,7 +75,7 @@ const ReviewPhase = ({
           </CardContent>
         </Card>
       </div>
-    </div>
+    </Card>
   );
 };
 

@@ -10,7 +10,6 @@ import {
 import { scoreColorMap } from '@/features/health-check/utils/color';
 import { cn } from '@/utils/cn';
 
-
 interface DetailCardProps {
   item: {
     id: string;
@@ -43,7 +42,7 @@ export default function DetailCard({
         <div className="flex items-start gap-3">
           <div
             className={cn(
-              'flex h-17 w-17 items-center justify-center self-center rounded-full',
+              'flex h-17 w-17 items-center justify-center self-center rounded-full px-3',
               circle,
             )}
           >

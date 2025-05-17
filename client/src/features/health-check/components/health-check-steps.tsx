@@ -22,7 +22,7 @@ const HealthCheckSteps = ({
           <div key={key} className="flex w-full flex-col items-center">
             <button
               className={cn(
-                'z-10 flex min-h-8 min-w-8 items-center justify-center rounded-full border-2 border-gray-200 bg-white text-gray-200',
+                'z-10 flex min-h-8 min-w-8 cursor-pointer items-center justify-center rounded-full border-2 border-gray-200 bg-white text-gray-200',
                 {
                   'border-orange-500 bg-orange-500 text-white':
                     key < currentStep,

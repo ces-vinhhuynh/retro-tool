@@ -57,3 +57,5 @@ export const STEPS = {
   review: { key: 3, value: 'Review' },
   close: { key: 4, value: 'Close' },
 };
+
+export const HEALTH_CHECK_LIMIT = 4;

@@ -5,6 +5,8 @@ import {
 } from '@/features/health-check/types/health-check';
 import supabaseClient from '@/lib/supabase/client';
 
+import { HEALTH_CHECK_LIMIT } from '../utils/constants';
+
 class HealthCheckService {
   async getWithTemplateById(id: string): Promise<HealthCheck> {
     const { data, error } = await supabaseClient
@@ -82,6 +84,32 @@ class HealthCheckService {
       .eq('id', id);
 
     if (error) throw error;
+  }
+
+  async getByTemplateIdAndTeamId(
+    templateId: string,
+    teamId: string,
+  ): Promise<HealthCheck[]> {
+    const { data, error } = await supabaseClient
+      .from('health_checks')
+      .select(
+        `
+        *,
+        template:health_check_templates (
+          id,
+          name,
+          description,
+          questions
+        )
+      `,
+      )
+      .eq('template_id', templateId)
+      .eq('team_id', teamId)
+      .order('created_at', { ascending: false })
+      .limit(HEALTH_CHECK_LIMIT);
+
+    if (error) throw error;
+    return data || [];
   }
 }
 

@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Layout } from '@/components/layout/layout';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import ClosePhase from '@/features/health-check/components/close-phase';
 import DiscussPhase from '@/features/health-check/components/discuss-phase';
 import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
 import ReviewPhase from '@/features/health-check/components/review-phase';
@@ -20,6 +21,7 @@ import {
 } from '@/features/health-check/constants/health-check';
 import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
 import { useGetActionItems } from '@/features/health-check/hooks/use-get-action-items';
+import { useGetHealthChecksByTeamsAndTemplate } from '@/features/health-check/hooks/use-get-health-checks-by-teams-and-template';
 import { useGetParticipants } from '@/features/health-check/hooks/use-get-participants';
 import {
   useHealthCheckMutations,
@@ -27,13 +29,16 @@ import {
 } from '@/features/health-check/hooks/use-health-check';
 import { useHealthCheckSubscription } from '@/features/health-check/hooks/use-health-check-subscription';
 import { useTemplateById } from '@/features/health-check/hooks/use-health-check-templates';
+import { useHealthChecksSubscription } from '@/features/health-check/hooks/use-health-checks-subscription';
 import { useParticipantsSubscription } from '@/features/health-check/hooks/use-participants-subscription';
 import {
   useCreateResponse,
   useResponse,
   useResponses,
 } from '@/features/health-check/hooks/use-response';
+import { useResponseByHealthChecks } from '@/features/health-check/hooks/use-response-by-health-checks';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
+import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckWithTemplate,
@@ -80,6 +85,15 @@ export default function HealthCheckPage() {
 
   const { mutate: createParticipant } = useCreateParticipant();
 
+  const { data: scrumHealthChecks } = useGetHealthChecksByTeamsAndTemplate(
+    healthCheck?.template_id || '',
+    healthCheck?.team_id || '',
+  );
+
+  const { data: scrumResponses } = useResponseByHealthChecks(
+    scrumHealthChecks?.map((check) => check.id) || [],
+  );
+
   useEffect(() => {
     if (!isLoadingParticipants && !isLoadingUser && currentUser) {
       const isUserParticipant = participants?.some(
@@ -104,6 +118,11 @@ export default function HealthCheckPage() {
   useHealthCheckSubscription(healthCheckId);
   useResponsesSubscription(healthCheckId);
   useParticipantsSubscription(healthCheckId);
+  useScrumHealthCheckSubscription(
+    healthCheck?.template_id || '',
+    healthCheck?.team_id || '',
+  );
+  useHealthChecksSubscription();
 
   const { updateHealthCheck } = useHealthCheckMutations();
   const { mutate: createResponse } = useCreateResponse();
@@ -311,7 +330,16 @@ export default function HealthCheckPage() {
               teamSize={participants?.length || 0}
             />
           )}
-          {healthCheck.current_step === STEPS['close'].key}
+          {healthCheck.current_step === STEPS['close'].key && (
+            <ClosePhase
+              healthCheck={healthCheck as HealthCheckWithTemplate}
+              questions={questions}
+              responses={responses || []}
+              actionItems={actionItems || []}
+              scrumHealthChecks={scrumHealthChecks as HealthCheckWithTemplate[]}
+              scrumResponses={scrumResponses || []}
+            />
+          )}
         </div>
         <UserSidebar
           healthCheck={healthCheck}

@@ -25,10 +25,12 @@ import ChartDialog from './chart-dialog';
 import ScoreMetric from './score-metric';
 
 interface TeamHealthChartProps {
+  title: string;
   healthCheck: HealthCheck;
   questions: Question[];
   responses: Response[];
   actionItems: ActionItem[];
+  isClosePhase?: boolean;
 }
 
 export default function TeamHealthChart({
@@ -36,6 +38,8 @@ export default function TeamHealthChart({
   questions,
   responses,
   actionItems,
+  title,
+  isClosePhase = false,
 }: TeamHealthChartProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -126,7 +130,7 @@ export default function TeamHealthChart({
 
   return (
     <div className="rounded-lg bg-white p-6">
-      <h2 className="text-2xl font-bold text-gray-900">Team Health Summary</h2>
+      <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
       <p className="mb-6 text-gray-500">
         Average scores from all participants for health check sprint
       </p>
@@ -136,6 +140,13 @@ export default function TeamHealthChart({
           <ScoreMetric label="Avg. Score" value={overallAvg} />
           <ScoreMetric label="Avg. Delivery & Execution" value={deliveryAvg} />
           <ScoreMetric label="Avg. Team Collaboration" value={collabAvg} />
+          {isClosePhase && (
+            <ScoreMetric
+              label="Total actions"
+              unit=""
+              value={actionItems.length}
+            />
+          )}
         </div>
 
         <ScoreMetric

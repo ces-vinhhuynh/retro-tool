@@ -154,6 +154,16 @@ class ResponseService {
     if (error) throw error;
     return data;
   }
+
+  async getAllByHealthChecks(healthCheckIds: string[]): Promise<Response[]> {
+    const { data, error } = await supabaseClient
+      .from('responses')
+      .select('*')
+      .in('health_check_id', healthCheckIds);
+
+    if (error) throw error;
+    return data;
+  }
 }
 
 export const responseService = new ResponseService();

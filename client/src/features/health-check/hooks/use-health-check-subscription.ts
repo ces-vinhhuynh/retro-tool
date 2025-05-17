@@ -28,6 +28,13 @@ export const useHealthCheckSubscription = (healthCheckId: string) => {
               ['healthCheck', healthCheckId],
               updatedHealthCheck,
             );
+            queryClient.invalidateQueries({
+              queryKey: [
+                'health-check-by-team-and-template',
+                updatedHealthCheck.template_id,
+                updatedHealthCheck.team_id,
+              ],
+            });
           }
         },
       )

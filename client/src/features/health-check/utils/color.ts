@@ -37,7 +37,7 @@ export const scoreColorMap: Record<number, { bg: string; circle: string }> = {
 };
 
 export function getScoreColors(score: number) {
-  const rounded = Math.max(1, Math.min(10, Math.round(score)));
+  const rounded = Math.max(0, Math.min(10, Math.round(score)));
   return scoreColorMap[rounded];
 }
 

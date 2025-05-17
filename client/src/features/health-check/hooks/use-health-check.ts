@@ -61,6 +61,13 @@ export function useHealthCheckMutations() {
     onSuccess: (data: HealthCheck) => {
       queryClient.invalidateQueries({ queryKey: ['healthCheck', data.id] });
       queryClient.invalidateQueries({ queryKey: ['healthChecks'] });
+      queryClient.invalidateQueries({
+        queryKey: [
+          'health-check-by-team-and-template',
+          data.template_id,
+          data.team_id,
+        ],
+      });
     },
     onError: (error) => {
       // TODO: Handle show toast notification

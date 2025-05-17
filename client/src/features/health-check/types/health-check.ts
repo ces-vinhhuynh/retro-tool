@@ -89,3 +89,16 @@ export type Challenge = {
   response: Response;
   additionalQuestionId: string;
 };
+
+export type FormattedHealthCheck = {
+  id: string;
+  title: string;
+  createdAt: string | null;
+  status: 'in progress' | 'done' | null;
+  questions: {
+    id: string;
+    title: string;
+    description: string;
+    averageScore: number;
+  }[];
+};
