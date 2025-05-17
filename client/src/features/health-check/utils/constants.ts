@@ -59,3 +59,36 @@ export const STEPS = {
 };
 
 export const HEALTH_CHECK_LIMIT = 4;
+
+export const RATING_OPTIONS = [
+  {
+    value: 1,
+    label: 'DEFINITELY NOT',
+    description: 'A waste of my time',
+    color: 'bg-red-500',
+  },
+  {
+    value: 2,
+    label: 'NOT REALLY',
+    description: 'Useful, but not worth all of my time',
+    color: 'bg-orange-400',
+  },
+  {
+    value: 3,
+    label: 'SOMEWHAT',
+    description: 'I gained enough to spend my time on it',
+    color: 'bg-teal-500',
+  },
+  {
+    value: 4,
+    label: 'MOSTLY',
+    description: 'I gained more value than the time I spent',
+    color: 'bg-lime-400',
+  },
+  {
+    value: 5,
+    label: 'ABSOLUTELY',
+    description: 'I gained a lot of value and it was absolutely worth my time',
+    color: 'bg-green-500',
+  },
+] as const;

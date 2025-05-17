@@ -164,6 +164,21 @@ class ResponseService {
     if (error) throw error;
     return data;
   }
+
+  async updateHealthCheckRating(
+    responseId: string,
+    healthCheckRating: number | null,
+  ): Promise<Response> {
+    const { data, error } = await supabaseClient
+      .from('responses')
+      .update({ health_check_rating: healthCheckRating })
+      .eq('id', responseId)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
 }
 
 export const responseService = new ResponseService();

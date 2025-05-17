@@ -43,6 +43,7 @@ import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-mod
 import {
   HealthCheckWithTemplate,
   Question,
+  ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
 
@@ -334,10 +335,11 @@ export default function HealthCheckPage() {
             <ClosePhase
               healthCheck={healthCheck as HealthCheckWithTemplate}
               questions={questions}
-              responses={responses || []}
+              responses={responses as ResponseWithUser[]}
               actionItems={actionItems || []}
               scrumHealthChecks={scrumHealthChecks as HealthCheckWithTemplate[]}
               scrumResponses={scrumResponses || []}
+              teamSize={participants?.length || 0}
             />
           )}
         </div>

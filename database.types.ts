@@ -250,32 +250,32 @@ export type Database = {
       }
       responses: {
         Row: {
-          answers: Json | null;
-          created_at: string | null;
-          health_check_id: string;
-          health_check_rating: number | null;
-          id: string;
-          updated_at: string | null;
-          user_id: string;
-        };
+          answers: Json | null
+          created_at: string | null
+          health_check_id: string
+          health_check_rating: number | null
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
         Insert: {
-          answers?: Json | null;
-          created_at?: string | null;
-          health_check_id: string;
-          health_check_rating?: number | null;
-          id?: string;
-          updated_at?: string | null;
-          user_id: string;
-        };
+          answers?: Json | null
+          created_at?: string | null
+          health_check_id: string
+          health_check_rating?: number | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
         Update: {
-          answers?: Json | null;
-          created_at?: string | null;
-          health_check_id?: string;
-          health_check_rating?: number | null;
-          id?: string;
-          updated_at?: string | null;
-          user_id?: string;
-        };
+          answers?: Json | null
+          created_at?: string | null
+          health_check_id?: string
+          health_check_rating?: number | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
         Relationships: [
           {
             foreignKeyName: "responses_health_check_id_fkey"
@@ -399,35 +399,35 @@ export type Database = {
       }
       workspace_users: {
         Row: {
-          created_at: string | null;
-          id: string;
-          role: Database['public']['Enums']['workspace_role'] | null;
-          status: Database['public']['Enums']['project_user_status'] | null;
-          token: string | null;
-          updated_at: string | null;
-          user_id: string;
-          workspace_id: string;
-        };
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["workspace_role"] | null
+          status: Database["public"]["Enums"]["project_user_status"] | null
+          token: string | null
+          updated_at: string | null
+          user_id: string
+          workspace_id: string
+        }
         Insert: {
-          created_at?: string | null;
-          id?: string;
-          role?: Database['public']['Enums']['workspace_role'] | null;
-          status?: Database['public']['Enums']['project_user_status'] | null;
-          token?: string | null;
-          updated_at?: string | null;
-          user_id: string;
-          workspace_id: string;
-        };
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["workspace_role"] | null
+          status?: Database["public"]["Enums"]["project_user_status"] | null
+          token?: string | null
+          updated_at?: string | null
+          user_id: string
+          workspace_id: string
+        }
         Update: {
-          created_at?: string | null;
-          id?: string;
-          role?: Database['public']['Enums']['workspace_role'] | null;
-          status?: Database['public']['Enums']['project_user_status'] | null;
-          token?: string | null;
-          updated_at?: string | null;
-          user_id?: string;
-          workspace_id?: string;
-        };
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["workspace_role"] | null
+          status?: Database["public"]["Enums"]["project_user_status"] | null
+          token?: string | null
+          updated_at?: string | null
+          user_id?: string
+          workspace_id?: string
+        }
         Relationships: [
           {
             foreignKeyName: "workspace_users_user_id_fkey"
@@ -482,13 +482,13 @@ export type Database = {
       }
     }
     Enums: {
-      action_item_priority: 'high' | 'medium' | 'low';
-      action_item_status: 'todo' | 'in_progress' | 'done' | 'blocked';
-      health_check_status: 'in progress' | 'done';
-      project_user_status: 'pending' | 'accepted' | 'expired';
-      team_role: 'admin' | 'member';
-      workspace_role: 'owner' | 'admin' | 'member';
-    };
+      action_item_priority: "high" | "medium" | "low"
+      action_item_status: "todo" | "in_progress" | "done" | "blocked"
+      health_check_status: "in progress" | "done"
+      project_user_status: "pending" | "accepted" | "expired"
+      team_role: "admin" | "member"
+      workspace_role: "owner" | "admin" | "member"
+    }
     CompositeTypes: {
       [_ in never]: never
     }
@@ -606,12 +606,12 @@ export const Constants = {
   },
   public: {
     Enums: {
-      action_item_priority: ['high', 'medium', 'low'],
-      action_item_status: ['todo', 'in_progress', 'done', 'blocked'],
-      health_check_status: ['in progress', 'done'],
-      project_user_status: ['pending', 'accepted', 'expired'],
-      team_role: ['admin', 'member'],
-      workspace_role: ['owner', 'admin', 'member'],
+      action_item_priority: ["high", "medium", "low"],
+      action_item_status: ["todo", "in_progress", "done", "blocked"],
+      health_check_status: ["in progress", "done"],
+      project_user_status: ["pending", "accepted", "expired"],
+      team_role: ["admin", "member"],
+      workspace_role: ["owner", "admin", "member"],
     },
   },
 } as const

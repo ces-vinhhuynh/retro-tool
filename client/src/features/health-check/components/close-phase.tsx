@@ -4,18 +4,21 @@ import {
   HealthCheckWithTemplate,
   Question,
   Response,
+  ResponseWithUser,
 } from '@/features/health-check/types/health-check';
 
+import { HealthCheckRating } from './health-check-rating';
 import ScrumHealthCheck from './scrum-health-check';
 import TeamHealthChart from './team-health-chart';
 
 interface ClosePhaseProps {
   healthCheck: HealthCheckWithTemplate;
   questions: Question[];
-  responses: Response[];
+  responses: ResponseWithUser[];
   actionItems: ActionItem[];
   scrumHealthChecks: HealthCheckWithTemplate[];
   scrumResponses: Response[];
+  teamSize: number;
 }
 export default function ClosePhase({
   healthCheck,
@@ -24,6 +27,7 @@ export default function ClosePhase({
   actionItems,
   scrumHealthChecks,
   scrumResponses,
+  teamSize,
 }: ClosePhaseProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -46,6 +50,12 @@ export default function ClosePhase({
             scrumHealthChecks={scrumHealthChecks}
             scrumResponses={scrumResponses}
           />
+        </CardContent>
+      </Card>
+
+      <Card className="mx-auto w-full max-w-7xl lg:w-3/4">
+        <CardContent className="flex flex-col gap-2 p-2">
+          <HealthCheckRating teamSize={teamSize} responses={responses} />
         </CardContent>
       </Card>
     </div>

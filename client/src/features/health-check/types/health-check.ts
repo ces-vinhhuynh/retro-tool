@@ -15,6 +15,9 @@ export type Response = Tables<'responses'>;
 export type ResponseInsert = TablesInsert<'responses'>;
 export type ResponseUpdate = TablesUpdate<'responses'>;
 export type User = Tables<'users'>;
+export type ResponseWithUser = Omit<Response, 'user'> & {
+  user: User;
+};
 
 export type Participant = Tables<'participants'>;
 export type ParticipantWithUser = Omit<Participant, 'user'> & {
