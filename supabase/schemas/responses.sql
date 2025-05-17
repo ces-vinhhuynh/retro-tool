@@ -3,6 +3,7 @@ create table responses (
     health_check_id uuid references health_checks(id) on delete cascade not null,
     user_id uuid references public.users(id) on delete cascade not null,
     answers jsonb default '{}',
+    health_check_rating integer,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now(),
     unique (health_check_id, user_id)
