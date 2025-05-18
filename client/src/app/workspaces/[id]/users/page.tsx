@@ -1,63 +1,16 @@
+'use client';
+
+import { useParams } from 'next/navigation';
+
 import { Layout } from '@/components/layout/layout';
 import { Button } from '@/components/ui/button';
-import {
-  columns,
-  WorkspaceUser,
-} from '@/features/workspace/components/user-table/columns';
+import { columns } from '@/features/workspace/components/user-table/columns';
 import { DataTable } from '@/features/workspace/components/user-table/data-table';
+import { useGetWorkspaceMembers } from '@/features/workspace/hooks/use-get-workspace-members';
 
-// TODO: Fetch data from hook
-function getData(): WorkspaceUser[] {
-  return [
-    {
-      id: '728ed52f',
-      avatar_url: '',
-      full_name: 'string',
-      email: 'string',
-      role: 'admin',
-      projects: ['sdf', 'sd'],
-    },
-    {
-      id: '728ed52f',
-      avatar_url: '',
-      full_name: 'string',
-      email: 'string',
-      role: 'owner',
-      projects: ['sdf', 'sd'],
-    },
-    {
-      id: '728ed52f',
-      avatar_url: '',
-      full_name: 'string',
-      email: 'string',
-      role: 'member',
-      projects: ['sdf', 'sd'],
-    },
-    {
-      id: '728ed52f',
-      avatar_url: '',
-      full_name: 'string',
-      email: 'string',
-      role: 'member',
-      projects: ['sdf', 'sd'],
-    },
-    {
-      id: '728ed52f',
-      avatar_url: '',
-      full_name: 'string',
-      email: 'string',
-      role: 'member',
-      projects: ['sdf', 'sd'],
-    },
-  ];
-}
-
-export default function WorkspacePage({
-  params: _params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const data = getData();
+export default function WorkspacePage() {
+  const { id: workspaceId } = useParams<{ id: string }>();
+  const { data: workspace = [] } = useGetWorkspaceMembers(workspaceId);
 
   return (
     <Layout>
@@ -71,7 +24,7 @@ export default function WorkspacePage({
             <h2 className="text-xl font-bold">All Users</h2>
             <p>Manage users and their account roles</p>
           </div>
-          <DataTable columns={columns} data={data} />
+          <DataTable columns={columns} data={workspace} />
         </div>
       </div>
     </Layout>

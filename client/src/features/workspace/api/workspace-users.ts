@@ -1,6 +1,6 @@
 import supabaseClient from '@/lib/supabase/client';
 
-import { WorkspaceUser } from '../types/workspace-users';
+import { WorkspaceUser, WorkspaceUserUpdate } from '../types/workspace-users';
 
 class WorkspaceUsersService {
   async getWorkspaces() {
@@ -28,6 +28,64 @@ class WorkspaceUsersService {
 
     if (error) throw error;
     return data;
+  }
+
+  async update(
+    id: string,
+    workspaceUser: WorkspaceUserUpdate,
+  ): Promise<WorkspaceUser> {
+    const { data, error } = await supabaseClient
+      .from('workspace_users')
+      .update(workspaceUser)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async getWorkspaceUsersByWorkspaceId(id: string) {
+    const { data, error } = await supabaseClient
+      .from('workspace_users')
+      .select(
+        `
+          id,
+          role,
+          users (
+            id,
+            full_name,
+            avatar_url,
+            email,
+            team_users (
+              teams (
+                name
+              )
+            )
+          )
+        `,
+      )
+      .eq('workspace_id', id);
+
+    if (error) throw error;
+
+    return data.map(({ id, role, users }) => ({
+      id,
+      role,
+      full_name: users.full_name,
+      avatar_url: users.avatar_url,
+      email: users.email,
+      teams: users.team_users.map((tu) => tu.teams.name),
+    }));
+  }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabaseClient
+      .from('workspace_users')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
   }
 }
 

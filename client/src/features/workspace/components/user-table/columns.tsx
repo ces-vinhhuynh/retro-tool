@@ -5,10 +5,19 @@ import { Trash2 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/utils/cn';
 import { getAvatarCharacters } from '@/utils/user';
 
 import { WORKSPACE_ROLES } from '../../constants/user';
+import { useDeleteWorkspaceUser } from '../../hooks/use-delete-workspace-user';
+import { useUpdateWorkspaceUser } from '../../hooks/use-update-workspace-user';
 
 export type WorkspaceUser = {
   id: string;
@@ -16,7 +25,7 @@ export type WorkspaceUser = {
   full_name: string;
   email: string;
   role: 'owner' | 'admin' | 'member';
-  projects: string[];
+  teams: string[];
 };
 
 export const columns: ColumnDef<WorkspaceUser>[] = [
@@ -48,37 +57,51 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
     accessorKey: 'role',
     header: 'Role',
     cell: ({ row }) => {
-      const { role } = row.original;
+      const { id, role } = row.original;
+      const { mutate: updateWorkspaceUser } = useUpdateWorkspaceUser();
+
+      const handleUpdateWorkspaceUser = (
+        newRole: 'owner' | 'admin' | 'member',
+      ) => {
+        updateWorkspaceUser({ id, workspaceUser: { role: newRole } });
+      };
 
       return (
-        <div
-          className={cn(
-            'w-fit rounded-4xl border border-gray-200 px-3 py-1.5',
-            {
-              'bg-ces-orange-500 text-white':
-                role === 'owner' || role === 'admin',
-            },
-          )}
-        >
-          {WORKSPACE_ROLES[role]}
-        </div>
+        <Select defaultValue={role} onValueChange={handleUpdateWorkspaceUser}>
+          <SelectTrigger
+            className={cn(
+              'w-fit rounded-4xl border border-gray-200 px-3 py-1.5 focus:ring-0',
+              {
+                'bg-ces-orange-500 text-white':
+                  role === 'owner' || role === 'admin',
+              },
+            )}
+          >
+            <SelectValue placeholder={WORKSPACE_ROLES[role]} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="owner">{WORKSPACE_ROLES['owner']}</SelectItem>
+            <SelectItem value="admin">{WORKSPACE_ROLES['admin']}</SelectItem>
+            <SelectItem value="member">{WORKSPACE_ROLES['member']}</SelectItem>
+          </SelectContent>
+        </Select>
       );
     },
   },
   {
-    accessorKey: 'projects',
-    header: 'Projects',
+    accessorKey: 'teams',
+    header: 'Teams',
     cell: ({ row }) => {
-      const { id, projects } = row.original;
+      const { id, teams } = row.original;
 
       return (
         <div className="flex gap-2">
-          {projects.map((project) => (
+          {teams.map((team) => (
             <div
-              key={`${id}_${project}`}
+              key={`${id}_${team}`}
               className="flex items-center rounded-sm bg-gray-100 p-1.5"
             >
-              {project}
+              {team}
             </div>
           ))}
         </div>
@@ -88,10 +111,16 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
   {
     id: 'actions',
     header: 'Actions',
-    cell: () => {
-      // TODO: update remove function
+    cell: ({ row }) => {
+      const { id } = row.original;
+      const { mutate: deleteWorkspaceUser } = useDeleteWorkspaceUser();
+
+      const handleDeleteWorkspaceUser = (id: string) => {
+        deleteWorkspaceUser(id);
+      };
+
       return (
-        <Button variant="ghost">
+        <Button variant="ghost" onClick={() => handleDeleteWorkspaceUser(id)}>
           <Trash2 className="text-ces-orange-500 h-4 w-4" />
         </Button>
       );
