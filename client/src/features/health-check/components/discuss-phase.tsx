@@ -22,16 +22,16 @@ interface DiscussPhaseProps {
   actionItems: ActionItem[];
 }
 
-export default function DiscussPhase({
+const DiscussPhase = ({
   healthCheck,
   questions,
   responses,
   actionItems,
-}: DiscussPhaseProps) {
+}: DiscussPhaseProps) => {
   const [allOpen, setAllOpen] = useState(false);
 
   return (
-    <div className="mx-auto w-full max-w-7xl lg:w-3/4">
+    <div className="mx-auto w-full max-w-7xl lg:w-4/6">
       <div className="flex flex-col gap-6 md:flex-row">
         <div className="relative min-w-0 flex-1">
           <Card>
@@ -87,4 +87,6 @@ export default function DiscussPhase({
       </div>
     </div>
   );
-}
+};
+
+export default DiscussPhase;

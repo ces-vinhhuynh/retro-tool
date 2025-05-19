@@ -74,11 +74,11 @@ const UserSidebar = ({
   );
 
   return (
-    <div className="fixed top-26 right-4 border border-gray-100">
+    <div className="fixed top-26 right-4 border border-gray-200">
       <div
         className={cn(
-          'sticky top-0 h-[85vh] overflow-hidden rounded-2xl  bg-white transition-all duration-500 ease-in-out',
-          isOpen ? 'right-0 w-80' : 'right-80 w-0',
+          'sticky top-0 h-[85vh] overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
+          isOpen ? 'right-0 w-70' : 'right-80 w-0',
           className,
         )}
       >

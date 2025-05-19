@@ -36,7 +36,6 @@ import {
   useResponse,
   useResponses,
 } from '@/features/health-check/hooks/use-response';
-import { useResponseByHealthChecks } from '@/features/health-check/hooks/use-response-by-health-checks';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
@@ -90,10 +89,6 @@ export default function HealthCheckPage() {
   const { data: scrumHealthChecks } = useGetHealthChecksByTeamsAndTemplate(
     healthCheck?.template_id || '',
     healthCheck?.team_id || '',
-  );
-
-  const { data: scrumResponses } = useResponseByHealthChecks(
-    scrumHealthChecks?.map((check) => check.id) || [],
   );
 
   useEffect(() => {
@@ -342,6 +337,7 @@ export default function HealthCheckPage() {
             <ReviewPhase
               healthCheck={healthCheck as HealthCheckWithTemplate}
               actionItems={actionItems || []}
+              teamId={healthCheck?.team_id || ''}
               teamSize={participants?.length || 0}
             />
           )}
@@ -352,7 +348,6 @@ export default function HealthCheckPage() {
               responses={responses as ResponseWithUser[]}
               actionItems={actionItems || []}
               scrumHealthChecks={scrumHealthChecks as HealthCheckWithTemplate[]}
-              scrumResponses={scrumResponses || []}
               teamSize={participants?.length || 0}
               currentUser={currentUser as unknown as User}
               handleCompleteHealthCheck={handleCompleteHealthCheck}

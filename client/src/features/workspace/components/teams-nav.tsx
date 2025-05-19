@@ -35,7 +35,7 @@ const NavTeams = ({ teams }: NavTeamsProps) => {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  onClick={() => router.push(`/team/${team.id}`)}
+                  onClick={() => router.push(`/teams/${team.id}`)}
                   tooltip={team.name}
                   className="cursor-pointer"
                 >

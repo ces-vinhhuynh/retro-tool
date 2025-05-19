@@ -10,31 +10,49 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ActionItems from '@/features/health-check/components/action-items';
 import ScrumHealthCheck from '@/features/health-check/components/scrum-health-check';
-import { SessionTemplateDialog } from '@/features/health-check/components/sessions/session-template-dialog';
-import { useGetHealthChecksByTeamsAndTemplate } from '@/features/health-check/hooks/use-get-health-checks-by-teams-and-template';
-import { useResponseByHealthChecks } from '@/features/health-check/hooks/use-response-by-health-checks';
-import { HealthCheckWithTemplate } from '@/features/health-check/types/health-check';
+import SessionTemplateDialog from '@/features/health-check/components/sessions/session-template-dialog';
+import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
+import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
+import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
+import { useNewSessionModalStore } from '@/features/health-check/stores/new-session-modal-store';
+import {
+  HealthCheck,
+  HealthCheckWithTemplate,
+} from '@/features/health-check/types/health-check';
+import { Template } from '@/features/health-check/types/templates';
+import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
 import { SessionProvider } from '@/lib/context/session-context';
 
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
+
   const [showDialog, setShowDialog] = useState(false);
-  const { data: scrumHealthChecks } = useGetHealthChecksByTeamsAndTemplate(
-    // TODO: Remove this hardcoded value with real value
-    '361391f3-5033-40ec-9fc9-a442ebafe971',
-    teamId || '',
+  const { setTemplateId } = useNewSessionModalStore();
+  
+  const { data: scrumHealthChecks } = useGetHealthChecksByTeam(teamId);
+  const { data: templates } = useTemplates();
+  const { data: actionItems } = useGetActionItemsByTeamId(teamId);
+
+  const healthChecksGrouped = splitHealthChecksByTemplateId(
+    templates as Template[],
+    scrumHealthChecks as HealthCheck[],
   );
 
-  const { data: scrumResponses } = useResponseByHealthChecks(
-    scrumHealthChecks?.map((check) => check.id) || [],
-  );
+  const onAddNewSession = (templateId: string) => {
+    setShowDialog(true);
+    setTemplateId(templateId);
+  };
 
   return (
     <Layout>
-      <Tabs defaultValue={tabs[0].value} className="w-full py-10">
+      <Tabs defaultValue={tabs[1].value} className="w-full py-10">
         <TabsList className="grid w-full grid-cols-4">
           {tabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="cursor-pointer"
+            >
               {tab.icon}
               {tab.label}
             </TabsTrigger>
@@ -72,24 +90,23 @@ const TeamPage = () => {
                       Actions from this health check
                     </h3>
                     <ActionItems
-                      actionItems={[]}
-                      // TODO: Remove this hardcoded value with real value
-                      healthCheckId={'31fac6b7-f9af-4de5-adcf-ceadde0397aa'}
+                      actionItems={actionItems || []}
+                      teamId={teamId}
                     />
                   </div>
                 </CardContent>
               </Card>
-              <Card className="mx-auto w-full">
-                <CardContent className="flex flex-col gap-2 p-2">
-                  <ScrumHealthCheck
-                    scrumHealthChecks={
-                      scrumHealthChecks as HealthCheckWithTemplate[]
-                    }
-                    scrumResponses={scrumResponses || []}
-                    isShowAddNew={true}
-                  />
-                </CardContent>
-              </Card>
+              {Object.entries(healthChecksGrouped).map(([key, value]) => (
+                <Card className="mx-auto w-full" key={key}>
+                  <CardContent className="flex flex-col gap-2 p-2">
+                    <ScrumHealthCheck
+                      onAddNewSession={() => onAddNewSession(key)}
+                      scrumHealthChecks={value as HealthCheckWithTemplate[]}
+                      isShowAddNew={true}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
             </Card>
           </div>
         </TabsContent>

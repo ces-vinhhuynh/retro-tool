@@ -19,7 +19,7 @@ alter table workspace_users enable row level security;
 create policy "Users can see their own workspace_users rows"
 on workspace_users for select
 using (
-  user_id = auth.uid()
+  auth.uid() is not null
 );
 
 -- Only owner/admin can create workspace users

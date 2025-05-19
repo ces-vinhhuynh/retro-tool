@@ -14,6 +14,17 @@ class ActionItemService {
     return data;
   }
 
+  async getByTeamId(teamId: string): Promise<ActionItem[]> {
+    const { data, error } = await supabaseClient
+      .from('action_items')
+      .select('*')
+      .eq('team_id', teamId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  }
+
   async create(actionItem: ActionItem): Promise<ActionItem> {
     const { data, error } = await supabaseClient
       .from('action_items')

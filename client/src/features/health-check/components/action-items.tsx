@@ -22,15 +22,17 @@ import {
 
 interface ActionItemsProps {
   actionItems: ActionItem[];
-  healthCheckId: string;
+  teamId?: string;
+  healthCheckId?: string;
   questionId?: string;
 }
 
-export default function ActionItems({
+const ActionItems = ({
   actionItems: initialItems,
   healthCheckId,
+  teamId,
   questionId,
-}: ActionItemsProps) {
+}: ActionItemsProps) => {
   const { mutate: createActionItem, isPending: isCreating } =
     useCreateActionItem();
   const { mutate: updateActionItem, isPending: isUpdating } =
@@ -73,6 +75,7 @@ export default function ActionItems({
       status: ActionStatus.TODO,
       priority: ActionPriority.MEDIUM,
       health_check_id: healthCheckId,
+      team_id: teamId,
       question_id: questionId,
     } as ActionItem;
 
@@ -176,4 +179,6 @@ export default function ActionItems({
       </div>
     </div>
   );
-}
+};
+
+export default ActionItems;

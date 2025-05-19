@@ -111,6 +111,27 @@ class HealthCheckService {
     if (error) throw error;
     return data || [];
   }
+
+  async getByTeamId(teamId: string): Promise<HealthCheck[]> {
+    const { data, error } = await supabaseClient
+      .from('health_checks')
+      .select(
+        `
+        *,
+        template:health_check_templates (
+          id,
+          name,
+          description,
+          questions
+        )
+      `,
+      )
+      .eq('team_id', teamId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  }
 }
 
 export const healthCheckService = new HealthCheckService();

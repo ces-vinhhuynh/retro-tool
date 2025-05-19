@@ -34,6 +34,7 @@ export function useCreateWorkspaceUser() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace-users'] });
     },
     onError: (error) => {
       toast.error('Error creating workspace and project', {

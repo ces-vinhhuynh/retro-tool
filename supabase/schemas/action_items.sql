@@ -3,7 +3,7 @@ create type action_item_priority as enum ('high', 'medium', 'low');
 
 create table action_items (
     id uuid default gen_random_uuid() primary key,
-    health_check_id uuid references health_checks(id) on delete cascade not null,
+    health_check_id uuid references health_checks(id) on delete cascade,
     team_id uuid,
     question_id uuid,
     title text not null,

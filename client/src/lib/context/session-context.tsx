@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-import { Template } from '@/types/database';
+import { Template } from '@/features/health-check/types/templates';
 
 export interface Session {
   id: string;

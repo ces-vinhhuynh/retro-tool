@@ -36,6 +36,7 @@ import {
   AUTHENTICATION_REQUIRED_DESCRIPTION,
 } from '@/utils/messages';
 
+import { useNewSessionModalStore } from '../../stores/new-session-modal-store';
 import { Template } from '../../types/templates';
 
 import { TemplatePreviewDialog } from './template-preview-dialog';
@@ -45,34 +46,41 @@ interface SessionTemplateDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function SessionTemplateDialog({
+const SessionTemplateDialog = ({
   open,
   onOpenChange,
-}: SessionTemplateDialogProps) {
-  const {id: team_id} = useParams<{id: string}>()
-  const [step, setStep] = useState<'choose' | 'form'>('choose');
-  const { data: templates, isLoading: isLoadingTemplates } = useTemplates();
+}: SessionTemplateDialogProps) => {
+  const { id: team_id } = useParams<{ id: string }>();
 
+  const { templateId, setTemplateId } = useNewSessionModalStore();
+  
+  const [step, setStep] = useState<'choose' | 'form'>('choose');
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
     null,
   );
   const [sessionName, setSessionName] = useState('');
   const [dueDate, setDueDate] = useState<Date>(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { createSession } = useSession();
-  const { data: currentUser } = useCurrentUser();
-  const { createHealthCheck, isLoading: isCreatingHealthCheck } =
-    useHealthCheckMutations();
-
   // For preview modal state
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
+  const { createSession } = useSession();
+  const { data: currentUser } = useCurrentUser();
+  const { data: templates, isLoading: isLoadingTemplates } = useTemplates();
+  const { createHealthCheck, isLoading: isCreatingHealthCheck } =
+    useHealthCheckMutations();
+
   useEffect(() => {
-    if (templates && templates.length > 0) {
+    if (templateId) {
+      setSelectedTemplate(
+        templates?.find((tpl) => tpl.id === templateId) || null,
+      );
+      setStep('form');
+    } else if (templates && templates.length > 0) {
       setSelectedTemplate(templates[0]);
     }
-  }, [templates]);
+  }, [templates, templateId]);
 
   const handleContinue = () => setStep('form');
   const handleBack = () => setStep('choose');
@@ -107,7 +115,7 @@ export function SessionTemplateDialog({
         title: sessionName,
         description: '',
         team_id,
-        template_id: selectedTemplate.id,
+        template_id: templateId || selectedTemplate.id,
         facilitator_id: currentUser.id,
         status: 'in progress',
         current_step: 1,
@@ -116,8 +124,8 @@ export function SessionTemplateDialog({
       toast.success('Health check created successfully');
 
       setIsSubmitting(false);
+      setTemplateId('');
       onOpenChange(false);
-
       // Note: No need to manually redirect, the mutation's onSuccess callback will handle it
     } catch (error) {
       toast.error('Failed to create health check', {
@@ -291,4 +299,6 @@ export function SessionTemplateDialog({
       />
     </>
   );
-}
+};
+
+export default SessionTemplateDialog;

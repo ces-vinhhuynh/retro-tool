@@ -7,7 +7,6 @@ import {
   ActionItem,
   HealthCheckWithTemplate,
   Question,
-  Response,
   ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
@@ -22,27 +21,26 @@ interface ClosePhaseProps {
   responses: ResponseWithUser[];
   actionItems: ActionItem[];
   scrumHealthChecks: HealthCheckWithTemplate[];
-  scrumResponses: Response[];
   teamSize: number;
   currentUser: User;
   handleCompleteHealthCheck: () => void;
 }
-export default function ClosePhase({
+
+const ClosePhase = ({
   healthCheck,
   questions,
   responses,
   actionItems,
   scrumHealthChecks,
-  scrumResponses,
   teamSize,
   currentUser,
   handleCompleteHealthCheck,
-}: ClosePhaseProps) {
+}: ClosePhaseProps) => {
   const router = useRouter();
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="mx-auto w-full max-w-7xl lg:w-3/4">
+      <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
         <CardContent className="flex flex-col gap-2 p-2">
           <TeamHealthChart
             title="Health radar"
@@ -55,12 +53,9 @@ export default function ClosePhase({
         </CardContent>
       </Card>
 
-      <Card className="mx-auto w-full max-w-7xl lg:w-3/4">
+      <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
         <CardContent className="flex flex-col gap-2 p-2">
-          <ScrumHealthCheck
-            scrumHealthChecks={scrumHealthChecks}
-            scrumResponses={scrumResponses}
-          />
+          <ScrumHealthCheck scrumHealthChecks={scrumHealthChecks} />
         </CardContent>
       </Card>
 
@@ -87,4 +82,6 @@ export default function ClosePhase({
       )}
     </div>
   );
-}
+};
+
+export default ClosePhase;
