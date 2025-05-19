@@ -61,6 +61,7 @@ export default function DetailCard({
           actionItems={actionItems}
           questionId={item.id}
           healthCheckId={healthCheck.id}
+          teamId={String(healthCheck.team_id)}
         />
         <SurveyResponses comments={item.comments} />
       </CardContent>

@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { ReactNode } from 'react';
 
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-get-workspace-user';
 import { Team } from '@/features/workspace/types/team';
@@ -18,8 +19,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const params = useParams();
+  const { data: currentUser } = useCurrentUser();
   const { data: workspaces, isLoading: isLoadingWorkspaces } =
-    useGetWorkspaceUser();
+    useGetWorkspaceUser(currentUser?.id || '');
 
   const currentWorkspace = workspaces?.find(
     (workspace) => workspace?.workspace?.id === String(params.id),

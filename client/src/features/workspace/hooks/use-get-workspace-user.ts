@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import { workspaceUsersService } from '../api/workspace-users';
 
-export function useGetWorkspaceUser() {
+export function useGetWorkspaceUser(userId: string) {
   const { data, isLoading } = useQuery({
     queryKey: ['workspaces'],
-    queryFn: () => workspaceUsersService.getWorkspaces(),
+    queryFn: () => workspaceUsersService.getWorkspaces(userId),
   });
 
   return { data, isLoading };

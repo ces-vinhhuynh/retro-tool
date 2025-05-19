@@ -3,7 +3,7 @@ import supabaseClient from '@/lib/supabase/client';
 import { WorkspaceUser, WorkspaceUserUpdate } from '../types/workspace-users';
 
 class WorkspaceUsersService {
-  async getWorkspaces() {
+  async getWorkspaces(userId: string) {
     const { data, error } = await supabaseClient
       .from('workspace_users')
       .select(
@@ -15,6 +15,7 @@ class WorkspaceUsersService {
         )
       `,
       )
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
     if (error) throw error;
     return data ?? [];

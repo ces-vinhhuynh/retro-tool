@@ -2,10 +2,14 @@
 
 import { redirect } from 'next/navigation';
 
+import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-get-workspace-user';
 
 export default function Home() {
-  const { data: workspaces, isLoading } = useGetWorkspaceUser();
+  const { data: currentUser } = useCurrentUser();
+  const { data: workspaces, isLoading } = useGetWorkspaceUser(
+    currentUser?.id || '',
+  );
 
   if (isLoading) {
     return <div>Loading...</div>;
