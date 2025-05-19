@@ -3,3 +3,8 @@ export const WORKSPACE_ROLES = {
   admin: 'Admin',
   member: 'Member',
 };
+
+export const TEAM_ROLES = {
+  admin: 'admin',
+  member: 'member',
+};
