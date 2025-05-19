@@ -20,7 +20,7 @@ import {
   STEPS,
 } from '@/features/health-check/constants/health-check';
 import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
-import { useGetActionItems } from '@/features/health-check/hooks/use-get-action-items';
+import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeamsAndTemplate } from '@/features/health-check/hooks/use-get-health-checks-by-teams-and-template';
 import { useGetParticipants } from '@/features/health-check/hooks/use-get-participants';
 import {
@@ -46,7 +46,6 @@ import {
   ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
-
 export type GroupedQuestions = {
   [section: string]: Question[];
 };
@@ -78,8 +77,9 @@ export default function HealthCheckPage() {
   );
   const { data: responses, isLoading: isLoadingResponses } =
     useResponses(healthCheckId);
+
   const { data: actionItems, isLoading: isLoadingActionItems } =
-    useGetActionItems(healthCheckId);
+    useGetActionItemsByTeamId(healthCheck?.team_id || '');
 
   const { data: participants, isLoading: isLoadingParticipants } =
     useGetParticipants(healthCheckId);
