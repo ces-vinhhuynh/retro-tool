@@ -1,21 +1,18 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { LogOut, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { cn } from '@/utils/cn';
 import { getAvatarCharacters } from '@/utils/user';
 
 import { TEAM_ROLES } from '../../constants/user';
+import { useDeleteTeam } from '../../hooks/use-delete-team';
+import EditTeamDialog from '../edit-team-dialog';
 
 export type Team = {
   id: string;
@@ -34,6 +31,11 @@ export const columns: ColumnDef<Team>[] = [
   {
     accessorKey: 'name',
     header: 'Team',
+    cell: ({ row }) => {
+      const { id, name } = row.original;
+
+      return <Link href={`/teams/${id}`}>{name}</Link>;
+    },
   },
   {
     accessorKey: 'members',
@@ -87,30 +89,21 @@ export const columns: ColumnDef<Team>[] = [
   {
     accessorKey: 'actions',
     header: 'Actions',
-    cell: () => {
+    cell: ({ row }) => {
+      const { id } = row.original;
+      const { mutate: deleteTeam } = useDeleteTeam();
+
+      const handleDeleteTeam = (id: string) => {
+        deleteTeam(id);
+      };
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Pencil />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Trash2 />
-              Remove
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <LogOut />
-              Leave
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center">
+          <EditTeamDialog teamId={id} />
+          <Button variant="ghost" onClick={() => handleDeleteTeam(id)}>
+            <Trash2 />
+          </Button>
+        </div>
       );
     },
   },

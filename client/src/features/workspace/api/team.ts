@@ -1,8 +1,19 @@
 import supabaseClient from '@/lib/supabase/client';
 
-import { Team } from '../types/team';
+import { Team, TeamInsert, TeamUpdate } from '../types/team';
 
 class TeamService {
+  async create(team: TeamInsert): Promise<Team> {
+    const { data, error } = await supabaseClient
+      .from('teams')
+      .insert(team)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  }
+
   async getTeams(workspaceId: string): Promise<Team[]> {
     const { data, error } = await supabaseClient
       .from('teams')
@@ -43,6 +54,27 @@ class TeamService {
         role: user.role,
       })),
     }));
+  }
+
+  async update(id: string, team: TeamUpdate): Promise<Team> {
+    const { data, error } = await supabaseClient
+      .from('teams')
+      .update(team)
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabaseClient
+      .from('teams')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
   }
 }
 

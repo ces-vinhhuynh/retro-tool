@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 
 import { Layout } from '@/components/layout/layout';
-import { Button } from '@/components/ui/button';
+import CreateTeamDialog from '@/features/workspace/components/create-team-dialog';
 import { columns } from '@/features/workspace/components/team-table/columns';
 import { DataTable } from '@/features/workspace/components/user-table/data-table';
 import { useGetWorkspaceTeams } from '@/features/workspace/hooks/use-get-workspace-teams';
@@ -17,7 +17,7 @@ export default function WorkspacePage() {
       <div className="flex flex-col gap-3 p-10">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Teams Management</h1>
-          <Button className="primary">Create Team</Button>
+          <CreateTeamDialog workspaceId={workspaceId} />
         </div>
         <div className="flex flex-col gap-8 rounded-xl bg-white p-5">
           <div className="flex flex-col">
