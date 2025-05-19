@@ -41,6 +41,7 @@ import { useResponsesSubscription } from '@/features/health-check/hooks/use-resp
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
+  HealthCheckStatus,
   HealthCheckWithTemplate,
   Question,
   ResponseWithUser,
@@ -132,6 +133,7 @@ export default function HealthCheckPage() {
   const grouped = _groupBy(questions, 'section');
   const sections = Object.keys(grouped);
   const isFacilitator = currentUser?.id === healthCheck?.facilitator_id;
+  const isCompleted = healthCheck?.status === HealthCheckStatus.DONE;
 
   useEffect(() => {
     if (
@@ -183,6 +185,18 @@ export default function HealthCheckPage() {
     isLoadingHealthCheck,
     healthCheckId,
   ]);
+
+  const handleCompleteHealthCheck = () => {
+    if (isFacilitator && !isCompleted) {
+      updateHealthCheck({
+        id: healthCheck?.id ?? '',
+        healthCheck: {
+          status: HealthCheckStatus.DONE,
+          updated_at: new Date().toISOString(),
+        },
+      });
+    }
+  };
 
   const handleChangeStep = (newStep: keyof typeof STEPS) => {
     if (!isFacilitator) return;
@@ -340,6 +354,8 @@ export default function HealthCheckPage() {
               scrumHealthChecks={scrumHealthChecks as HealthCheckWithTemplate[]}
               scrumResponses={scrumResponses || []}
               teamSize={participants?.length || 0}
+              currentUser={currentUser as unknown as User}
+              handleCompleteHealthCheck={handleCompleteHealthCheck}
             />
           )}
         </div>

@@ -4,10 +4,9 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 
 import { useUpdateHealthCheckRating } from '../hooks/use-update-health-check-rating';
-import { ResponseWithUser } from '../types/health-check';
+import { ResponseWithUser, User } from '../types/health-check';
 import { RATING_OPTIONS } from '../utils/constants';
 
 import RatingOption from './rating-option';
@@ -17,10 +16,14 @@ import RevealModal from './reveal-modal';
 interface SessionReviewProps {
   teamSize: number;
   responses: ResponseWithUser[];
+  currentUser: User;
 }
 
-export function HealthCheckRating({ teamSize, responses }: SessionReviewProps) {
-  const { data: currentUser } = useCurrentUser();
+export function HealthCheckRating({
+  teamSize,
+  responses,
+  currentUser,
+}: SessionReviewProps) {
   const currentUserResponse = responses.find(
     (response) => response.user_id === currentUser?.id,
   );
