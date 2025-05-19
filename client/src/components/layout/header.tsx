@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,8 +26,19 @@ interface HeaderProps {
 
 export function Header({ currentWorkspace }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+
   const { data: currentUser, isLoading } = useCurrentUser();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const base = `/workspaces/${currentWorkspace?.workspace_id}`;
+
+  const links = [
+    { href: `${base}`, label: 'Home' },
+    { href: `${base}/teams`, label: 'Teams' },
+    { href: `${base}/users`, label: 'Users' },
+    { href: `${base}/settings`, label: 'Setting' }, // fix duplicate href with Home
+  ];
 
   const handleSignOut = async () => {
     try {
@@ -40,6 +51,7 @@ export function Header({ currentWorkspace }: HeaderProps) {
       setIsLoggingOut(false);
     }
   };
+
   return (
     <header className="relative border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
       <SidebarTrigger className="absolute top-1/2 -translate-y-1/2" />
@@ -54,6 +66,22 @@ export function Header({ currentWorkspace }: HeaderProps) {
             </span>
           </div>
         </div>
+
+        {currentWorkspace?.workspace_id && (
+          <nav className="flex gap-5">
+            {links.map(({ href, label }) => (
+              <Link
+                key={label}
+                href={href}
+                className={cn('text-gray-500 hover:text-black', {
+                  'text-ces-orange-500 font-bold': pathname === href,
+                })}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        )}
 
         {isLoading && (
           <div className="h-9 w-36 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
