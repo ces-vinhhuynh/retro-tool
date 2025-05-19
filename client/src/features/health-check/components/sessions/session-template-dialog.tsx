@@ -30,13 +30,13 @@ import {
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useHealthCheckMutations } from '@/features/health-check/hooks/use-health-check';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
-import { useSession } from '@/lib/context/session-context';
 import {
   AUTHENTICATION_REQUIRED,
   AUTHENTICATION_REQUIRED_DESCRIPTION,
 } from '@/utils/messages';
 
 import { useNewSessionModalStore } from '../../stores/new-session-modal-store';
+import { HealthCheckStatus } from '../../types/health-check';
 import { Template } from '../../types/templates';
 
 import { TemplatePreviewDialog } from './template-preview-dialog';
@@ -53,7 +53,6 @@ const SessionTemplateDialog = ({
   const { id: team_id } = useParams<{ id: string }>();
 
   const { templateId, setTemplateId } = useNewSessionModalStore();
-  
   const [step, setStep] = useState<'choose' | 'form'>('choose');
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
     null,
@@ -61,11 +60,9 @@ const SessionTemplateDialog = ({
   const [sessionName, setSessionName] = useState('');
   const [dueDate, setDueDate] = useState<Date>(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // For preview modal state
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
-  const { createSession } = useSession();
   const { data: currentUser } = useCurrentUser();
   const { data: templates, isLoading: isLoadingTemplates } = useTemplates();
   const { createHealthCheck, isLoading: isCreatingHealthCheck } =
@@ -90,53 +87,30 @@ const SessionTemplateDialog = ({
 
     setIsSubmitting(true);
 
-    try {
-      // Check if user is authenticated
-      if (!currentUser) {
-        toast.error(AUTHENTICATION_REQUIRED, {
-          description: AUTHENTICATION_REQUIRED_DESCRIPTION,
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      // First create the session in context (for local state)
-      await createSession({
-        name: sessionName,
-        description: '',
-        template: selectedTemplate,
-        facilitatorId: currentUser.id,
-        isAnonymous: true,
-        dueDate: format(dueDate, 'yyyy-MM-dd'),
-      });
-
-      // Create the health check in the database using the tanstack-query mutation
-      createHealthCheck({
-        title: sessionName,
-        description: '',
-        team_id,
-        template_id: templateId || selectedTemplate.id,
-        facilitator_id: currentUser.id,
-        status: 'in progress',
-        current_step: 1,
-      });
-
-      toast.success('Health check created successfully');
-
-      setIsSubmitting(false);
-      setTemplateId('');
-      onOpenChange(false);
-      // Note: No need to manually redirect, the mutation's onSuccess callback will handle it
-    } catch (error) {
-      toast.error('Failed to create health check', {
-        description:
-          error instanceof Error ? error.message : 'Please try again later',
+    if (!currentUser) {
+      toast.error(AUTHENTICATION_REQUIRED, {
+        description: AUTHENTICATION_REQUIRED_DESCRIPTION,
       });
       setIsSubmitting(false);
+      return;
     }
+
+    createHealthCheck({
+      title: sessionName,
+      description: '',
+      team_id,
+      template_id: templateId || selectedTemplate.id,
+      facilitator_id: currentUser.id,
+      status: HealthCheckStatus.IN_PROGRESS,
+      current_step: 1,
+    });
+
+    setTemplateId('');
+    onOpenChange(false);
+
+    setIsSubmitting(false);
   };
 
-  // Open the preview dialog and set the preview template
   const handlePreview = (tpl: Template) => {
     setPreviewTemplate(tpl);
     setPreviewOpen(true);
@@ -144,8 +118,14 @@ const SessionTemplateDialog = ({
 
   return (
     <>
-      {/* Main Dialog */}
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog
+        open={open}
+        onOpenChange={() => {
+          onOpenChange(false);
+          setTemplateId('');
+          setStep('choose');
+        }}
+      >
         <DialogContent className="max-h-[80vh] w-full max-w-2xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
@@ -173,7 +153,6 @@ const SessionTemplateDialog = ({
                       tabIndex={0}
                       aria-selected={selectedTemplate?.id === tpl.id}
                     >
-                      {/* Eye icon button top-right, does NOT trigger card select */}
                       <button
                         type="button"
                         className="focus:ring-primary absolute top-3 right-3 z-10 rounded-full bg-white p-1 hover:bg-gray-100 focus:ring-2 focus:outline-none"
@@ -252,11 +231,7 @@ const SessionTemplateDialog = ({
                     <Calendar
                       mode="single"
                       selected={dueDate}
-                      onSelect={(date) => {
-                        if (date) {
-                          setDueDate(date);
-                        }
-                      }}
+                      onSelect={(date) => date && setDueDate(date)}
                       className="rounded-md border shadow-sm"
                     />
                   </PopoverContent>
@@ -274,10 +249,7 @@ const SessionTemplateDialog = ({
                 <Button
                   type="submit"
                   disabled={
-                    isSubmitting ||
-                    isCreatingHealthCheck ||
-                    !sessionName ||
-                    !sessionName.trim()
+                    isSubmitting || isCreatingHealthCheck || !sessionName.trim()
                   }
                   className="bg-primary text-primary-foreground"
                 >
@@ -291,7 +263,6 @@ const SessionTemplateDialog = ({
         </DialogContent>
       </Dialog>
 
-      {/* Template Preview Dialog */}
       <TemplatePreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}

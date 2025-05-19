@@ -68,12 +68,10 @@ const TeamPage = () => {
           ))}
         </TabsList>
         <TabsContent value="retrospective">
-          <SessionProvider>
-            <SessionTemplateDialog
-              open={showDialog}
-              onOpenChange={() => setShowDialog(!showDialog)}
-            />
-          </SessionProvider>
+          <SessionTemplateDialog
+            open={showDialog}
+            onOpenChange={() => setShowDialog(!showDialog)}
+          />
 
           <div className="pt-10">
             <Card className="flex flex-col gap-8 p-10">

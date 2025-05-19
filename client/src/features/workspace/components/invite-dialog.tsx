@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,26 +14,17 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User } from '@/features/health-check/types/health-check';
-import { useCreateWorkspaceUser } from '@/features/workspace/hooks/use-create-workspace-user';
 import { inviteSchema } from '@/features/workspace/schema/workspace-user.schema';
-import { Role } from '@/features/workspace/utils/role';
+
 type InviteFormData = z.infer<typeof inviteSchema>;
 
 interface InviteDialogProps {
   open: boolean;
   onClose: () => void;
-  users: User[];
-  workspaceId: string;
+  onInvite: (email: string) => void;
 }
 
-const InviteDialog = ({
-  open,
-  onClose,
-  users,
-  workspaceId,
-}: InviteDialogProps) => {
-  const { mutate: createWorkspaceUser } = useCreateWorkspaceUser();
+const InviteDialog = ({ open, onClose, onInvite }: InviteDialogProps) => {
   const {
     control,
     handleSubmit,
@@ -45,17 +35,7 @@ const InviteDialog = ({
 
   const onSubmit = async (data: InviteFormData) => {
     const { email } = data;
-    const user = users.find((user) => user.email === email);
-
-    createWorkspaceUser({
-      id: uuidv4(),
-      workspaceId,
-      userId: user?.id ?? email,
-      token: uuidv4(),
-      role: Role.MEMBER,
-    });
-
-    onClose();
+    onInvite(email);
   };
 
   return (
