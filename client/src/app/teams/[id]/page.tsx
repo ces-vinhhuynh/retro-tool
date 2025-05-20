@@ -21,14 +21,23 @@ import {
 } from '@/features/health-check/types/health-check';
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
+import TeamInviteDialog from '@/features/workspace/components/team-invite-dialog';
+import { columns } from '@/features/workspace/components/team-members-table/columns';
+import { DataTable } from '@/features/workspace/components/user-table/data-table';
+import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
 import { SessionProvider } from '@/lib/context/session-context';
 
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
 
   const [showDialog, setShowDialog] = useState(false);
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+
   const { setTemplateId } = useNewSessionModalStore();
-  
+  const { data: teamMembers = [] } = useGetTeamMembers(teamId);
+  const { data: users } = useGetUsers();
+
   const { data: scrumHealthChecks } = useGetHealthChecksByTeam(teamId);
   const { data: templates } = useTemplates();
   const { data: actionItems } = useGetActionItemsByTeamId(teamId);
@@ -107,6 +116,28 @@ const TeamPage = () => {
                   </CardContent>
                 </Card>
               ))}
+            </Card>
+          </div>
+        </TabsContent>
+        <TabsContent value="members">
+          <div className="pt-10">
+            <Card className="flex flex-col gap-8 p-10">
+              <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
+                <Button
+                  variant={'default'}
+                  className="self-start md:self-center"
+                  onClick={() => setShowInviteDialog(true)}
+                >
+                  Invite member
+                </Button>
+                <TeamInviteDialog
+                  open={showInviteDialog}
+                  onClose={() => setShowInviteDialog(false)}
+                  users={users ?? []}
+                  teamId={teamId}
+                />
+              </div>
+              <DataTable columns={columns} data={teamMembers} />
             </Card>
           </div>
         </TabsContent>
