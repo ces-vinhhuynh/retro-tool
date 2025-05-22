@@ -54,10 +54,18 @@ class HealthCheckService {
   async getHealthCheck(id: string): Promise<HealthCheck | null> {
     const { data, error } = await supabaseClient
       .from('health_checks')
-      .select('*')
+      .select(
+        `
+        *,
+        team:teams (
+          id,
+          name,
+          workspace_id
+        )
+      `,
+      )
       .eq('id', id)
       .single();
-
     if (error) throw error;
     return data;
   }
@@ -70,7 +78,22 @@ class HealthCheckService {
       .from('health_checks')
       .update(healthCheck)
       .eq('id', id)
-      .select('*')
+      .select(
+        `
+      *,
+      template:health_check_templates (
+        id,
+        name,
+        description,
+        questions
+      ),
+      team:teams (
+        id,
+        name,
+        workspace_id
+      )
+    `,
+      )
       .single();
 
     if (error) throw error;

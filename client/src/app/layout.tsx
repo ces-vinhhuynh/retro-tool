@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 import { ReactQueryProvider } from '@/components/react-query-provider';
-import '@/styles/globals.css';
 import { Toaster } from '@/components/ui/sonner';
+
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: 'Retro Tool',

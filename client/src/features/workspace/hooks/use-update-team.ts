@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { TeamUpdate } from '@/types/team';
+
 import { teamService } from '../api/team';
-import { TeamUpdate } from '../types/team';
 
 export function useUpdateTeam() {
   const queryClient = useQueryClient();
@@ -11,6 +12,7 @@ export function useUpdateTeam() {
       teamService.update(id, team),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-teams'] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 

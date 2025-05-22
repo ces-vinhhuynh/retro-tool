@@ -1,7 +1,7 @@
 'use client';
 
 import { Users } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
@@ -11,8 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-
-import { Team } from '../types/team';
+import { Team } from '@/types/team';
+import { cn } from '@/utils/cn';
 
 interface NavTeamsProps {
   teams: Team[];
@@ -20,32 +20,42 @@ interface NavTeamsProps {
 
 const NavTeams = ({ teams }: NavTeamsProps) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Teams</SidebarGroupLabel>
       <SidebarMenu>
-        {teams?.map((team) => (
-          <Collapsible
-            key={team.id}
-            asChild
-            defaultOpen={true}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton
-                  onClick={() => router.push(`/teams/${team.id}`)}
-                  tooltip={team.name}
-                  className="cursor-pointer"
-                >
-                  <Users />
-                  <span>{team.name}</span>
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
+        {teams?.map((team) => {
+          const isActive = pathname === `/teams/${team.id}`;
+
+          return (
+            <Collapsible
+              key={team.id}
+              asChild
+              defaultOpen={true}
+              className="group/collapsible"
+            >
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton
+                    onClick={() => router.push(`/teams/${team.id}`)}
+                    tooltip={team.name}
+                    className={cn(
+                      'cursor-pointer',
+                      isActive && 'bg-accent text-accent-foreground',
+                    )}
+                  >
+                    <Users
+                      className={cn(isActive && 'text-accent-foreground')}
+                    />
+                    <span>{team.name}</span>
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+              </SidebarMenuItem>
+            </Collapsible>
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );

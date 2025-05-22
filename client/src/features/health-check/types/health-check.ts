@@ -1,4 +1,5 @@
 import { Tables, TablesInsert, TablesUpdate } from '@/types/database';
+import { Team } from '@/types/team';
 
 export type HealthCheckTemplate = Omit<
   Tables<'health_check_templates'>,
@@ -10,6 +11,9 @@ export type HealthCheckTemplate = Omit<
 export type HealthCheckInsert = TablesInsert<'health_checks'>;
 export type HealthCheckUpdate = TablesUpdate<'health_checks'>;
 export type HealthCheck = Tables<'health_checks'>;
+export type HealthCheckWithTeam = HealthCheck & {
+  team: Team;
+};
 
 export type Response = Tables<'responses'>;
 export type ResponseInsert = TablesInsert<'responses'>;

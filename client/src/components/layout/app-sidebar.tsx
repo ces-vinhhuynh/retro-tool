@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/sidebar';
 import NavTeams from '@/features/workspace/components/teams-nav';
 import { WorkspaceSwitcher } from '@/features/workspace/components/workspace-switcher';
-import { Team } from '@/features/workspace/types/team';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
+import { Team } from '@/types/team';
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   workspaces: WorkspaceUserWithWorkspace[];
