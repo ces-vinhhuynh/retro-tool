@@ -11,7 +11,6 @@ create table action_items (
     due_date timestamp with time zone,
     status action_item_status default 'todo',
     priority action_item_priority,
-    assigned_to uuid references public.users(id) on delete set null,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now()
 );
