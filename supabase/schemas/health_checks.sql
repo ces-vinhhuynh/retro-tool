@@ -11,8 +11,14 @@ create table health_checks (
     status health_check_status default 'in progress',
     average_score jsonb default '{}',
     participants jsonb default '[]',
+    settings jsonb default '{
+        "display_mode": "grouped"
+    }',
     created_at timestamp with time zone default now(),
-    updated_at timestamp with time zone default now()
+    updated_at timestamp with time zone default now(),
+    constraint valid_display_mode check (
+        settings->>'display_mode' in ('single', 'grouped', 'all')
+    )
 );
 
 -- Enable RLS
