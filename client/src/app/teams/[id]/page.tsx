@@ -27,6 +27,7 @@ import { columns } from '@/features/workspace/components/team-members-table/colu
 import { DataTable } from '@/features/workspace/components/user-table/data-table';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
+
 import { SessionProvider } from '@/lib/context/session-context';
 
 const TeamPage = () => {
@@ -55,7 +56,7 @@ const TeamPage = () => {
 
   return (
     <Layout>
-      <Tabs defaultValue={tabs[1].value} className="w-full py-10">
+      <Tabs defaultValue={tabs[1].value} className="w-full p-10">
         <TabsList className="grid w-full grid-cols-4">
           {tabs.map((tab) => (
             <TabsTrigger

@@ -2,7 +2,7 @@
 
 import _groupBy from 'lodash.groupby';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Layout } from '@/components/layout/layout';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,8 @@ import DiscussPhase from '@/features/health-check/components/discuss-phase';
 import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
 import ReviewPhase from '@/features/health-check/components/review-phase';
 import { WelcomeModal } from '@/features/health-check/components/sessions/welcome-modal';
+import SubMenu from '@/features/health-check/components/sub-menu';
 import SurveyTab from '@/features/health-check/components/survey-tab';
-import UserSidebar from '@/features/health-check/components/user-sidebar';
 import {
   FIRST_STEP,
   LAST_STEP,
@@ -38,6 +38,7 @@ import {
 } from '@/features/health-check/hooks/use-response';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
+import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckStatus,
@@ -47,18 +48,13 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+
 export type GroupedQuestions = {
   [section: string]: Question[];
 };
 
 export default function HealthCheckPage() {
   const { id: healthCheckId } = useParams<{ id: string }>();
-
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   const {
     isOpen: isWelcomeModalOpen,
@@ -67,6 +63,8 @@ export default function HealthCheckPage() {
     hasSeenModal,
     markAsSeen,
   } = useWelcomeModalStore();
+
+  const { selectedSubmenu } = useSubMenuStore();
 
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: healthCheck, isLoading: isLoadingHealthCheck } =
@@ -308,18 +306,20 @@ export default function HealthCheckPage() {
 
   return (
     <Layout>
-      <div className="flex w-full">
-        <div className="mx-auto w-full">
-          <div className="pb-6">
-            <div className="flex items-center justify-center pt-3">
-              <HealthCheckSteps
-                currentStep={healthCheck.current_step || FIRST_STEP.key}
-                isFacilitator={isFacilitator}
-                handleChangeStep={handleChangeStep}
-              />
-            </div>
-          </div>
-          {healthCheck.current_step === STEPS['survey'].key && (
+      <div className="flex w-full justify-between">
+        <div className={selectedSubmenu ? "w-[80%]" : "w-full"}>
+          <div className="flex w-full">
+            <div className="mx-auto w-full">
+              <div className="pb-6">
+                <div className="flex items-center justify-center pt-3">
+                  <HealthCheckSteps
+                    currentStep={healthCheck.current_step || FIRST_STEP.key}
+                    isFacilitator={isFacilitator}
+                    handleChangeStep={handleChangeStep}
+                  />
+                </div>
+              </div>
+              {healthCheck.current_step === STEPS['survey'].key && (
             <SurveyTab
               sections={sections}
               currentUser={currentUser as unknown as User}
@@ -358,40 +358,42 @@ export default function HealthCheckPage() {
               currentUser={currentUser as unknown as User}
               handleCompleteHealthCheck={handleCompleteHealthCheck}
             />
+              )}
+            </div>
+            {healthCheck && (
+              <WelcomeModal
+                isOpen={isWelcomeModalOpen}
+                onClose={closeWelcomeModal}
+                healthCheck={healthCheck}
+                template={template}
+              />
+            )}
+          </div>
+          {isFacilitator && healthCheck?.current_step !== LAST_STEP.key && (
+            <div className="mx-auto flex w-[50%] py-5">
+              <Button
+                className="ml-auto w-full bg-[#E15D2F] text-white hover:bg-[#eeaa83] sm:w-auto"
+                onClick={() =>
+                  updateHealthCheck({
+                    id: healthCheck?.id ?? '',
+                    healthCheck: {
+                      current_step: (healthCheck?.current_step || 1) + 1,
+                    },
+                  })
+                }
+              >
+                {getNextPhaseButtonText()}
+              </Button>
+            </div>
           )}
         </div>
-        <UserSidebar
+        <SubMenu
           healthCheck={healthCheck}
-          isOpen={sidebarOpen}
-          toggleSidebar={toggleSidebar}
           healthCheckId={healthCheckId}
+          actionItems={actionItems || []}
+          teamId={healthCheck?.team_id || ''}
         />
-        {healthCheck && (
-          <WelcomeModal
-            isOpen={isWelcomeModalOpen}
-            onClose={closeWelcomeModal}
-            healthCheck={healthCheck}
-            template={template}
-          />
-        )}
       </div>
-      {isFacilitator && healthCheck?.current_step !== LAST_STEP.key && (
-        <div className="mx-auto flex w-[50%] py-5">
-          <Button
-            className="ml-auto w-full bg-[#E15D2F] text-white hover:bg-[#eeaa83] sm:w-auto"
-            onClick={() =>
-              updateHealthCheck({
-                id: healthCheck?.id ?? '',
-                healthCheck: {
-                  current_step: (healthCheck?.current_step || 1) + 1,
-                },
-              })
-            }
-          >
-            {getNextPhaseButtonText()}
-          </Button>
-        </div>
-      )}
     </Layout>
   );
 }

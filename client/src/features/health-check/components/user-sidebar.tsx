@@ -8,11 +8,11 @@ import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-mod
 import { cn } from '@/lib/utils';
 
 import { useGetParticipants } from '../hooks/use-get-participants';
+import { useSubMenuStore } from '../stores/sub-menu-store';
 import { HealthCheck, ParticipantWithUser } from '../types/health-check';
 
 interface UserSidebarProps {
   isOpen: boolean;
-  toggleSidebar: () => void;
   healthCheckId: string;
   className?: string;
   healthCheck: HealthCheck;
@@ -48,7 +48,6 @@ const UserItem = ({ participant }: { participant: ParticipantWithUser }) => (
 
 const UserSidebar = ({
   isOpen,
-  toggleSidebar,
   healthCheckId,
   className,
   healthCheck,
@@ -56,6 +55,7 @@ const UserSidebar = ({
   const { facilitator_id } = healthCheck;
 
   const { open: openWelcomeModal } = useWelcomeModalStore();
+  const { setSelectedSubmenu } = useSubMenuStore();
 
   const { data: participants } = useGetParticipants(healthCheckId);
 
@@ -74,19 +74,19 @@ const UserSidebar = ({
   );
 
   return (
-    <div className="fixed top-26 right-4 border border-gray-200">
+    <div className="fixed top-20 right-24 border border-gray-200">
       <div
         className={cn(
           'sticky top-0 h-[85vh] overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
-          isOpen ? 'right-0 w-70' : 'right-80 w-0',
+          isOpen ? 'right-0 w-100' : 'right-80 w-0',
           className,
         )}
       >
-        <div className="flex h-full rounded-2xl flex-col">
+        <div className="flex h-full flex-col rounded-2xl">
           <div className="flex items-center justify-between border-b p-4">
             <Button
               variant="ghost"
-              onClick={toggleSidebar}
+              onClick={() => setSelectedSubmenu('')}
               className="text-gray-500 transition-colors hover:text-gray-700"
             >
               {isOpen ? (
@@ -112,7 +112,7 @@ const UserSidebar = ({
             )}
           </div>
 
-          <div className="flex flex-1 rounded-2xl flex-col">
+          <div className="flex flex-1 flex-col rounded-2xl">
             <div className={cn('p-4', !isOpen && 'md:hidden')}>
               <Button
                 variant="default"
@@ -135,7 +135,7 @@ const UserSidebar = ({
               </div>
             )}
 
-            <div className="flex flex-1 rounded-2xl flex-col overflow-auto p-4">
+            <div className="flex flex-1 flex-col overflow-auto rounded-2xl p-4">
               {isOpen && (
                 <>
                   <div className="mb-6">
@@ -170,21 +170,6 @@ const UserSidebar = ({
             </div>
           </div>
         </div>
-      </div>
-
-      <div
-        className={cn(
-          'fixed top-20 p-6 transition-all duration-500 ease-in-out',
-          isOpen ? '-right-20 opacity-0' : 'right-0 opacity-100',
-        )}
-      >
-        <Button
-          variant="ghost"
-          onClick={toggleSidebar}
-          className="border bg-white text-gray-500 transition-colors hover:text-gray-700"
-        >
-          <ChevronLeft size={18} />
-        </Button>
       </div>
     </div>
   );

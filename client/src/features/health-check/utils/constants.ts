@@ -92,3 +92,10 @@ export const RATING_OPTIONS = [
     color: 'bg-green-500',
   },
 ] as const;
+
+export const SUBMENU_ITEMS = {
+  PROGRESS_BAR: 'progress-bar',
+  ACTIONS: 'actions',
+  AGREEMENT: 'agreement',
+  ISSUES: 'issues',
+} as const;

@@ -215,14 +215,14 @@ const ActionItems = ({
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white h-full">
       <ActionItemForm
         register={register}
         onSubmit={onSubmit}
         isDisabled={isSubmitting || isCreating}
       />
 
-      <div>
+      <div className="max-h-5/6 overflow-y-auto">
         {items.length === 0 ? (
           <div className="py-4 text-center text-sm text-gray-400">
             no actions yet
