@@ -35,6 +35,10 @@ export type Score = {
 
 export type GroupedQuestions = Record<string, Question[]>;
 export type ActionItem = Tables<'action_items'>;
+export type ActionItemAssignee = Tables<'action_item_assignees'>;
+export type ActionItemWithAssignees = ActionItem & {
+  action_item_assignees: ActionItemAssignee[];
+};
 
 export type HealthCheckWithTemplate = HealthCheck & {
   template: HealthCheckTemplate & {

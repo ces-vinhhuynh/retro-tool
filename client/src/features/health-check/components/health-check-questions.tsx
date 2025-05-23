@@ -11,6 +11,7 @@ import {
   Question,
   Response,
   Section,
+  User,
 } from '@/features/health-check/types/health-check';
 import { getCommentsByQuestionId } from '@/features/health-check/utils/comment';
 import { getRatings } from '@/features/health-check/utils/rating';
@@ -21,6 +22,7 @@ interface HealthCheckQuestionsProps {
   allOpen: boolean;
   actionItems: ActionItem[];
   healthCheck: HealthCheck;
+  teamMembers: User[];
 }
 
 export default function HealthCheckQuestions({
@@ -29,6 +31,7 @@ export default function HealthCheckQuestions({
   allOpen,
   actionItems,
   healthCheck,
+  teamMembers,
 }: HealthCheckQuestionsProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -83,6 +86,7 @@ export default function HealthCheckQuestions({
       </Accordion>
       {dialogOpen && (
         <ChartDialog
+          teamMembers={teamMembers}
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           data={chartData}

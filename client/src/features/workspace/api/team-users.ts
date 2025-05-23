@@ -1,6 +1,5 @@
 import supabaseClient from '@/lib/supabase/client';
-
-import { TeamUserInsert } from '../types/team';
+import { TeamUserInsert } from '@/types/team';
 
 class TeamUsersService {
   async create(teamUser: TeamUserInsert): Promise<TeamUserInsert> {

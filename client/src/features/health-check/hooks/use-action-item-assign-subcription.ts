@@ -3,23 +3,22 @@ import { useEffect } from 'react';
 
 import supabaseClient from '@/lib/supabase/client';
 
-export const useActionItemsSubscription = (healthCheckId: string) => {
+export const useActionItemAssignSubscription = (teamId: string) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const subscription = supabaseClient
-      .channel(`action_items_${healthCheckId}`)
+      .channel(`action_item_assignees_team_${teamId}`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'action_items',
-          filter: `health_check_id=eq.${healthCheckId}`,
+          table: 'action_item_assignees',
         },
         () => {
           queryClient.invalidateQueries({
-            queryKey: ['action-items', healthCheckId],
+            queryKey: ['action-items', teamId],
           });
         },
       )
@@ -28,5 +27,5 @@ export const useActionItemsSubscription = (healthCheckId: string) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [healthCheckId, queryClient]);
+  }, [teamId, queryClient]);
 };

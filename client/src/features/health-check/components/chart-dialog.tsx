@@ -14,10 +14,10 @@ import DetailCard from '@/features/health-check/components/detail-card';
 import {
   ActionItem,
   HealthCheck,
+  User,
 } from '@/features/health-check/types/health-check';
 import { scoreColorMap } from '@/features/health-check/utils/color';
 import { cn } from '@/utils/cn';
-
 
 interface ChartDialogProps {
   onOpenChange: (open: boolean) => void;
@@ -34,6 +34,7 @@ interface ChartDialogProps {
   setCurrentIndex: (index: number) => void;
   open: boolean;
   healthCheck: HealthCheck;
+  teamMembers: User[];
 }
 export default function ChartDialog({
   onOpenChange,
@@ -43,6 +44,7 @@ export default function ChartDialog({
   open,
   actionItems,
   healthCheck,
+  teamMembers,
 }: ChartDialogProps) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
 
@@ -84,6 +86,7 @@ export default function ChartDialog({
                     actionItems={actionItems.filter(
                       (actionItem) => actionItem.question_id === item.id,
                     )}
+                    teamMembers={teamMembers}
                   />
                 )}
               </CarouselItem>
@@ -107,7 +110,7 @@ export default function ChartDialog({
                   circle,
                   {
                     'ring-2 ring-black': currentIndex === index,
-                  }
+                  },
                 )}
               />
             );

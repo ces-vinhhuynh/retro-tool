@@ -11,6 +11,9 @@ export const useDeleteActionItem = () => {
       queryClient.invalidateQueries({
         queryKey: ['action-items'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['action-item-assignees'],
+      });
     },
     onError: (error) => {
       console.error('Error deleting action item:', error);

@@ -13,6 +13,7 @@ import {
   HealthCheckWithTemplate,
   Question,
   Response,
+  User,
 } from '@/features/health-check/types/health-check';
 
 interface DiscussPhaseProps {
@@ -20,6 +21,7 @@ interface DiscussPhaseProps {
   questions: Question[];
   responses: Response[];
   actionItems: ActionItem[];
+  teamMembers: User[];
 }
 
 const DiscussPhase = ({
@@ -27,6 +29,7 @@ const DiscussPhase = ({
   questions,
   responses,
   actionItems,
+  teamMembers,
 }: DiscussPhaseProps) => {
   const [allOpen, setAllOpen] = useState(false);
 
@@ -43,6 +46,7 @@ const DiscussPhase = ({
                 healthCheck={healthCheck}
                 questions={questions}
                 actionItems={actionItems}
+                teamMembers={teamMembers}
               />
               <div className="rounded-lg bg-white p-6">
                 <div className="flex flex-wrap items-center justify-between">
@@ -73,6 +77,7 @@ const DiscussPhase = ({
                   </Button>
                 </div>
                 <HealthCheckQuestions
+                  teamMembers={teamMembers}
                   responses={responses}
                   questions={questions}
                   allOpen={allOpen}

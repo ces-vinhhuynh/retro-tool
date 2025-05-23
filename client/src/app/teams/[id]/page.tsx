@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartSpline, House, Menu, User } from 'lucide-react';
+import { ChartSpline, House, Menu, User as UserIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -18,6 +18,7 @@ import { useNewSessionModalStore } from '@/features/health-check/stores/new-sess
 import {
   HealthCheck,
   HealthCheckWithTemplate,
+  User,
 } from '@/features/health-check/types/health-check';
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
@@ -99,6 +100,7 @@ const TeamPage = () => {
                     <ActionItems
                       actionItems={actionItems || []}
                       teamId={teamId}
+                      teamMembers={teamMembers as unknown as User[]}
                     />
                   </div>
                 </CardContent>
@@ -153,7 +155,7 @@ const tabs = [
     icon: <Menu className="size-4" />,
     label: 'Retrospective',
   },
-  { value: 'members', icon: <User className="size-4" />, label: 'Members' },
+  { value: 'members', icon: <UserIcon className="size-4" />, label: 'Members' },
   {
     value: 'data-track',
     icon: <ChartSpline className="size-4" />,

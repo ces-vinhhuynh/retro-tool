@@ -46,6 +46,7 @@ import {
   ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
+import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 export type GroupedQuestions = {
   [section: string]: Question[];
 };
@@ -87,8 +88,11 @@ export default function HealthCheckPage() {
   const { mutate: createParticipant } = useCreateParticipant();
 
   const { data: scrumHealthChecks } = useGetHealthChecksByTeamsAndTemplate(
-    healthCheck?.template_id || '',
-    healthCheck?.team_id || '',
+    healthCheck?.template_id ?? '',
+    healthCheck?.team_id ?? '',
+  );
+  const { data: teamMembers = [] } = useGetTeamMembers(
+    healthCheck?.team_id ?? '',
   );
 
   useEffect(() => {
@@ -329,8 +333,9 @@ export default function HealthCheckPage() {
             <DiscussPhase
               healthCheck={healthCheck as HealthCheckWithTemplate}
               questions={questions}
-              responses={responses || []}
-              actionItems={actionItems || []}
+              responses={responses ?? []}
+              actionItems={actionItems ?? []}
+              teamMembers={teamMembers as unknown as User[]}
             />
           )}
           {healthCheck.current_step === STEPS['review'].key && (
@@ -339,6 +344,7 @@ export default function HealthCheckPage() {
               actionItems={actionItems || []}
               teamId={healthCheck?.team_id || ''}
               teamSize={participants?.length || 0}
+              teamMembers={teamMembers as unknown as User[]}
             />
           )}
           {healthCheck.current_step === STEPS['close'].key && (

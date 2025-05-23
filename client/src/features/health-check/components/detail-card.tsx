@@ -6,6 +6,7 @@ import SurveyResponses from '@/features/health-check/components/survey-responses
 import {
   ActionItem,
   HealthCheck,
+  User,
 } from '@/features/health-check/types/health-check';
 import { scoreColorMap } from '@/features/health-check/utils/color';
 import { cn } from '@/utils/cn';
@@ -21,11 +22,13 @@ interface DetailCardProps {
   };
   actionItems: ActionItem[];
   healthCheck: HealthCheck;
+  teamMembers: User[];
 }
 export default function DetailCard({
   item,
   actionItems,
   healthCheck,
+  teamMembers,
 }: DetailCardProps) {
   const roundedValue = Math.max(0, Math.min(10, Math.round(item.value)));
   const { bg, circle } = scoreColorMap[roundedValue] || scoreColorMap[0];
@@ -62,6 +65,7 @@ export default function DetailCard({
           questionId={item.id}
           healthCheckId={healthCheck.id}
           teamId={String(healthCheck.team_id)}
+          teamMembers={teamMembers}
         />
         <SurveyResponses comments={item.comments} />
       </CardContent>

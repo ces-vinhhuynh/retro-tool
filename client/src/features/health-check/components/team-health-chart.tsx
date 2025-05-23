@@ -13,6 +13,7 @@ import {
   Question,
   Response,
   Section,
+  User,
 } from '../types/health-check';
 import {
   calcTotalComments,
@@ -31,6 +32,7 @@ interface TeamHealthChartProps {
   responses: Response[];
   actionItems: ActionItem[];
   isClosePhase?: boolean;
+  teamMembers: User[];
 }
 
 export default function TeamHealthChart({
@@ -40,6 +42,7 @@ export default function TeamHealthChart({
   actionItems,
   title,
   isClosePhase = false,
+  teamMembers
 }: TeamHealthChartProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -187,6 +190,7 @@ export default function TeamHealthChart({
             currentIndex={selectedIndex}
             setCurrentIndex={setSelectedIndex}
             actionItems={actionItems}
+            teamMembers={teamMembers}
           />
         )}
       </div>

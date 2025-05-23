@@ -17,7 +17,8 @@ class ActionItemService {
   async getByTeamId(teamId: string): Promise<ActionItem[]> {
     const { data, error } = await supabaseClient
       .from('action_items')
-      .select('*')
+
+      .select(`*, action_item_assignees(*, team_users(*, users(*)))`)
       .eq('team_id', teamId)
       .order('created_at', { ascending: false });
 

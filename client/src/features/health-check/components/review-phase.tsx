@@ -1,7 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
 
-import { ActionItem, HealthCheckWithTemplate } from '../types/health-check';
+import {
+  ActionItem,
+  HealthCheckWithTemplate,
+  User,
+} from '../types/health-check';
 import { formatDateTime } from '../utils/time-format';
 
 import ActionItems from './action-items';
@@ -11,6 +15,7 @@ interface ReviewPhaseProps {
   actionItems: ActionItem[];
   teamId?: string;
   teamSize: number;
+  teamMembers: User[];
 }
 
 const ReviewPhase = ({
@@ -18,6 +23,7 @@ const ReviewPhase = ({
   healthCheck,
   teamSize = 0,
   teamId,
+  teamMembers,
 }: ReviewPhaseProps) => {
   return (
     <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
@@ -73,6 +79,7 @@ const ReviewPhase = ({
                 actionItems={actionItems}
                 healthCheckId={healthCheck.id}
                 teamId={teamId}
+                teamMembers={teamMembers}
               />
             </div>
           </CardContent>
