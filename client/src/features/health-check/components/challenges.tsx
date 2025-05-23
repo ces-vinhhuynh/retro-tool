@@ -3,34 +3,71 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+import { Button } from '@/components/ui/button';
 import {
+  ActionItem,
   Challenge,
+  HealthCheck,
   Question,
   Response,
+  Section,
+  User,
 } from '@/features/health-check/types/health-check';
-import { getTopChallenges } from '@/features/health-check/utils/comment';
+import {
+  getCommentsByQuestionId,
+  getTopChallenges,
+} from '@/features/health-check/utils/comment';
 
 import { useMoveTagAdditionalAnswer } from '../hooks/use-response';
 import { generateTagColors } from '../utils/color';
 
+import ChartDialog from './chart-dialog';
 import TagDropdown from './tag-dropdown';
 
 interface TopChallengesProps {
   responses: Response[];
   questions: Question[];
+  healthCheck: HealthCheck;
+  actionItems: ActionItem[];
+  teamMembers: User[];
 }
 
 export default function TopChallenges({
   responses,
   questions,
+  healthCheck,
+  actionItems,
+  teamMembers,
 }: TopChallengesProps) {
   const [selectedTags, setSelectedTags] = useState<Record<string, string>>({});
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
+    null,
+  );
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const challenges = getTopChallenges(responses, questions);
   const { mutate: moveTagAdditionalAnswer } = useMoveTagAdditionalAnswer();
   const regularQuestions = questions.filter(
-    (q) => q.section !== 'Additional Questions',
+    ({ section }) => section !== Section.AdditionalQuestions,
   );
   const tagColors = generateTagColors(regularQuestions.length);
+
+  const addtionalQuestion = (challenge: Challenge) => {
+    const { title = '', description = '' } =
+      questions.find(({ id }) => id === challenge.additionalQuestionId) ?? {};
+
+    return {
+      id: challenge.additionalQuestionId,
+      subject: title,
+      description,
+      comments: getCommentsByQuestionId(
+        responses,
+        challenge.additionalQuestionId,
+      ),
+      value: 0,
+      fullTitle: title,
+    };
+  };
 
   const tags = [
     {
@@ -65,6 +102,11 @@ export default function TopChallenges({
     });
   };
 
+  const handleChallengeClick = (challenge: Challenge) => {
+    setSelectedChallenge(challenge);
+    setDialogOpen(true);
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between py-6">
@@ -80,7 +122,13 @@ export default function TopChallenges({
                 key={challengeKey}
                 className="flex items-center justify-between rounded bg-orange-50 px-3 py-2 text-gray-700"
               >
-                <span title={challenge.text}>{challenge.text}</span>
+                <Button
+                  variant="ghost"
+                  className="flex-1 justify-start hover:bg-transparent"
+                  onClick={() => handleChallengeClick(challenge)}
+                >
+                  <span title={challenge.text}>{challenge.text}</span>
+                </Button>
                 <span className="ml-4">
                   <TagDropdown
                     tags={tags}
@@ -105,6 +153,18 @@ export default function TopChallenges({
         </ul>
       ) : (
         <p className="text-gray-500">No challenges reported yet.</p>
+      )}
+      {selectedChallenge && (
+        <ChartDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          data={[addtionalQuestion(selectedChallenge)]}
+          actionItems={actionItems}
+          currentIndex={0}
+          setCurrentIndex={() => {}}
+          healthCheck={healthCheck}
+          teamMembers={teamMembers}
+        />
       )}
     </div>
   );

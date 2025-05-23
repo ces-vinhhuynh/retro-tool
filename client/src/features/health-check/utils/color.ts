@@ -22,7 +22,10 @@ export function getScoreColor({
     : 'bg-muted';
 }
 
-export const scoreColorMap: Record<number, { bg: string; circle: string }> = {
+export const scoreColorMap: Record<
+  number | string,
+  { bg: string; circle: string }
+> = {
   0: { bg: 'bg-white', circle: 'bg-white' },
   1: { bg: 'bg-[#f7d0c2]', circle: 'bg-red-600' },
   2: { bg: 'bg-[#f9d8c1]', circle: 'bg-red-500' },

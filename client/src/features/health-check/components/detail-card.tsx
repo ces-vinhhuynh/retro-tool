@@ -36,27 +36,35 @@ export default function DetailCard({
   return (
     <Card
       className={cn(
-        'border-0 shadow-none',
-        bg,
-        'absolute inset-0 inset-y-auto min-h-full px-4',
+        'absolute inset-0 inset-y-auto min-h-full border-0 bg-[#dfedcf] px-4 shadow-none',
+        item.value > 0 && bg,
       )}
     >
       <CardHeader>
         <div className="flex items-start gap-3">
-          <div
-            className={cn(
-              'flex h-17 w-17 items-center justify-center self-center rounded-full px-3',
-              circle,
-            )}
-          >
-            <span className="text-4xl font-bold text-white">
-              {Number(item.value).toFixed(1)}
-            </span>
-          </div>
-          <div className="flex flex-col gap-2 self-center">
-            <CardTitle className="text-xl">{item.subject}</CardTitle>
-            <p>{item.description}</p>
-          </div>
+          {item.value > 0 ? (
+            <>
+              <div
+                className={cn(
+                  'flex h-17 w-17 items-center justify-center self-center rounded-full px-3',
+                  circle,
+                )}
+              >
+                <span className="text-4xl font-bold text-white">
+                  {Number(item.value).toFixed(1)}
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 self-center">
+                <CardTitle className="text-xl">{item.subject}</CardTitle>
+                <p>{item.description}</p>
+              </div>
+            </>
+          ) : (
+            <div className="flex w-full flex-col gap-2">
+              <CardTitle className="text-xl">{item.subject}</CardTitle>
+              <p className="text-gray-600">{item.description}</p>
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="ml-2 w-full border-t py-5">

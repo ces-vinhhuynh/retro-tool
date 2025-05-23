@@ -84,7 +84,13 @@ const DiscussPhase = ({
                   actionItems={actionItems}
                   healthCheck={healthCheck}
                 />
-                <TopChallenges questions={questions} responses={responses} />
+                <TopChallenges
+                  questions={questions}
+                  responses={responses}
+                  healthCheck={healthCheck}
+                  actionItems={actionItems}
+                  teamMembers={teamMembers}
+                />
               </div>
             </CardContent>
           </Card>
