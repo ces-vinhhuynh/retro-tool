@@ -9,7 +9,7 @@ import TopChallenges from '@/features/health-check/components/challenges';
 import HealthCheckQuestions from '@/features/health-check/components/health-check-questions';
 import TeamHealthChart from '@/features/health-check/components/team-health-chart';
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   HealthCheckWithTemplate,
   Question,
   Response,
@@ -20,7 +20,7 @@ interface DiscussPhaseProps {
   healthCheck: HealthCheckWithTemplate;
   questions: Question[];
   responses: Response[];
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   teamMembers: User[];
 }
 

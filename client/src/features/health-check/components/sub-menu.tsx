@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Sidebar, SidebarContent, SidebarRail } from '@/components/ui/sidebar';
 
 import { useSubMenuStore } from '../stores/sub-menu-store';
-import { ActionItem, HealthCheck } from '../types/health-check';
+import { ActionItemWithAssignees, HealthCheck, User } from '../types/health-check';
 import { SUBMENU_ITEMS } from '../utils/constants';
 
 import TeamActions from './team-actions';
@@ -18,16 +18,18 @@ import TeamIssues from './team-issues';
 import UserSidebar from './user-sidebar';
 
 interface SubMenuProps {
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   healthCheckId: string;
   healthCheck: HealthCheck;
   teamId: string;
+  teamMembers: User[];
 }
 const SubMenu = ({
   healthCheck,
   healthCheckId,
   actionItems,
   teamId,
+  teamMembers,
 }: SubMenuProps) => {
   const { selectedSubmenu, setSelectedSubmenu } = useSubMenuStore();
 
@@ -62,6 +64,7 @@ const SubMenu = ({
         actionItems={actionItems}
         teamId={teamId}
         healthCheckId={healthCheckId}
+        teamMembers={teamMembers}
       />
       <TeamAgreements isOpen={selectedSubmenu === SUBMENU_ITEMS.AGREEMENT} />
       <TeamIssues isOpen={selectedSubmenu === SUBMENU_ITEMS.ISSUES} />

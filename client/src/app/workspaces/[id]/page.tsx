@@ -30,7 +30,6 @@ export default function WorkspacePage({
     const user = users?.find((user) => user.email === email);
 
     createWorkspaceUser({
-      id: uuidv4(),
       workspaceId,
       userId: user?.id ?? email,
       token: uuidv4(),

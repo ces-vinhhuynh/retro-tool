@@ -1,6 +1,6 @@
 import { CircleCheck } from 'lucide-react';
 
-import { ActionItem } from '../types/health-check';
+import { ActionItemWithAssignees, User } from '../types/health-check';
 
 import ActionItems from './action-items';
 import SubMenuWrapper from './sub-menu-wrapper';
@@ -8,9 +8,10 @@ import SubMenuWrapper from './sub-menu-wrapper';
 interface TeamActionsProps {
   isOpen: boolean;
   className?: string;
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   teamId: string;
   healthCheckId: string;
+  teamMembers: User[];
 }
 
 const TeamActions = ({
@@ -19,6 +20,7 @@ const TeamActions = ({
   actionItems,
   teamId,
   healthCheckId,
+  teamMembers,
 }: TeamActionsProps) => {
   return (
     <SubMenuWrapper
@@ -31,6 +33,7 @@ const TeamActions = ({
         actionItems={actionItems}
         healthCheckId={healthCheckId}
         teamId={teamId}
+        teamMembers={teamMembers}
       />
     </SubMenuWrapper>
   );

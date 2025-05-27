@@ -392,6 +392,7 @@ export default function HealthCheckPage() {
           healthCheckId={healthCheckId}
           actionItems={actionItems || []}
           teamId={healthCheck?.team_id || ''}
+          teamMembers={teamMembers as unknown as User[]}
         />
       </div>
     </Layout>

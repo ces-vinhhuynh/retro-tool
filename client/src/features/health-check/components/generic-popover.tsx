@@ -11,16 +11,16 @@ import { ActionItem } from '@/features/health-check/types/health-check';
 
 interface GenericPopoverProps {
   item: ActionItem;
-  openPopovers: Record<string, boolean>;
-  setOpenPopovers: (value: Record<string, boolean>) => void;
-  isUpdating: boolean;
+  openPopovers?: Record<string, boolean>;
+  setOpenPopovers?: (value: Record<string, boolean>) => void;
+  isUpdating?: boolean;
   triggerButton: ReactNode;
   popoverContent: ReactNode;
   align?: 'start' | 'center' | 'end';
   className?: string;
 }
 
-export default function GenericPopover({
+export const GenericPopover = ({
   item,
   openPopovers,
   setOpenPopovers,
@@ -29,16 +29,17 @@ export default function GenericPopover({
   popoverContent,
   align = 'end',
   className = 'w-auto p-0',
-}: GenericPopoverProps) {
+}: GenericPopoverProps) => {
   return (
     <Popover
-      open={openPopovers[item.id] ?? false}
+      open={openPopovers?.[item.id] ?? false}
       onOpenChange={(open) =>
-        setOpenPopovers({
+        setOpenPopovers?.({
           ...openPopovers,
           [item.id]: open,
         })
       }
+      modal={true}
     >
       <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
       <PopoverContent className={className} align={align}>
@@ -46,4 +47,6 @@ export default function GenericPopover({
       </PopoverContent>
     </Popover>
   );
-}
+};
+
+export default GenericPopover;

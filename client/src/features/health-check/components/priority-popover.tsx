@@ -3,7 +3,7 @@
 import { CheckCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import GenericPopover from '@/features/health-check/components/generic-popover';
+import { GenericPopover } from '@/features/health-check/components/generic-popover';
 import {
   ActionItem,
   ActionPriority,
@@ -13,24 +13,31 @@ import { cn } from '@/utils/cn';
 
 interface PriorityPopoverProps {
   item: ActionItem;
-  openPriorityPopovers: Record<string, boolean>;
-  setOpenPriorityPopovers: (value: Record<string, boolean>) => void;
-  getPriorityIcon: (priority: ActionPriority) => React.ReactNode;
-  setPriority: (id: string, priority: ActionPriority) => void;
-  isUpdating: boolean;
+  openPriorityPopovers?: Record<string, boolean>;
+  setOpenPriorityPopovers?: (value: Record<string, boolean>) => void;
+  getPriorityIcon?: (priority: ActionPriority) => React.ReactNode;
+  setPriority?: (id: string, priority: ActionPriority) => void;
+  isUpdating?: boolean;
+  isEditable?: boolean;
 }
 
-export default function PriorityPopover({
+export const PriorityPopover = ({
   item,
   openPriorityPopovers,
   setOpenPriorityPopovers,
   getPriorityIcon,
   setPriority,
   isUpdating,
-}: PriorityPopoverProps) {
+  isEditable = true,
+}: PriorityPopoverProps) => {
   const triggerButton = (
-    <Button variant="ghost" size="icon" className="h-8 w-8">
-      {getPriorityIcon(item.priority as ActionPriority)}
+    <Button
+      variant="ghost"
+      size="icon"
+      disabled={!isEditable}
+      className={'h-8 w-8'}
+    >
+      {getPriorityIcon?.(item.priority as ActionPriority)}
     </Button>
   );
 
@@ -44,7 +51,7 @@ export default function PriorityPopover({
             key={key}
             variant="ghost"
             className="h-8 w-full justify-start rounded-none px-2 font-normal"
-            onClick={() => setPriority(item.id, key as ActionPriority)}
+            onClick={() => setPriority?.(item.id, key as ActionPriority)}
             disabled={isUpdating}
           >
             <div className="flex items-center">
@@ -72,4 +79,6 @@ export default function PriorityPopover({
       className="w-35 p-2"
     />
   );
-}
+};
+
+export default PriorityPopover;

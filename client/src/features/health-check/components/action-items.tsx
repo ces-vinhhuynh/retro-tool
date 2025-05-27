@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import ActionItemForm, {
   AddActionFormData,
 } from '@/features/health-check/components/action-item-form';
-import ActionItemRow from '@/features/health-check/components/action-item-row';
+import { ActionItemRow } from '@/features/health-check/components/action-item-row';
 import { useCreateActionItem } from '@/features/health-check/hooks/use-create-action-item';
 import { useDeleteActionItem } from '@/features/health-check/hooks/use-delete-action-item';
 import { useUpdateActionItem } from '@/features/health-check/hooks/use-update-action-item';
@@ -17,23 +17,28 @@ import {
   ActionStatus,
   User,
 } from '@/features/health-check/types/health-check';
-import {
-  PRIORITY_CONFIG,
-  STATUS_CONFIG,
-} from '@/features/health-check/utils/constants';
 
 import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subcription';
 import { useActionItemsByTeamsSubscription } from '../hooks/use-action-items-by-teams-subcriptions';
-import { useCreateActionItemAssignee } from '../hooks/use-create-action-item-assignee';
-import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-assignee';
 
 interface ActionItemsProps {
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   teamId?: string;
   healthCheckId?: string;
   questionId?: string;
   teamMembers: User[];
 }
+
+const updateItemState = (
+  id: string,
+  updates: Partial<ActionItemWithAssignees>,
+  setItems: React.Dispatch<React.SetStateAction<ActionItemWithAssignees[]>>,
+  items: ActionItemWithAssignees[],
+) => {
+  setItems(
+    items.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+  );
+};
 
 const ActionItems = ({
   actionItems: initialItems,
@@ -46,17 +51,10 @@ const ActionItems = ({
     useCreateActionItem();
   const { mutate: updateActionItem, isPending: isUpdating } =
     useUpdateActionItem();
-
   const { mutate: deleteActionItem, isPending: isDeleting } =
     useDeleteActionItem();
 
-  const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } =
-    useCreateActionItemAssignee();
-
-  const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
-    useRemoveActionItemAssignee();
-
-  const [items, setItems] = useState<ActionItem[]>([]);
+  const [items, setItems] = useState<ActionItemWithAssignees[]>([]);
   const [openStatusPopovers, setOpenStatusPopovers] = useState<
     Record<string, boolean>
   >({});
@@ -100,11 +98,11 @@ const ActionItems = ({
       question_id: questionId,
     } as ActionItem;
 
-    const tempId = Date.now().toString();
-    const optimisticAction = {
+    const optimisticAction: ActionItemWithAssignees = {
       ...newAction,
-      id: tempId,
+      id: Date.now().toString(),
       created_at: new Date().toISOString(),
+      action_item_assignees: [],
     };
 
     setItems((prevItems) => [optimisticAction, ...prevItems]);
@@ -113,105 +111,23 @@ const ActionItems = ({
   });
 
   const setActionStatus = (id: string, status: ActionStatus) => {
-    setItems(
-      items.map((item) => (item.id === id ? { ...item, status } : item)),
-    );
-
+    updateItemState(id, { status }, setItems, items);
     setOpenStatusPopovers({ ...openStatusPopovers, [id]: false });
-
     updateActionItem({ id, actionItem: { status } });
   };
 
   const setDueDate = (id: string, date?: Date) => {
     if (!date) return;
-
     const due_date = date.toLocaleDateString('en-CA');
-
-    setItems(
-      items.map((item) => (item.id === id ? { ...item, due_date } : item)),
-    );
-
+    updateItemState(id, { due_date }, setItems, items);
     setOpenDatePopovers({ ...openDatePopovers, [id]: false });
-
     updateActionItem({ id, actionItem: { due_date } });
   };
 
   const setPriority = (id: string, priority: ActionPriority) => {
-    setItems(
-      items.map((item) => (item.id === id ? { ...item, priority } : item)),
-    );
-
+    updateItemState(id, { priority }, setItems, items);
     setOpenPriorityPopovers({ ...openPriorityPopovers, [id]: false });
-
     updateActionItem({ id, actionItem: { priority } });
-  };
-
-  const assignToAll = (id: string) => {
-    const item = items.find((i) => i.id === id) as
-      | ActionItemWithAssignees
-      | undefined;
-    if (!item) return;
-
-    const currentAssignees = new Set(
-      item.action_item_assignees?.map((a) => a.team_user_id),
-    );
-    const newAssignees = teamMembers
-      .map((m) => m.id)
-      .filter((id) => !currentAssignees.has(id));
-
-    if (newAssignees.length) {
-      createActionItemAssignee({ actionItemId: id, teamUserIds: newAssignees });
-    }
-  };
-
-  const assignToNone = (id: string) => {
-    removeActionItemAssignee({
-      actionItemId: id,
-      teamUserIds: teamMembers.map((member) => member.id),
-    });
-  };
-
-  const toggleAssignee = (id: string, memberId: string) => {
-    const item = items.find((i) => i.id === id) as
-      | ActionItemWithAssignees
-      | undefined;
-    if (!item) return;
-
-    const isAssigned = item.action_item_assignees?.some(
-      (a) => a.team_user_id === memberId,
-    );
-
-    const payload = { actionItemId: id, teamUserIds: [memberId] };
-
-    if (isAssigned) {
-      removeActionItemAssignee(payload);
-    } else {
-      createActionItemAssignee(payload);
-    }
-  };
-
-  const getStatusIcon = (status: ActionStatus) => {
-    const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
-    if (!config) return null;
-
-    const Icon = config.icon;
-    return <Icon className={config.className} size={20} />;
-  };
-
-  const getPriorityIcon = (priority: ActionPriority) => {
-    const config = PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG];
-    if (!config) return null;
-
-    const Icon = config.icon;
-    return <Icon className={config.className} size={20} />;
-  };
-
-  const getAssignees = (item: ActionItemWithAssignees) => {
-    return (
-      item?.action_item_assignees
-        ?.map((assignee) => assignee.team_user_id)
-        .filter((id): id is string => id !== null) ?? []
-    );
   };
 
   return (
@@ -238,8 +154,6 @@ const ActionItems = ({
               setOpenPriorityPopovers={setOpenPriorityPopovers}
               openDatePopovers={openDatePopovers}
               setOpenDatePopovers={setOpenDatePopovers}
-              getStatusIcon={getStatusIcon}
-              getPriorityIcon={getPriorityIcon}
               setActionStatus={setActionStatus}
               setPriority={setPriority}
               setDueDate={setDueDate}
@@ -249,12 +163,6 @@ const ActionItems = ({
               teamMembers={teamMembers}
               openAssigneePopovers={openAssigneePopovers}
               setOpenAssigneePopovers={setOpenAssigneePopovers}
-              assignToAll={assignToAll}
-              assignToNone={assignToNone}
-              toggleAssignee={toggleAssignee}
-              assignees={getAssignees(item as ActionItemWithAssignees)}
-              isCreatingAssignee={isCreatingAssignee}
-              isRemovingAssignee={isRemovingAssignee}
             />
           ))
         )}

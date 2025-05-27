@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ActionItems from '@/features/health-check/components/action-items';
 import SurveyResponses from '@/features/health-check/components/survey-responses';
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   HealthCheck,
   User,
 } from '@/features/health-check/types/health-check';
@@ -20,16 +20,17 @@ interface DetailCardProps {
     description: string;
     comments: { comment: string; created_at: string }[];
   };
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   healthCheck: HealthCheck;
   teamMembers: User[];
 }
-export default function DetailCard({
+
+const DetailCard = ({
   item,
   actionItems,
   healthCheck,
   teamMembers,
-}: DetailCardProps) {
+}: DetailCardProps) => {
   const roundedValue = Math.max(0, Math.min(10, Math.round(item.value)));
   const { bg, circle } = scoreColorMap[roundedValue] || scoreColorMap[0];
 
@@ -79,4 +80,6 @@ export default function DetailCard({
       </CardContent>
     </Card>
   );
-}
+};
+
+export default DetailCard;

@@ -1,6 +1,6 @@
 import supabaseClient from '@/lib/supabase/client';
 
-import { ActionItem } from '../types/health-check';
+import { ActionItem, ActionItemWithAssignees } from '../types/health-check';
 
 class ActionItemService {
   async getByHealthCheckId(healthCheckId: string): Promise<ActionItem[]> {
@@ -14,7 +14,7 @@ class ActionItemService {
     return data;
   }
 
-  async getByTeamId(teamId: string): Promise<ActionItem[]> {
+  async getByTeamId(teamId: string): Promise<ActionItemWithAssignees[]> {
     const { data, error } = await supabaseClient
       .from('action_items')
 

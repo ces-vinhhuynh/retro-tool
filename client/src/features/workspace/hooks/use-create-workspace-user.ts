@@ -9,20 +9,17 @@ export function useCreateWorkspaceUser() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({
-      id,
       workspaceId,
       userId,
       token,
       role,
     }: {
-      id: string;
       workspaceId: string;
       token: string;
       userId: string;
       role: Role;
     }) => {
       return workspaceUsersService.create({
-        id,
         workspace_id: workspaceId,
         user_id: userId,
         token,

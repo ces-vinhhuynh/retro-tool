@@ -1,6 +1,10 @@
 import supabaseClient from '@/lib/supabase/client';
 
-import { WorkspaceUser, WorkspaceUserUpdate } from '../types/workspace-users';
+import {
+  WorkspaceUser,
+  WorkspaceUserInsert,
+  WorkspaceUserUpdate,
+} from '../types/workspace-users';
 
 class WorkspaceUsersService {
   async getWorkspaces(userId: string) {
@@ -21,7 +25,7 @@ class WorkspaceUsersService {
     return data ?? [];
   }
 
-  async create(workspaceUser: WorkspaceUser): Promise<WorkspaceUser> {
+  async create(workspaceUser: WorkspaceUserInsert): Promise<WorkspaceUser> {
     const { data, error } = await supabaseClient
       .from('workspace_users')
       .insert(workspaceUser)

@@ -2,17 +2,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
 
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   HealthCheckWithTemplate,
   User,
 } from '../types/health-check';
 import { formatDateTime } from '../utils/time-format';
 
+import { ActionItemRow } from './action-item-row';
 import ActionItems from './action-items';
 
 interface ReviewPhaseProps {
   healthCheck: HealthCheckWithTemplate;
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   teamId?: string;
   teamSize: number;
   teamMembers: User[];
@@ -25,6 +26,14 @@ const ReviewPhase = ({
   teamId,
   teamMembers,
 }: ReviewPhaseProps) => {
+  const currentActionItems = actionItems?.filter(
+    (item) => item.health_check_id === healthCheck.id,
+  );
+
+  const previousActionItems = actionItems?.filter(
+    (item) => item.health_check_id !== healthCheck.id,
+  );
+
   return (
     <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
       <CardContent className="space-y-4 p-4 sm:p-8">
@@ -76,7 +85,7 @@ const ReviewPhase = ({
                 Actions from this health check
               </h3>
               <ActionItems
-                actionItems={actionItems}
+                actionItems={currentActionItems}
                 healthCheckId={healthCheck.id}
                 teamId={teamId}
                 teamMembers={teamMembers}
@@ -84,6 +93,26 @@ const ReviewPhase = ({
             </div>
           </CardContent>
         </Card>
+        {previousActionItems && (
+          <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
+            <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
+            <CardContent className="p-8">
+              <div className="space-y-4">
+                <h2 className="flex items-center gap-2 text-xl font-medium text-gray-600">
+                  Actions from the previous Health check
+                </h2>
+                {previousActionItems?.map((item) => (
+                  <ActionItemRow
+                    key={item.id}
+                    item={item}
+                    isEditable={false}
+                    teamMembers={teamMembers}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </Card>
   );

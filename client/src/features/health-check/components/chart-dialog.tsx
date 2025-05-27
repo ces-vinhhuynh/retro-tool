@@ -12,7 +12,7 @@ import {
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import DetailCard from '@/features/health-check/components/detail-card';
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   HealthCheck,
   User,
 } from '@/features/health-check/types/health-check';
@@ -29,14 +29,15 @@ interface ChartDialogProps {
     description: string;
     comments: { comment: string; created_at: string }[];
   }[];
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   currentIndex: number;
   setCurrentIndex: (index: number) => void;
   open: boolean;
   healthCheck: HealthCheck;
   teamMembers: User[];
 }
-export default function ChartDialog({
+
+const ChartDialog = ({
   onOpenChange,
   data,
   currentIndex,
@@ -45,7 +46,7 @@ export default function ChartDialog({
   actionItems,
   healthCheck,
   teamMembers,
-}: ChartDialogProps) {
+}: ChartDialogProps) => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
 
   const scrollToIndex = (index: number) => {
@@ -119,4 +120,6 @@ export default function ChartDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default ChartDialog;

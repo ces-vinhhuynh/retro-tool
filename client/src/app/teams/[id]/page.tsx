@@ -28,8 +28,6 @@ import { DataTable } from '@/features/workspace/components/user-table/data-table
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
 
-import { SessionProvider } from '@/lib/context/session-context';
-
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
 

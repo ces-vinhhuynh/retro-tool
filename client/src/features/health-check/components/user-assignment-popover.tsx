@@ -5,23 +5,25 @@ import { Button } from '@/components/ui/button';
 
 import { ActionItem, User } from '../types/health-check';
 
-import GenericPopover from './generic-popover';
+import { GenericPopover } from './generic-popover';
 
 interface UserAssignmentPopoverProps {
   item: ActionItem;
   assignees: string[];
   teamMembers: User[];
-  openPopovers: Record<string, boolean>;
-  setOpenPopovers: (value: Record<string, boolean>) => void;
-  assignToNone: (actionId: string) => void;
-  assignToAll: (actionId: string) => void;
-  toggleAssignee: (actionId: string, memberId: string) => void;
-  isCreatingAssignee: boolean;
-  isRemovingAssignee: boolean;
+  isEditable?: boolean;
+  openPopovers?: Record<string, boolean>;
+  setOpenPopovers?: (value: Record<string, boolean>) => void;
+  assignToNone?: (actionId: string) => void;
+  assignToAll?: (actionId: string) => void;
+  toggleAssignee?: (actionId: string, memberId: string) => void;
+  isCreatingAssignee?: boolean;
+  isRemovingAssignee?: boolean;
 }
 
-export default function UserAssignmentPopover({
+const UserAssignmentPopover = ({
   item,
+  isEditable,
   assignees,
   teamMembers,
   openPopovers,
@@ -31,7 +33,7 @@ export default function UserAssignmentPopover({
   toggleAssignee,
   isCreatingAssignee,
   isRemovingAssignee,
-}: UserAssignmentPopoverProps) {
+}: UserAssignmentPopoverProps) => {
   const isAllAssigned = assignees?.length === teamMembers?.length;
 
   const triggerButton = (
@@ -49,7 +51,7 @@ export default function UserAssignmentPopover({
                 {member.avatar_url ? (
                   <AvatarImage
                     src={member.avatar_url || '/placeholder.svg'}
-                    alt={member.full_name || ''}
+                    alt={member.full_name ?? ''}
                   />
                 ) : (
                   <AvatarFallback>
@@ -68,6 +70,7 @@ export default function UserAssignmentPopover({
         <Button
           variant="ghost"
           size="icon"
+          disabled={!isEditable}
           className="h-8 w-8 rounded-full text-cyan-500"
         >
           <UserIcon size={18} />
@@ -89,7 +92,7 @@ export default function UserAssignmentPopover({
               className="cursor-pointer border-none bg-transparent text-blue-400"
               onClick={(e) => {
                 e.stopPropagation();
-                assignToNone(item.id);
+                assignToNone?.(item.id);
               }}
               disabled={isRemovingAssignee}
             >
@@ -100,7 +103,7 @@ export default function UserAssignmentPopover({
               className="cursor-pointer border-none bg-transparent text-blue-400"
               onClick={(e) => {
                 e.stopPropagation();
-                assignToAll(item.id);
+                assignToAll?.(item.id);
               }}
               disabled={isCreatingAssignee || isAllAssigned}
             >
@@ -117,7 +120,7 @@ export default function UserAssignmentPopover({
             className="flex cursor-pointer items-center px-3 py-2 hover:bg-gray-50"
             onClick={(e) => {
               e.stopPropagation();
-              toggleAssignee(item.id, member.id);
+              toggleAssignee?.(item.id, member.id);
             }}
             disabled={isCreatingAssignee}
           >
@@ -130,7 +133,7 @@ export default function UserAssignmentPopover({
               {member.avatar_url ? (
                 <AvatarImage
                   src={member.avatar_url || '/placeholder.svg'}
-                  alt={member.full_name || ''}
+                  alt={member.full_name ?? ''}
                 />
               ) : (
                 <AvatarFallback>{member.full_name?.slice(0, 2)}</AvatarFallback>
@@ -155,4 +158,6 @@ export default function UserAssignmentPopover({
       className="w-auto p-0"
     />
   );
-}
+};
+
+export default UserAssignmentPopover;

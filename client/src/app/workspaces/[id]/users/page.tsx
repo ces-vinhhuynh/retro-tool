@@ -2,17 +2,22 @@
 
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Layout } from '@/components/layout/layout';
 import InviteDialog from '@/features/workspace/components/invite-dialog';
 import { columns } from '@/features/workspace/components/user-table/columns';
 import { DataTable } from '@/features/workspace/components/user-table/data-table';
+import { useCreateWorkspaceUser } from '@/features/workspace/hooks/use-create-workspace-user';
 import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
 import { useGetWorkspaceMembers } from '@/features/workspace/hooks/use-get-workspace-members';
+import { Role } from '@/features/workspace/utils/role';
 
 export default function WorkspacePage() {
   const { id: workspaceId } = useParams<{ id: string }>();
   const { data: workspace = [] } = useGetWorkspaceMembers(workspaceId);
+
+  const { mutate: createWorkspaceUser } = useCreateWorkspaceUser();
 
   const [open, setOpen] = useState(false);
 
@@ -20,6 +25,19 @@ export default function WorkspacePage() {
 
   const handleClose = () => {
     setOpen(!open);
+  };
+
+  const handleInvite = async (email: string) => {
+    const user = users?.find((user) => user.email === email);
+
+    createWorkspaceUser({
+      workspaceId,
+      userId: user?.id ?? email,
+      token: uuidv4(),
+      role: Role.MEMBER,
+    });
+
+    handleClose();
   };
 
   return (
@@ -30,8 +48,7 @@ export default function WorkspacePage() {
           <InviteDialog
             open={open}
             onClose={handleClose}
-            users={users || []}
-            workspaceId={workspaceId}
+            onInvite={handleInvite}
           />
         </div>
         <div className="flex flex-col gap-8 rounded-xl bg-white p-5">

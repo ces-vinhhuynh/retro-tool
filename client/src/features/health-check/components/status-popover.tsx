@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import GenericPopover from '@/features/health-check/components/generic-popover';
+import { GenericPopover } from '@/features/health-check/components/generic-popover';
 import {
   ActionItem,
   ActionStatus,
@@ -9,27 +9,26 @@ import {
 import { STATUS_CONFIG } from '@/features/health-check/utils/constants';
 import { cn } from '@/utils/cn';
 
-
 interface StatusPopoverProps {
   item: ActionItem;
-  openStatusPopovers: Record<string, boolean>;
-  setOpenStatusPopovers: (value: Record<string, boolean>) => void;
-  getStatusIcon: (status: ActionStatus) => React.ReactNode;
-  setActionStatus: (id: string, status: ActionStatus) => void;
-  isUpdating: boolean;
+  openStatusPopovers?: Record<string, boolean>;
+  setOpenStatusPopovers?: (value: Record<string, boolean>) => void;
+  getStatusIcon?: (status: ActionStatus) => React.ReactNode;
+  setActionStatus?: (id: string, status: ActionStatus) => void;
+  isUpdating?: boolean;
 }
 
-export default function StatusPopover({
+export const StatusPopover = ({
   item,
   openStatusPopovers,
   setOpenStatusPopovers,
   getStatusIcon,
   setActionStatus,
   isUpdating,
-}: StatusPopoverProps) {
+}: StatusPopoverProps) => {
   const triggerButton = (
     <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-      {getStatusIcon(item.status as ActionStatus)}
+      {getStatusIcon?.(item.status as ActionStatus)}
     </Button>
   );
 
@@ -42,7 +41,7 @@ export default function StatusPopover({
             key={key}
             variant="ghost"
             className="h-8 justify-start rounded-none px-2 font-normal"
-            onClick={() => setActionStatus(item.id, key as ActionStatus)}
+            onClick={() => setActionStatus?.(item.id, key as ActionStatus)}
             disabled={isUpdating}
           >
             <Icon className={cn('mr-2 h-4 w-4', config.className)} />
@@ -65,4 +64,6 @@ export default function StatusPopover({
       className="w-40 p-0"
     />
   );
-}
+};
+
+export default StatusPopover;

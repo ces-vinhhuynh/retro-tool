@@ -6,7 +6,7 @@ import { Accordion } from '@/components/ui/accordion';
 import ChartDialog from '@/features/health-check/components/chart-dialog';
 import QuestionAccordionItem from '@/features/health-check/components/question-accordion-item';
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   HealthCheck,
   Question,
   Response,
@@ -20,19 +20,19 @@ interface HealthCheckQuestionsProps {
   responses: Response[];
   questions: Question[];
   allOpen: boolean;
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   healthCheck: HealthCheck;
   teamMembers: User[];
 }
 
-export default function HealthCheckQuestions({
+const HealthCheckQuestions = ({
   responses,
   questions,
   allOpen,
   actionItems,
   healthCheck,
   teamMembers,
-}: HealthCheckQuestionsProps) {
+}: HealthCheckQuestionsProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -98,4 +98,6 @@ export default function HealthCheckQuestions({
       )}
     </div>
   );
-}
+};
+
+export default HealthCheckQuestions;
