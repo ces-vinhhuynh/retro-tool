@@ -1,5 +1,6 @@
 create type health_check_status as enum ('in progress', 'done');
 
+-- Create the health_checks table
 create table health_checks (
     id uuid default gen_random_uuid() primary key,
     title text not null,
@@ -24,21 +25,48 @@ create table health_checks (
 -- Enable RLS
 alter table health_checks enable row level security;
 
-create policy "Health checks can be created by authenticated users"
-on health_checks for insert
-with check (auth.uid() is not null);
+-- Policies
+create policy "Team admin can create health checks"
+on health_checks
+for insert
+to authenticated
+with check (
+  exists (
+    select 1 from team_users
+    where team_users.team_id = health_checks.team_id
+      and team_users.user_id = auth.uid()
+      and team_users.role = 'admin'
+  )
+);
 
-create policy "Health checks can be viewed by authenticated users"
-on health_checks for select
-using (auth.uid() is not null);
+create policy "Team members can view health checks"
+on health_checks
+for select
+to authenticated
+using (
+  exists (
+    select 1 from team_users
+    where team_users.team_id = health_checks.team_id
+      and team_users.user_id = auth.uid()
+  )
+);
 
 create policy "Health checks can be updated by creator"
 on health_checks for update
 using (auth.uid() = facilitator_id);
 
-create policy "Health checks can be deleted by creator"
-on health_checks for delete
-using (auth.uid() = facilitator_id);
+create policy "Team admin can delete health checks"
+on health_checks
+for delete
+to authenticated
+using (
+  exists (
+    select 1 from team_users
+    where team_users.team_id = health_checks.team_id
+      and team_users.user_id = auth.uid()
+      and team_users.role = 'admin'
+  )
+);
 
 -- Triggers for updated_at
 create trigger handle_updated_at before update on health_checks

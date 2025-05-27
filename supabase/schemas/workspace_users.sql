@@ -1,7 +1,7 @@
 create type workspace_role as enum ('owner', 'admin', 'member');
 create type project_user_status as enum ('pending', 'accepted', 'expired');
 
--- Then create the table
+-- Create the workspace_users table
 create table workspace_users (
     id uuid default gen_random_uuid() primary key,
     workspace_id uuid references workspaces(id) on delete cascade not null,
@@ -14,17 +14,15 @@ create table workspace_users (
     unique (workspace_id, user_id)
 );
 
+-- Enable RLS
 alter table workspace_users enable row level security;
 
-create policy "Users can see their own workspace_users rows"
-on workspace_users for select
-using (
-  auth.uid() is not null
-);
-
--- Only owner/admin can create workspace users
+-- Policies
 create policy "Owner/Admin can create workspace users"
-on workspace_users for insert
+on workspace_users
+as restrictive
+for insert
+to authenticated
 with check (
   exists (
     select 1 from workspace_users wu2
@@ -33,22 +31,51 @@ with check (
       and wu2.role in ('owner', 'admin')
   )
 );
- 
-create policy "Owner/Admin can update workspace users"
-on workspace_users for update
-using (
-  auth.uid() is not null
+
+create policy "Only one owner per workspace allowed"
+on workspace_users
+as restrictive
+for insert
+to authenticated
+with check (
+  workspace_users.role != 'owner'
+  OR NOT EXISTS (
+    select 1 from workspace_users wu2
+    where wu2.workspace_id = workspace_users.workspace_id
+      and wu2.role = 'owner'
+  )
 );
 
--- Only owner can remove workspace users
-create policy "Owner can remove workspace users"
+create policy "Users can see other users in their workspace"
+on workspace_users
+for select
+to authenticated
+using (
+  true
+);
+ 
+create policy "Owner/Admin can update workspace users"
+on workspace_users
+for update
+to authenticated
+using (
+  exists (
+    select 1 from workspace_users wu2
+    where wu2.workspace_id = workspace_users.workspace_id
+      and wu2.user_id = auth.uid()
+      and wu2.role in ('owner', 'admin')
+  ) AND
+  workspace_users.role != 'owner'
+);
+
+create policy "Owner/Admin can remove workspace users"
 on workspace_users for delete
 using (
   exists (
     select 1 from workspace_users wu2
     where wu2.workspace_id = workspace_users.workspace_id
       and wu2.user_id = auth.uid()
-      and wu2.role = 'owner'
+      and wu2.role in ('owner', 'admin')
   )
   and workspace_users.role != 'owner'
 );

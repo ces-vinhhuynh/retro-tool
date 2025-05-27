@@ -1,3 +1,4 @@
+-- Create the responses table
 create table responses (
     id uuid default gen_random_uuid() primary key,
     health_check_id uuid references health_checks(id) on delete cascade not null,
@@ -12,25 +13,50 @@ create table responses (
 -- Enable RLS
 alter table responses enable row level security;
 
-create policy "Responses can be created by authenticated users"
-on responses for insert
+-- Policies
+create policy "Team members can create responses"
+on responses
+for insert
+to authenticated
 with check (
-  auth.uid() is not null
+  exists (
+    select 1
+    from health_checks hc
+    join team_users tu on tu.team_id = hc.team_id
+    where hc.id = responses.health_check_id
+      and tu.user_id = auth.uid()
+  )
 );
 
-create policy "Responses can be viewed by authenticated users"
-on responses for select
+create policy "Team members can view responses"
+on responses
+for select
+to authenticated
 using (
-  auth.uid() is not null
+  exists (
+    select 1
+    from health_checks hc
+    join team_users tu on tu.team_id = hc.team_id
+    where hc.id = responses.health_check_id
+      and tu.user_id = auth.uid()
+  )
 );
 
-create policy "Responses can be updated by their creators"
-on responses for update
-using (auth.uid() is not null);
+create policy "Authors can update their own responses"
+on responses
+for update
+to authenticated
+using (
+  user_id = auth.uid()
+);
 
-create policy "Responses can be deleted by their creators"
-on responses for delete
-using (auth.uid() = user_id);
+create policy "Authors can delete their own responses"
+on responses
+for delete
+to authenticated
+using (
+  user_id = auth.uid()
+);
 
 -- Triggers for updated_at
 create trigger handle_updated_at before update on responses

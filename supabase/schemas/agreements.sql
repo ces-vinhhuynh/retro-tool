@@ -15,7 +15,7 @@ create policy "Agreements can be created by authenticated users"
 on agreements for insert
 with check (
     exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = agreements.team_id
         and tu.user_id = auth.uid()
     )
@@ -25,7 +25,7 @@ create policy "Agreements can be viewed by authenticated users"
 on agreements for select
 using (
     exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = agreements.team_id
         and tu.user_id = auth.uid()
     )
@@ -35,7 +35,7 @@ create policy "Agreements can be updated by their creators"
 on agreements for update
 using (
     exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = agreements.team_id
         and tu.user_id = auth.uid()
     )
@@ -45,7 +45,7 @@ create policy "Agreements can be deleted by their creators"
 on agreements for delete
 using (
     exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = agreements.team_id
         and tu.user_id = auth.uid()
     )

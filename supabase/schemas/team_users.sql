@@ -1,5 +1,6 @@
 create type team_role as enum ('admin', 'member');
 
+-- Create the team_users table
 create table team_users (
     id uuid default gen_random_uuid() primary key,
     team_id uuid references teams(id) on delete cascade not null,
@@ -10,17 +11,14 @@ create table team_users (
     unique (team_id, user_id)
 );
 
+-- Enable RLS
 alter table team_users enable row level security;
 
-create policy "Users can see their own team_users rows"
-on team_users for select
-using (
-  user_id = auth.uid()
-);
-
--- Only team admin can add team users
-create policy "Team admin can add team users"
-on team_users for insert
+-- Policies
+create policy "Team admin can create team users"
+on team_users
+for insert
+to authenticated
 with check (
   exists (
     select 1 from team_users tu2
@@ -30,9 +28,37 @@ with check (
   )
 );
 
--- Only team admin can update team users
+create policy "Workspace owner/admin create add team users"
+on team_users
+for insert
+to authenticated
+with check (
+  exists (
+    select 1 from teams t
+    join workspace_users wu on wu.workspace_id = t.workspace_id
+    where t.id = team_users.team_id
+      and wu.user_id = auth.uid()
+      and wu.role in ('owner', 'admin')
+  )
+);
+
+create policy "Workspace member can view team users"
+on team_users
+for select
+to authenticated
+using (
+  exists (
+    select 1 from teams t
+    join workspace_users wu on wu.workspace_id = t.workspace_id
+    where t.id = team_users.team_id
+      and wu.user_id = auth.uid()
+  )
+);
+
 create policy "Team admin can update team users"
-on team_users for update
+on team_users
+for update
+to authenticated
 using (
   exists (
     select 1 from team_users tu2
@@ -42,15 +68,44 @@ using (
   )
 );
 
--- Only team admin can delete team users
+create policy "Workspace owner/admin can update team users"
+on team_users
+for update
+to authenticated
+using (
+  exists (
+    select 1 from teams t
+    join workspace_users wu on wu.workspace_id = t.workspace_id
+    where t.id = team_users.team_id
+      and wu.user_id = auth.uid()
+      and wu.role in ('owner', 'admin')
+  )
+);
+
 create policy "Team admin can delete team users"
-on team_users for delete
+on team_users
+for delete
+to authenticated
 using (
   exists (
     select 1 from team_users tu2
     where tu2.team_id = team_users.team_id
       and tu2.user_id = auth.uid()
       and tu2.role = 'admin'
+  )
+);
+
+create policy "Workspace owner/admin can delete team users"
+on team_users
+for delete
+to authenticated
+using (
+  exists (
+    select 1 from teams t
+    join workspace_users wu on wu.workspace_id = t.workspace_id
+    where t.id = team_users.team_id
+      and wu.user_id = auth.uid()
+      and wu.role in ('owner', 'admin')
   )
 );
 

@@ -15,7 +15,7 @@ create policy "Issues can be created by authenticated users"
 on issues for insert
 with check (
   exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = issues.team_id
         and tu.user_id = auth.uid()
     )
@@ -25,7 +25,7 @@ create policy "Issues can be viewed by authenticated users"
 on issues for select
 using (
   exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = issues.team_id
         and tu.user_id = auth.uid()
     )
@@ -35,7 +35,7 @@ create policy "Issues can be updated by their creators"
 on issues for update
 using (
   exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = issues.team_id
         and tu.user_id = auth.uid()
     )
@@ -45,7 +45,7 @@ create policy "Issues can be deleted by their creators"
 on issues for delete
 using (
   exists (
-        select 1 from teams_users tu
+        select 1 from team_users tu
         where tu.team_id = issues.team_id
         and tu.user_id = auth.uid()
     )
