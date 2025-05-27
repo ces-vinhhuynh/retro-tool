@@ -125,3 +125,7 @@ export type HealthCheckFormData = {
   dueDate: Date;
   displayMode: DisplayMode;
 };
+
+export type HealthCheckSettings = {
+  display_mode: DisplayMode;
+};

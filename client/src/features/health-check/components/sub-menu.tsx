@@ -3,6 +3,7 @@ import {
   ChartNoAxesColumn,
   CircleCheck,
   Handshake,
+  Settings,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -14,12 +15,14 @@ import { useSubMenuStore } from '../stores/sub-menu-store';
 import { Agreement } from '../types/agreements';
 import {
   ActionItemWithAssignees,
+  DisplayMode,
   HealthCheck,
   User,
 } from '../types/health-check';
 import { Issue } from '../types/issues';
 import { SUBMENU_ITEMS } from '../utils/constants';
 
+import DisplayModeDialog from './display-mode-dialog';
 import TeamActions from './team-actions';
 import TeamAgreements from './team-agreements';
 import TeamIssues from './team-issues';
@@ -33,6 +36,8 @@ interface SubMenuProps {
   healthCheck: HealthCheck;
   teamId: string;
   teamMembers: User[];
+  onDisplayModeChange: (mode: DisplayMode) => void;
+  currentDisplayMode: DisplayMode;
 }
 
 const SubMenu = ({
@@ -43,6 +48,8 @@ const SubMenu = ({
   actionItems,
   teamId,
   teamMembers,
+  onDisplayModeChange,
+  currentDisplayMode,
 }: SubMenuProps) => {
   const { selectedSubmenu, setSelectedSubmenu } = useSubMenuStore();
 
@@ -86,21 +93,38 @@ const SubMenu = ({
     <Sidebar collapsible="icon">
       <SidebarContent className="sticky top-0 right-0 h-full w-22 overflow-hidden border border-gray-200 bg-white p-6">
         <div className="flex w-full flex-col gap-8">
-          {menuItems.map((item) => (
-            <Button
-              key={item.value}
-              variant={'ghost'}
-              className="hover:text-ces-orange-500 flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
-              onClick={() => {
-                setSelectedSubmenu(
-                  selectedSubmenu === item.value ? '' : item.value,
-                );
-              }}
-            >
-              {item.icon}
-              <span className="text-xs">{item.name}</span>
-            </Button>
-          ))}
+          {menuItems.map((item) =>
+            item.value === SUBMENU_ITEMS.CUSTOMIZE ? (
+              <DisplayModeDialog
+                key={item.value}
+                currentMode={currentDisplayMode}
+                onChange={onDisplayModeChange}
+                trigger={
+                  <Button
+                    variant="ghost"
+                    className="hover:text-ces-orange-500 flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
+                  >
+                    {item.icon}
+                    <span className="text-xs">{item.name}</span>
+                  </Button>
+                }
+              />
+            ) : (
+              <Button
+                key={item.value}
+                variant={'ghost'}
+                className="hover:text-ces-orange-500 flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
+                onClick={() => {
+                  setSelectedSubmenu(
+                    selectedSubmenu === item.value ? '' : item.value,
+                  );
+                }}
+              >
+                {item.icon}
+                <span className="text-xs">{item.name}</span>
+              </Button>
+            ),
+          )}
         </div>
       </SidebarContent>
       <UserSidebar
@@ -156,5 +180,10 @@ const menuItems = [
     name: 'Issues',
     icon: <BadgeAlert size={15} />,
     value: SUBMENU_ITEMS.ISSUES,
+  },
+  {
+    name: 'Customize',
+    icon: <Settings size={15} />,
+    value: SUBMENU_ITEMS.CUSTOMIZE,
   },
 ];

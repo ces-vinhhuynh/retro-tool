@@ -43,6 +43,8 @@ import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/u
 import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
+  DisplayMode,
+  HealthCheckSettings,
   HealthCheckStatus,
   HealthCheckWithTemplate,
   Question,
@@ -237,6 +239,14 @@ export default function HealthCheckPage() {
     }
   };
 
+  const handleUpdateDisplayMode = (mode: DisplayMode) => {
+    if (!isFacilitator) return;
+    updateHealthCheck({
+      id: healthCheckId,
+      healthCheck: { settings: { display_mode: mode } },
+    });
+  };
+
   const calculateAverageScores = () => {
     if (!responses || responses?.length === 0) return null;
 
@@ -388,7 +398,7 @@ export default function HealthCheckPage() {
           {isFacilitator && healthCheck?.current_step !== LAST_STEP.key && (
             <div className="mx-auto flex w-[50%] py-5">
               <Button
-                className="ml-auto w-full bg-[#E15D2F] text-white hover:bg-[#eeaa83] sm:w-auto"
+                className="bg-ces-orange-500 hover:bg-ces-orange-600 ml-auto w-full text-white sm:w-auto"
                 onClick={() =>
                   updateHealthCheck({
                     id: healthCheck?.id ?? '',
@@ -411,6 +421,10 @@ export default function HealthCheckPage() {
           actionItems={actionItems || []}
           teamId={healthCheck?.team_id || ''}
           teamMembers={teamMembers as unknown as User[]}
+          onDisplayModeChange={handleUpdateDisplayMode}
+          currentDisplayMode={
+            (healthCheck.settings as HealthCheckSettings).display_mode
+          }
         />
       </div>
     </Layout>

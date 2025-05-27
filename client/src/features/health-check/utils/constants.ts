@@ -98,6 +98,7 @@ export const SUBMENU_ITEMS = {
   ACTIONS: 'actions',
   AGREEMENT: 'agreement',
   ISSUES: 'issues',
+  CUSTOMIZE: 'customize',
 } as const;
 
 export type HealthCheckTab = 'general' | 'options';

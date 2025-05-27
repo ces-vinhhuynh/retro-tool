@@ -96,15 +96,6 @@ const SessionTemplateDialog = ({
     onOpenChange(false);
   };
 
-  if (isLoadingTemplates) {
-    return (
-      <Card className="p-4">
-        <div className="h-6 w-24 animate-pulse rounded bg-gray-200"></div>
-        <div className="h-4 w-full animate-pulse rounded bg-gray-200 pt-2"></div>
-      </Card>
-    );
-  }
-
   return (
     <>
       <Dialog
