@@ -19,6 +19,8 @@ import {
   LAST_STEP,
   STEPS,
 } from '@/features/health-check/constants/health-check';
+import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
+import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
 import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
 import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeamsAndTemplate } from '@/features/health-check/hooks/use-get-health-checks-by-teams-and-template';
@@ -48,6 +50,7 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { cn } from '@/utils/cn';
 
 export type GroupedQuestions = {
   [section: string]: Question[];
@@ -82,6 +85,13 @@ export default function HealthCheckPage() {
 
   const { data: participants, isLoading: isLoadingParticipants } =
     useGetParticipants(healthCheckId);
+
+  const { data: agreements = [], isLoading: isLoadingAgreements } =
+    useAgreementsQuery(healthCheck?.team_id || '');
+
+  const { data: issues = [], isLoading: isLoadingIssues } = useIssuesQuery(
+    healthCheck?.team_id || '',
+  );
 
   const { mutate: createParticipant } = useCreateParticipant();
 
@@ -290,7 +300,9 @@ export default function HealthCheckPage() {
     isLoadingUser ||
     isLoadingHealthCheck ||
     isLoadingResponses ||
-    isLoadingActionItems;
+    isLoadingActionItems ||
+    isLoadingAgreements ||
+    isLoadingIssues;
 
   if (isLoading || !template) {
     return (
@@ -307,7 +319,7 @@ export default function HealthCheckPage() {
   return (
     <Layout>
       <div className="flex w-full justify-between">
-        <div className={selectedSubmenu ? 'w-[80%]' : 'w-full'}>
+        <div className={cn('w-full', selectedSubmenu && 'w-[80%]')}>
           <div className="flex w-full">
             <div className="mx-auto w-full">
               <div className="pb-6">
@@ -340,6 +352,8 @@ export default function HealthCheckPage() {
               )}
               {healthCheck.current_step === STEPS['review'].key && (
                 <ReviewPhase
+                  agreements={agreements || []}
+                  issues={issues || []}
                   healthCheck={healthCheck as HealthCheckWithTemplate}
                   actionItems={actionItems || []}
                   teamId={healthCheck?.team_id || ''}
@@ -390,6 +404,8 @@ export default function HealthCheckPage() {
           )}
         </div>
         <SubMenu
+          agreements={agreements || []}
+          issues={issues || []}
           healthCheck={healthCheck}
           healthCheckId={healthCheckId}
           actionItems={actionItems || []}

@@ -11,7 +11,7 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subcription';
+import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
 import { useCreateActionItemAssignee } from '../hooks/use-create-action-item-assignee';
 import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-assignee';
 import { PRIORITY_CONFIG, STATUS_CONFIG } from '../utils/constants';

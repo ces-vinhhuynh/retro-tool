@@ -1,11 +1,9 @@
 'use client';
 
+import { CheckCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import ActionItemForm, {
-  AddActionFormData,
-} from '@/features/health-check/components/action-item-form';
 import { ActionItemRow } from '@/features/health-check/components/action-item-row';
 import { useCreateActionItem } from '@/features/health-check/hooks/use-create-action-item';
 import { useDeleteActionItem } from '@/features/health-check/hooks/use-delete-action-item';
@@ -18,8 +16,10 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subcription';
-import { useActionItemsByTeamsSubscription } from '../hooks/use-action-items-by-teams-subcriptions';
+import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
+import { useActionItemsByTeamsSubscription } from '../hooks/use-action-items-by-teams-subscriptions';
+
+import EntryForm from './entry-form';
 
 interface ActionItemsProps {
   actionItems: ActionItemWithAssignees[];
@@ -76,7 +76,7 @@ const ActionItems = ({
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<AddActionFormData>({
+  } = useForm<{ title: string }>({
     defaultValues: { title: '' },
   });
 
@@ -131,17 +131,19 @@ const ActionItems = ({
   };
 
   return (
-    <div className="w-full bg-white h-full">
-      <ActionItemForm
+    <div className="w-full bg-white">
+      <EntryForm
         register={register}
         onSubmit={onSubmit}
         isDisabled={isSubmitting || isCreating}
+        placeholder="Add new action..."
+        Icon={CheckCircle}
       />
 
       <div className="max-h-5/6 overflow-y-auto">
         {items.length === 0 ? (
-          <div className="py-4 text-center text-sm text-gray-400">
-            no actions yet
+          <div className="border py-4 text-center text-sm text-gray-400">
+            No actions yet
           </div>
         ) : (
           items.map((item) => (

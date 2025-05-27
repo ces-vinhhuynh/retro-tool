@@ -22,6 +22,7 @@ const TeamActions = ({
   healthCheckId,
   teamMembers,
 }: TeamActionsProps) => {
+
   return (
     <SubMenuWrapper
       Icon={CircleCheck}

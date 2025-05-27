@@ -8,8 +8,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Sidebar, SidebarContent, SidebarRail } from '@/components/ui/sidebar';
 
+import { useAgreementMutation } from '../hooks/agreements/use-agreements-mutation';
+import { useIssuesMutation } from '../hooks/issues/use-issues-mutation';
 import { useSubMenuStore } from '../stores/sub-menu-store';
-import { ActionItemWithAssignees, HealthCheck, User } from '../types/health-check';
+import { Agreement } from '../types/agreements';
+import {
+  ActionItemWithAssignees,
+  HealthCheck,
+  User,
+} from '../types/health-check';
+import { Issue } from '../types/issues';
 import { SUBMENU_ITEMS } from '../utils/constants';
 
 import TeamActions from './team-actions';
@@ -18,13 +26,18 @@ import TeamIssues from './team-issues';
 import UserSidebar from './user-sidebar';
 
 interface SubMenuProps {
+  agreements: Agreement[];
+  issues: Issue[];
   actionItems: ActionItemWithAssignees[];
   healthCheckId: string;
   healthCheck: HealthCheck;
   teamId: string;
   teamMembers: User[];
 }
+
 const SubMenu = ({
+  agreements,
+  issues,
   healthCheck,
   healthCheckId,
   actionItems,
@@ -32,6 +45,42 @@ const SubMenu = ({
   teamMembers,
 }: SubMenuProps) => {
   const { selectedSubmenu, setSelectedSubmenu } = useSubMenuStore();
+
+  const {
+    createAgreements,
+    deleteAgreements,
+    isLoading: isLoadingAgreements,
+  } = useAgreementMutation();
+
+  const {
+    createIssue,
+    deleteIssue,
+    isLoading: isLoadingIssues,
+  } = useIssuesMutation();
+
+  const handleCreateAgreement = (title: string) => {
+    createAgreements({
+      title,
+      team_id: teamId,
+      health_check_id: healthCheck.id,
+    });
+  };
+
+  const handleDeleteAgreement = (id: string) => {
+    deleteAgreements(id);
+  };
+
+  const handleCreateIssue = (title: string) => {
+    createIssue({
+      title,
+      team_id: teamId,
+      health_check_id: healthCheck.id,
+    });
+  };
+
+  const handleDeleteIssue = (id: string) => {
+    deleteIssue(id);
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -66,8 +115,20 @@ const SubMenu = ({
         healthCheckId={healthCheckId}
         teamMembers={teamMembers}
       />
-      <TeamAgreements isOpen={selectedSubmenu === SUBMENU_ITEMS.AGREEMENT} />
-      <TeamIssues isOpen={selectedSubmenu === SUBMENU_ITEMS.ISSUES} />
+      <TeamAgreements
+        isOpen={selectedSubmenu === SUBMENU_ITEMS.AGREEMENT}
+        agreements={agreements}
+        handleCreateAgreement={handleCreateAgreement}
+        handleDeleteAgreement={handleDeleteAgreement}
+        isLoadingAgreements={isLoadingAgreements}
+      />
+      <TeamIssues
+        isOpen={selectedSubmenu === SUBMENU_ITEMS.ISSUES}
+        issues={issues}
+        handleCreateIssue={handleCreateIssue}
+        handleDeleteIssue={handleDeleteIssue}
+        isLoadingIssues={isLoadingIssues}
+      />
       <SidebarRail />
     </Sidebar>
   );
