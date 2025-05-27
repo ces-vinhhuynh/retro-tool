@@ -123,6 +123,44 @@ export type Database = {
           },
         ];
       };
+      agreements: {
+        Row: {
+          created_at: string | null;
+          description: string | null;
+          health_check_id: string | null;
+          id: string;
+          team_id: string | null;
+          title: string;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          description?: string | null;
+          health_check_id?: string | null;
+          id?: string;
+          team_id?: string | null;
+          title: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          description?: string | null;
+          health_check_id?: string | null;
+          id?: string;
+          team_id?: string | null;
+          title?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'agreements_health_check_id_fkey';
+            columns: ['health_check_id'];
+            isOneToOne: false;
+            referencedRelation: 'health_checks';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       health_check_templates: {
         Row: {
           created_at: string | null;
@@ -177,6 +215,7 @@ export type Database = {
           facilitator_id: string | null;
           id: string;
           participants: Json | null;
+          settings: Json | null;
           status: Database['public']['Enums']['health_check_status'] | null;
           team_id: string | null;
           template_id: string | null;
@@ -191,6 +230,7 @@ export type Database = {
           facilitator_id?: string | null;
           id?: string;
           participants?: Json | null;
+          settings?: Json | null;
           status?: Database['public']['Enums']['health_check_status'] | null;
           team_id?: string | null;
           template_id?: string | null;
@@ -205,6 +245,7 @@ export type Database = {
           facilitator_id?: string | null;
           id?: string;
           participants?: Json | null;
+          settings?: Json | null;
           status?: Database['public']['Enums']['health_check_status'] | null;
           team_id?: string | null;
           template_id?: string | null;
@@ -231,6 +272,44 @@ export type Database = {
             columns: ['template_id'];
             isOneToOne: false;
             referencedRelation: 'health_check_templates';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      issues: {
+        Row: {
+          created_at: string | null;
+          description: string | null;
+          health_check_id: string | null;
+          id: string;
+          team_id: string | null;
+          title: string;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          description?: string | null;
+          health_check_id?: string | null;
+          id?: string;
+          team_id?: string | null;
+          title: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          description?: string | null;
+          health_check_id?: string | null;
+          id?: string;
+          team_id?: string | null;
+          title?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'issues_health_check_id_fkey';
+            columns: ['health_check_id'];
+            isOneToOne: false;
+            referencedRelation: 'health_checks';
             referencedColumns: ['id'];
           },
         ];

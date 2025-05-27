@@ -19,14 +19,14 @@ interface TemplatePreviewDialogProps {
   template: Template | null;
 }
 
-export function TemplatePreviewDialog({
+const TemplatePreviewDialog = ({
   open,
   onOpenChange,
   template,
-}: TemplatePreviewDialogProps) {
+}: TemplatePreviewDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] w-full max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-bold">
             {template ? template.name : 'Template Preview'}
@@ -35,7 +35,7 @@ export function TemplatePreviewDialog({
             {template?.description}
           </DialogDescription>
         </DialogHeader>
-        <div className="pt-4 py-4">
+        <div className="py-4 pt-4">
           {template?.questions.map((question, index) => (
             <div key={index} className="py-2">
               <div className="flex items-start gap-3">
@@ -44,7 +44,7 @@ export function TemplatePreviewDialog({
                 </span>
                 <div className="pt-1">
                   <p className="text-base font-bold">{question.title}</p>
-                  <p className="text-base pt-1">{question.description}</p>
+                  <p className="pt-1 text-base">{question.description}</p>
                 </div>
               </div>
             </div>
@@ -58,4 +58,6 @@ export function TemplatePreviewDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default TemplatePreviewDialog;

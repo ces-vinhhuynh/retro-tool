@@ -21,12 +21,12 @@ interface WelcomeModalProps {
   template?: Template | null;
 }
 
-export function WelcomeModal({
+const WelcomeModal = ({
   isOpen,
   onClose,
   healthCheck,
   template,
-}: WelcomeModalProps) {
+}: WelcomeModalProps) => {
   const [copied, setCopied] = useState(false);
   const pathname = usePathname();
   const [sessionLink, setSessionLink] = useState('');
@@ -112,4 +112,6 @@ export function WelcomeModal({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default WelcomeModal;

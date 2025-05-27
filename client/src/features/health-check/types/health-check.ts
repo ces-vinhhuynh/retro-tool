@@ -113,3 +113,15 @@ export type FormattedHealthCheck = {
     averageScore: number;
   }[];
 };
+
+export enum DisplayMode {
+  SINGLE = 'single',
+  GROUPED = 'grouped',
+  ALL = 'all',
+}
+
+export type HealthCheckFormData = {
+  title: string;
+  dueDate: Date;
+  displayMode: DisplayMode;
+};
