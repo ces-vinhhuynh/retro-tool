@@ -9,6 +9,7 @@ export function useDeleteTeam() {
     mutationFn: (id: string) => teamService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-teams'] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 

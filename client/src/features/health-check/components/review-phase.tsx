@@ -36,9 +36,9 @@ interface SummaryItemProps {
 }
 
 const SummaryItem = ({ title, content }: SummaryItemProps) => (
-  <div className="space-y-1">
-    <div className="text-sm text-gray-500">{title}</div>
-    <div className="font-medium">{content}</div>
+  <div className="space-y-1 rounded-lg bg-gray-50/50 p-2 sm:p-3">
+    <div className="text-xs text-gray-500 sm:text-sm">{title}</div>
+    <div className="text-sm font-medium sm:text-base">{content}</div>
   </div>
 );
 
@@ -51,9 +51,11 @@ const EntryWrapper = ({
 }) => (
   <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
     <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
-    <CardContent className="p-8">
-      <div className="space-y-4">
-        <h2 className="flex items-center gap-2 text-xl font-medium">{title}</h2>
+    <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-4 md:p-6">
+      <div className="space-y-3 sm:space-y-4">
+        <h2 className="flex items-center gap-2 text-base font-bold text-gray-800 sm:text-base">
+          {title}
+        </h2>
         {children}
       </div>
     </CardContent>
@@ -142,10 +144,12 @@ const ReviewPhase = ({
   ];
 
   return (
-    <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
-      <CardContent className="space-y-4 p-4 sm:p-8">
-        <h3 className="text-lg font-medium">Session Summary</h3>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+    <Card className="mx-auto w-full px-2 sm:px-4 md:px-6 lg:w-5/6">
+      <CardContent className="space-y-3 p-3 sm:space-y-4 sm:p-4 md:p-6 lg:p-8">
+        <h3 className="text-base font-medium sm:text-lg md:text-xl">
+          Session Summary
+        </h3>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
           {summaryItems.map((item, index) => (
             <SummaryItem
               key={index}
@@ -156,7 +160,7 @@ const ReviewPhase = ({
         </div>
       </CardContent>
 
-      <div className="space-y-6 p-4 sm:p-6">
+      <div className="space-y-4 p-3 sm:space-y-6 sm:p-4 md:p-6">
         <EntryWrapper title="Team actions">
           <ActionItems
             actionItems={currentActionItems}

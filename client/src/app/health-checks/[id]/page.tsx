@@ -328,7 +328,7 @@ export default function HealthCheckPage() {
 
   return (
     <Layout>
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between px-3 lg:px-0">
         <div className={cn('w-full', selectedSubmenu && 'w-[80%]')}>
           <div className="flex w-full">
             <div className="mx-auto w-full">
@@ -399,9 +399,9 @@ export default function HealthCheckPage() {
             )}
           </div>
           {isFacilitator && healthCheck?.current_step !== LAST_STEP.key && (
-            <div className="mx-auto flex w-[50%] py-5">
+            <div className="mx-auto flex w-[50%] justify-center py-5">
               <Button
-                className="bg-ces-orange-500 hover:bg-ces-orange-600 ml-auto w-full text-white sm:w-auto"
+                className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white sm:w-auto"
                 onClick={() =>
                   updateHealthCheck({
                     id: healthCheck?.id ?? '',

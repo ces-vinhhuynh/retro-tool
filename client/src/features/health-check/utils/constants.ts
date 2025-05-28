@@ -24,7 +24,7 @@ export const STATUS_CONFIG = {
   [ActionStatus.DONE]: {
     icon: CheckCircle,
     label: 'Completed',
-    className: 'text-green-500 fill-green-500',
+    className: 'text-green-500 fill-white',
   },
   [ActionStatus.BLOCKED]: {
     icon: XCircle,

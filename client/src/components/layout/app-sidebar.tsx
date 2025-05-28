@@ -26,7 +26,7 @@ export function AppSidebar({
   ...props
 }: AppSidebarProps) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" {...props} className="md:max-lg:hidden">
       <SidebarHeader>
         <WorkspaceSwitcher
           workspaces={workspaces}
