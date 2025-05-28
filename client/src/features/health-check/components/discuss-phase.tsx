@@ -4,7 +4,6 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import TopChallenges from '@/features/health-check/components/challenges';
 import HealthCheckQuestions from '@/features/health-check/components/health-check-questions';
 import TeamHealthChart from '@/features/health-check/components/team-health-chart';
@@ -34,66 +33,60 @@ const DiscussPhase = ({
   const [allOpen, setAllOpen] = useState(false);
 
   return (
-    <div className="mx-auto w-full max-w-7xl lg:w-4/6">
-      <div className="flex flex-col gap-6 md:flex-row">
-        <div className="relative min-w-0 flex-1">
-          <Card>
-            <CardContent className="p-6">
-              <TeamHealthChart
-                isClosePhase={false}
-                title="Team Health Summary"
-                responses={responses}
-                healthCheck={healthCheck}
-                questions={questions}
-                actionItems={actionItems}
-                teamMembers={teamMembers}
-              />
-              <div className="rounded-lg bg-white p-6">
-                <div className="flex flex-wrap items-center justify-between">
-                  <div className="flex flex-col gap-1">
-                    <h2 className="mt-2 text-2xl font-bold text-gray-900">
-                      Discussion Topics
-                    </h2>
-                    <p className="text-gray-500">
-                      Review feedback and comments from the team
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    className="mt-4 flex h-10 items-center gap-2 self-start px-4"
-                    onClick={() => setAllOpen((open) => !open)}
-                  >
-                    {allOpen ? (
-                      <>
-                        <ChevronUp className="h-4 w-4" />
-                        Collapse all
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4" />
-                        Expand all
-                      </>
-                    )}
-                  </Button>
-                </div>
-                <HealthCheckQuestions
-                  teamMembers={teamMembers}
-                  responses={responses}
-                  questions={questions}
-                  allOpen={allOpen}
-                  actionItems={actionItems}
-                  healthCheck={healthCheck}
-                />
-                <TopChallenges
-                  questions={questions}
-                  responses={responses}
-                  healthCheck={healthCheck}
-                  actionItems={actionItems}
-                  teamMembers={teamMembers}
-                />
-              </div>
-            </CardContent>
-          </Card>
+    <div className="relative mx-auto w-full max-w-7xl min-w-0 flex-1 lg:w-4/6">
+      <div className="bg-card text-card-foreground border p-6 shadow md:rounded-xl">
+        <TeamHealthChart
+          isClosePhase={false}
+          title="Team Health Summary"
+          responses={responses}
+          healthCheck={healthCheck}
+          questions={questions}
+          actionItems={actionItems}
+          teamMembers={teamMembers}
+        />
+        <div className="flex flex-col gap-3 rounded-lg bg-white p-6">
+          <div className="flex flex-wrap items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <h2 className="mt-2 text-2xl font-bold text-gray-900">
+                Discussion Topics
+              </h2>
+              <p className="text-gray-500">
+                Review feedback and comments from the team
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="mt-4 flex h-10 items-center gap-2 self-start px-4"
+              onClick={() => setAllOpen((open) => !open)}
+            >
+              {allOpen ? (
+                <>
+                  <ChevronUp className="h-4 w-4" />
+                  Collapse all
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" />
+                  Expand all
+                </>
+              )}
+            </Button>
+          </div>
+          <HealthCheckQuestions
+            teamMembers={teamMembers}
+            responses={responses}
+            questions={questions}
+            allOpen={allOpen}
+            actionItems={actionItems}
+            healthCheck={healthCheck}
+          />
+          <TopChallenges
+            questions={questions}
+            responses={responses}
+            healthCheck={healthCheck}
+            actionItems={actionItems}
+            teamMembers={teamMembers}
+          />
         </div>
       </div>
     </div>
