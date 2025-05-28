@@ -13,12 +13,18 @@ create table health_checks (
     average_score jsonb default '{}',
     participants jsonb default '[]',
     settings jsonb default '{
-        "display_mode": "grouped"
+        "display_mode": "grouped",
+        "allow_participant_navigation": true
     }',
+    current_group_index integer default 0,
+    current_question_index integer default 0,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now(),
     constraint valid_display_mode check (
         settings->>'display_mode' in ('single', 'grouped', 'all')
+    ),
+    constraint valid_allow_navigation check (
+        settings->>'allow_participant_navigation' in ('true', 'false')
     )
 );
 
