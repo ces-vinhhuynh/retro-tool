@@ -129,3 +129,8 @@ export type HealthCheckFormData = {
 export type HealthCheckSettings = {
   display_mode: DisplayMode;
 };
+
+export type AnswerSurvey = {
+  responses: Record<string, number>;
+  comments: Record<string, string>;
+};

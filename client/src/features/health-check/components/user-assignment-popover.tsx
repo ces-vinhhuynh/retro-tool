@@ -82,7 +82,7 @@ const UserAssignmentPopover = ({
 
   // Popover content
   const popoverContent = (
-    <div className="w-64 px-3">
+    <div className="w-full">
       <div className="flex border-b border-gray-200 px-3 py-2">
         <div className="flex items-center justify-between">
           <span className="font-medium text-gray-500">ASSIGN TO</span>
@@ -112,12 +112,12 @@ const UserAssignmentPopover = ({
           </div>
         </div>
       </div>
-      <div className="max-h-64 overflow-x-hidden overflow-y-auto py-2">
+      <div className="flex max-h-64 w-full flex-col justify-start gap-2 overflow-x-hidden overflow-y-auto px-2 py-2">
         {teamMembers?.map((member) => (
           <Button
             key={member.id}
             variant="ghost"
-            className="flex cursor-pointer items-center px-3 py-2 hover:bg-gray-50"
+            className="flex w-full items-center justify-start rounded-none py-2"
             onClick={(e) => {
               e.stopPropagation();
               toggleAssignee?.(item.id, member.id);
@@ -155,7 +155,7 @@ const UserAssignmentPopover = ({
       triggerButton={triggerButton}
       popoverContent={popoverContent}
       align="end"
-      className="w-auto p-0"
+      className="w-full p-0"
     />
   );
 };

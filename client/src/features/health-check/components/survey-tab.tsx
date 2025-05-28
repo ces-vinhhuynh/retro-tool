@@ -1,31 +1,24 @@
 'use client';
 
-import { Plus, Trash2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import SurveyQuestionRow from '@/features/health-check/components/survey-question-row';
 
 import { useUpdateResponse } from '../hooks/use-response';
 import { useUpdateParticipant } from '../hooks/use-update-participant';
 import {
+  AnswerSurvey,
+  DisplayMode,
   GroupedQuestions,
-  Question,
   Response,
   Score,
   User,
 } from '../types/health-check';
 
-interface Answers {
-  responses: Record<string, number>;
-  comments: Record<string, string>;
-}
+import OneQuestionMode from './survey/one-question-mode';
 
-// Interface for the answer structure in the database
 interface QuestionAnswer {
   rating: number | null;
   comment: string[];
@@ -41,6 +34,7 @@ type SurveyTabProps = {
   minScore: Score;
   maxScore: Score;
   response: Response | null | undefined;
+  displayMode: DisplayMode;
 };
 
 const SurveyTab = ({
@@ -50,13 +44,13 @@ const SurveyTab = ({
   minScore,
   maxScore,
   response,
+  displayMode,
 }: SurveyTabProps) => {
   const { id: healthCheckId } = useParams<{ id: string }>();
 
-  const [currentTab, setCurrentTab] = useState<string>('');
   const [additionalItems, setAdditionalItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState('');
-  const [answers, setAnswers] = useState<Answers>({
+  const [answers, setAnswers] = useState<AnswerSurvey>({
     responses: (response?.answers as Record<string, number>) || {},
     comments: {},
   });
@@ -64,7 +58,6 @@ const SurveyTab = ({
   const { mutate: updateQuestionAnswer } = useUpdateResponse();
   const { mutate: updateParticipant } = useUpdateParticipant();
 
-  const currentQuestions = groupedQuestions[currentTab] || [];
   const additionalQuestions = useMemo(
     () => groupedQuestions['Additional Questions'] || [],
     [groupedQuestions],
@@ -134,91 +127,50 @@ const SurveyTab = ({
     const comments: Record<string, string> = {};
 
     Object.entries(answersObj).forEach(([questionId, answer]) => {
-      if (answer && typeof answer === 'object') {
-        if (answer.rating !== null && answer.rating !== undefined) {
-          responses[questionId] = answer.rating;
-        }
-        if (
-          answer.comment &&
-          Array.isArray(answer.comment) &&
-          answer.comment.length > 0
-        ) {
-          comments[questionId] = answer.comment.join('\n');
-        }
+      if (answer?.rating != null) responses[questionId] = answer.rating;
+      if (Array.isArray(answer.comment) && answer.comment.length > 0) {
+        comments[questionId] = answer.comment.join('\n');
       }
     });
 
-    setAnswers({
-      responses,
-      comments,
-    });
+    setAnswers({ responses, comments });
 
     if (additionalQuestions.length > 0) {
       const questionId = additionalQuestions[0].id;
       const additionalAnswer = answersObj[questionId];
-      if (
-        additionalAnswer?.comment &&
-        Array.isArray(additionalAnswer.comment)
-      ) {
-        const items = [...additionalAnswer.comment];
-        if (items.length > 0) {
-          setAdditionalItems(items);
-        }
+      if (Array.isArray(additionalAnswer?.comment)) {
+        setAdditionalItems([...additionalAnswer.comment]);
       }
     }
   }, [response, additionalQuestions]);
 
-  useEffect(() => {
-    if (!currentTab && sections.length > 0) {
-      setCurrentTab(sections[0]);
-    }
-  }, [sections, currentTab]);
-
   const totalQuestions = Object.values(groupedQuestions)
     .filter((questions) => questions[0]?.section !== 'Additional Questions')
-    .reduce((sum: number, questions) => sum + questions.length, 0);
+    .reduce((sum, questions) => sum + questions.length, 0);
 
   const answeredQuestions = Object.keys(answers.responses).length;
   const progress =
     totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
 
   useEffect(() => {
-    const updateParticipantProgress = async () => {
-      if (currentUser?.id && healthCheckId) {
-        updateParticipant({
-          healthCheckId: healthCheckId,
-          userId: currentUser.id,
-          updates: {
-            progress: Math.round(progress),
-          },
-        });
-      }
-    };
-
-    updateParticipantProgress();
+    if (currentUser?.id && healthCheckId) {
+      updateParticipant({
+        healthCheckId,
+        userId: currentUser.id,
+        updates: { progress: Math.round(progress) },
+      });
+    }
   }, [progress, currentUser?.id, healthCheckId, updateParticipant]);
 
   const additionalTitle = additionalQuestions[0]?.title ?? 'Title';
   const additionalDescription = additionalQuestions[0]?.description ?? '';
 
-  const handleNavigation = (direction: 'next' | 'previous') => {
-    const currentIndex = sections.indexOf(currentTab);
-    const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
-
-    if (newIndex >= 0 && newIndex < sections.length) {
-      setCurrentTab(sections[newIndex]);
-    }
-  };
-
   const handleAdditionalItem = async () => {
     if (!newItem.trim()) return;
-    const trimmedValue = newItem.trim();
+    const updated = [...additionalItems, newItem.trim()];
     setNewItem('');
-
-    const newItems = [...additionalItems, trimmedValue];
-    setAdditionalItems(newItems);
-
-    await saveAdditionalItemsImmediate(newItems);
+    setAdditionalItems(updated);
+    await saveAdditionalItemsImmediate(updated);
   };
 
   const handleItemChange = async (index: number, value: string) => {
@@ -230,146 +182,46 @@ const SurveyTab = ({
   };
 
   const handleDeleteItem = async (index: number) => {
-    const updatedItems = [...additionalItems];
-    updatedItems.splice(index, 1);
+    const updatedItems = additionalItems.filter((_, i) => i !== index);
     setAdditionalItems(updatedItems);
-
     await saveAdditionalItemsImmediate(updatedItems);
   };
 
+  const sharedProps = {
+    sections,
+    groupedQuestions,
+    minScore,
+    maxScore,
+    answers,
+    onResponseChange,
+    onCommentChange,
+    additionalTitle,
+    additionalDescription,
+    additionalItems,
+    newItem,
+    handleAdditionalItem,
+    setNewItem,
+    handleItemChange,
+    handleDeleteItem,
+  };
+
   return (
-    <Card className="mx-auto w-full max-w-7xl lg:w-2/3">
-      <CardContent className="space-y-8 p-6">
-        {/* Progress Section */}
-        <div className="w-full space-y-2 sm:w-1/3 lg:w-1/5">
-          <Progress value={progress} className="h-2" />
-          <div className="text-muted-foreground text-right text-sm">
-            {Math.round(progress)}%
-          </div>
-        </div>
-
-        {/* Main Content */}
-        {currentTab !== 'Additional Questions' ? (
-          <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6">
-            <h2 className="mb-4 text-xl font-bold text-[#222] sm:text-[1.35rem]">
-              {currentTab}
-            </h2>
-            <div className="space-y-6">
-              {currentQuestions.map((question: Question) => (
-                <SurveyQuestionRow
-                  key={question.id}
-                  question={{
-                    id: question.id,
-                    text: question.title,
-                    description: question.description,
-                    required: true,
-                  }}
-                  value={answers.responses[question.id]}
-                  comment={answers.comments[question.id] || ''}
-                  onValueChange={(val) => onResponseChange(question.id, val)}
-                  onCommentChange={(val) => onCommentChange(question.id, val)}
-                  minScore={minScore}
-                  maxScore={maxScore}
-                />
-              ))}
+    <div className="w-full px-2 sm:px-4 md:px-6">
+      <Card className="mx-auto w-full max-w-7xl flex-shrink-0 overflow-hidden md:w-[90%] lg:w-2/3">
+        <CardContent className="p-3 sm:p-4 md:p-5 lg:p-6">
+          <div className="min-w-0 flex-shrink-0 pb-2 md:w-1/2 lg:w-1/3">
+            <Progress value={progress} className="h-2" />
+            <div className="text-muted-foreground text-right text-sm">
+              {Math.round(progress)}%
             </div>
           </div>
-        ) : (
-          <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6">
-            <h2 className="mb-4 text-xl font-bold text-[#222] sm:text-[1.35rem]">
-              Additional Questions
-            </h2>
-            <div className="space-y-6">
-              <h3 className="mb-1 text-lg font-bold text-[#222] sm:text-xl">
-                {additionalTitle}
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                {additionalDescription}
-              </p>
-              <div className="flex items-center gap-2 p-1">
-                <Input
-                  type="text"
-                  placeholder={`Challenge ${additionalItems.length + 1}`}
-                  value={newItem}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setNewItem(value);
-                    // No auto-save for the draft item - only save when Add button is clicked
-                  }}
-                  onKeyDown={(e) => {
-                    // Add item when Enter is pressed
-                    if (e.key === 'Enter' && newItem.trim()) {
-                      e.preventDefault();
-                      handleAdditionalItem();
-                    }
-                  }}
-                  className="flex-1 rounded-lg border border-gray-200 bg-[#F7F7F7] focus:border-[#E15D2F] focus:ring-1 focus:ring-[#E15D2F]"
-                />
-                <Button
-                  variant="default"
-                  size="sm"
-                  disabled={!newItem}
-                  onClick={handleAdditionalItem}
-                  className="bg-[#E15D2F] whitespace-nowrap text-white hover:bg-[#eeaa83]"
-                >
-                  <Plus size={14} className="mr-1" />
-                  Add
-                </Button>
-              </div>
-              <div className="space-y-2">
-                <p className="text-muted-foreground text-xs italic">
-                  You can edit any existing item by clicking on it and making
-                  changes.
-                </p>
-                <div className="flex max-h-72 flex-col space-y-4 overflow-y-auto p-1">
-                  {additionalItems.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Input
-                        type="text"
-                        value={item}
-                        onChange={(e) =>
-                          handleItemChange(index, e.target.value)
-                        }
-                        className="flex-1 rounded-lg border border-gray-200 bg-[#F7F7F7] focus:border-[#E15D2F] focus:ring-1 focus:ring-[#E15D2F]"
-                        placeholder="Click to edit this item"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteItem(index)}
-                        className="h-10 w-10 text-red-500 hover:bg-red-50 hover:text-red-600"
-                      >
-                        <Trash2 size={18} />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between gap-4 py-4">
-          <Button
-            onClick={() => handleNavigation('previous')}
-            disabled={currentTab === sections[0]}
-            className="w-full bg-[#E15D2F] text-white hover:bg-[#eeaa83] sm:w-auto"
-          >
-            Previous
-          </Button>
-          {currentTab !== sections[sections.length - 1] && (
-            <Button
-              onClick={() => handleNavigation('next')}
-              disabled={currentTab === sections[sections.length - 1]}
-              className="w-full bg-[#E15D2F] text-white hover:bg-[#eeaa83] sm:w-auto"
-            >
-              Next
-            </Button>
+          {displayMode === DisplayMode.SINGLE && (
+            <OneQuestionMode {...sharedProps} />
           )}
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

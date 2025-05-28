@@ -349,6 +349,9 @@ export default function HealthCheckPage() {
                   minScore={template?.min_value}
                   maxScore={template?.max_value}
                   response={response}
+                  displayMode={
+                    (healthCheck.settings as HealthCheckSettings).display_mode
+                  }
                 />
               )}
               {healthCheck.current_step === STEPS['discuss'].key && (

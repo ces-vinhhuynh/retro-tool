@@ -33,7 +33,7 @@ export const StatusPopover = ({
   );
 
   const popoverContent = (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-2 py-2">
       {Object.entries(STATUS_CONFIG).map(([key, config]) => {
         const Icon = config.icon;
         return (
