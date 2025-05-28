@@ -132,9 +132,7 @@ export function Layout({ children }: LayoutProps) {
         <Header
           currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
         />
-        <main className="flex-grow w-full">
-          {children}
-        </main>
+        <main className="w-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

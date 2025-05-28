@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,6 +11,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import WorkspaceLogo from '@/features/workspace/components/workspace-logo';
@@ -37,7 +44,7 @@ export function Header({ currentWorkspace }: HeaderProps) {
     { href: `${base}`, label: 'Home' },
     { href: `${base}/teams`, label: 'Teams' },
     { href: `${base}/users`, label: 'Users' },
-    { href: `${base}/settings`, label: 'Setting' }, // fix duplicate href with Home
+    { href: `${base}/settings`, label: 'Settings' }, // fix duplicate href with Home
   ];
 
   const handleSignOut = async () => {
@@ -53,11 +60,11 @@ export function Header({ currentWorkspace }: HeaderProps) {
   };
 
   return (
-    <header className="relative border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+    <header className="relative w-full border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
       <div className="lg:max-w-screen-3xl flex w-full items-center justify-start gap-3 p-3">
         <SidebarTrigger />
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link href={base} className="flex items-center gap-2">
             <div className="flex aspect-square size-7 items-center justify-center rounded-lg font-bold text-white sm:size-8">
               <WorkspaceLogo name={String(currentWorkspace?.workspace?.name)} />
             </div>
@@ -66,25 +73,43 @@ export function Header({ currentWorkspace }: HeaderProps) {
                 {currentWorkspace?.workspace?.name}
               </span>
             </div>
-          </div>
+          </Link>
 
-          {currentWorkspace?.workspace_id && (
-            <nav className="flex flex-wrap gap-3 sm:gap-4 md:gap-5">
-              {links.map(({ href, label }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  className={cn(
-                    'text-sm text-gray-500 hover:text-black sm:text-base',
-                    {
-                      'text-ces-orange-500 font-bold': pathname === href,
-                    },
-                  )}
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
+          {currentWorkspace?.workspace_id && pathname.includes(base) && (
+            <>
+              <Select
+                value={pathname}
+                onValueChange={(value) => router.push(value)}
+              >
+                <SelectTrigger className="text-ces-orange-500 w-24 rounded-none border-none bg-transparent text-base font-semibold focus:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none sm:hidden">
+                  <SelectValue placeholder="Home" />
+                </SelectTrigger>
+                <SelectContent sideOffset={-5} className="rounded-sm">
+                  {links.map(({ href, label }) => (
+                    <SelectItem key={label} value={href} className="">
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <nav className="hidden flex-wrap gap-3 sm:flex sm:gap-4 md:gap-5">
+                {links.map(({ href, label }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className={cn(
+                      'text-sm text-gray-500 hover:text-black sm:text-base',
+                      {
+                        'text-ces-orange-500 font-bold': pathname === href,
+                      },
+                    )}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            </>
           )}
 
           {isLoading && (
@@ -103,7 +128,7 @@ export function Header({ currentWorkspace }: HeaderProps) {
                 </span>
               </div>
               <div className="flex flex-col text-right sm:hidden">
-                <span className="text-xs font-semibold text-gray-900 dark:text-gray-100">
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                   {currentUser.user_metadata?.full_name ??
                     currentUser.email?.split('@')[0] ??
                     'User'}
