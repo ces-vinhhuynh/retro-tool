@@ -417,14 +417,22 @@ export default function HealthCheckPage() {
             )}
           </div>
           {isFacilitator && (
-            <div className="mx-auto flex w-[50%] py-5">
+            <div className={`mx-auto flex w-[50%] py-5`}>
               <Button
-                className={cn(
-                  'ml-auto w-full text-white sm:w-auto',
-                  healthCheck?.current_step !== LAST_STEP.key &&
-                    'bg-ces-orange-500 hover:bg-ces-orange-600',
-                )}
-                onClick={handleButtonClick}
+                className={`ml-auto w-full text-white sm:w-auto ${healthCheck?.current_step !== LAST_STEP.key ? 'bg-ces-orange-500 hover:bg-ces-orange-600' : ''}`}
+                onClick={() => {
+                  if (healthCheck?.current_step !== LAST_STEP.key) {
+                    updateHealthCheck({
+                      id: healthCheck?.id ?? '',
+                      healthCheck: {
+                        current_step: (healthCheck?.current_step || 1) + 1,
+                      },
+                    });
+                  } else {
+                    handleCompleteHealthCheck();
+                    router.push(`/teams/${healthCheck.team_id}`);
+                  }
+                }}
               >
                 {healthCheck?.current_step !== LAST_STEP.key
                   ? getNextPhaseButtonText()
