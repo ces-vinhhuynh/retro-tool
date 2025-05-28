@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
@@ -9,28 +10,24 @@ import {
   HealthCheckTab,
 } from '@/features/health-check/utils/constants';
 
-import { HealthCheckFormData } from '../../types/health-check';
-
 import GeneralTab from './general-tab';
 import OptionsTab from './option-tab';
 import TabNavigation from './tab-navigation';
 
 interface SessionFormStepProps {
-  formData: HealthCheckFormData;
-  onFormDataChange: (data: Partial<HealthCheckFormData>) => void;
   onSubmit: () => void;
   onBack: () => void;
   isSubmitting: boolean;
 }
 
 const SessionFormStep = ({
-  formData,
-  onFormDataChange,
   onSubmit,
   onBack,
   isSubmitting,
 }: SessionFormStepProps) => {
   const [activeTab, setActiveTab] = useState<HealthCheckTab>('general');
+  const { handleSubmit, watch } = useFormContext();
+  const title = watch('title');
 
   return (
     <div className="py-4">
@@ -40,19 +37,9 @@ const SessionFormStep = ({
         tabs={HEALTH_CHECK_TABS}
       />
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
-        {activeTab === 'general' && (
-          <GeneralTab formData={formData} onFormDataChange={onFormDataChange} />
-        )}
-
-        {activeTab === 'options' && (
-          <OptionsTab formData={formData} onFormDataChange={onFormDataChange} />
-        )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {activeTab === 'general' && <GeneralTab />}
+        {activeTab === 'options' && <OptionsTab />}
 
         <DialogFooter className="pt-4">
           <Button
@@ -65,7 +52,7 @@ const SessionFormStep = ({
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting || !formData.title.trim()}
+            disabled={isSubmitting || !title?.trim()}
             className="text-primary-foreground"
           >
             {isSubmitting ? 'Creating...' : 'Create'}

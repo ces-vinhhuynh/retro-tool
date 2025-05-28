@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Card } from '@/components/ui/card';
@@ -46,11 +47,6 @@ const SessionTemplateDialog = ({
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
     null,
   );
-  const [formData, setFormData] = useState<HealthCheckFormData>({
-    title: '',
-    dueDate: new Date(),
-    displayMode: DisplayMode.GROUPED,
-  });
   const [previewState, setPreviewState] = useState<{
     open: boolean;
     template: Template | null;
@@ -60,6 +56,14 @@ const SessionTemplateDialog = ({
   const { data: templates, isLoading: isLoadingTemplates } = useTemplates();
   const { createHealthCheck, isLoading: isCreatingHealthCheck } =
     useHealthCheckMutations();
+
+  const methods = useForm<HealthCheckFormData>({
+    defaultValues: {
+      title: '',
+      dueDate: new Date(),
+      displayMode: DisplayMode.GROUPED,
+    },
+  });
 
   useEffect(() => {
     if (templateId) {
@@ -71,7 +75,8 @@ const SessionTemplateDialog = ({
     }
   }, [templates, templateId]);
 
-  const handleCreate = async () => {
+  // Accept form data from react-hook-form
+  const handleCreate = async (formData: HealthCheckFormData) => {
     if (!selectedTemplate || !currentUser) {
       toast.error(AUTHENTICATION_REQUIRED, {
         description: AUTHENTICATION_REQUIRED_DESCRIPTION,
@@ -132,15 +137,13 @@ const SessionTemplateDialog = ({
             ))}
 
           {step === 'form' && (
-            <SessionFormStep
-              formData={formData}
-              onFormDataChange={(data) =>
-                setFormData((prev) => ({ ...prev, ...data }))
-              }
-              onSubmit={handleCreate}
-              onBack={() => setStep('choose')}
-              isSubmitting={isCreatingHealthCheck}
-            />
+            <FormProvider {...methods}>
+              <SessionFormStep
+                onSubmit={methods.handleSubmit(handleCreate)}
+                onBack={() => setStep('choose')}
+                isSubmitting={isCreatingHealthCheck}
+              />
+            </FormProvider>
           )}
         </DialogContent>
       </Dialog>
