@@ -2,6 +2,7 @@ import { Check, User as UserIcon } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { getAvatarCharacters } from '@/utils/user';
 
 import { ActionItem, User } from '../types/health-check';
 
@@ -55,7 +56,7 @@ const UserAssignmentPopover = ({
                   />
                 ) : (
                   <AvatarFallback>
-                    {member.full_name?.slice(0, 2)}
+                    {getAvatarCharacters(member.full_name ?? '')}
                   </AvatarFallback>
                 )}
               </Avatar>

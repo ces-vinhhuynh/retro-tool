@@ -1,5 +1,7 @@
 'use client';
 
+import { cn } from '@/utils/cn';
+
 import { useResponseByHealthChecks } from '../hooks/use-response-by-health-checks';
 import {
   AverageScores,
@@ -63,20 +65,21 @@ const ScrumHealthCheck = ({
   };
 
   return (
-    <div className="rounded-lg bg-white p-6">
+    <div className="rounded-lg bg-white">
       <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
       <div className="flex w-full flex-row gap-0 border-gray-200 md:flex-nowrap">
-        <div className="w-32 md:w-56 lg:w-68">
+        <div className={cn('w-32 md:w-56 lg:w-68', { 'w-20': isShowAddNew })}>
           <div className="h-24 border-r border-b border-gray-200" />
           {formattedData[0].questions?.map((item) => (
             <QuestionRow
               key={item.id}
               title={item.title}
               description={item.description}
+              isShowAddNew={isShowAddNew}
             />
           ))}
         </div>
-        <div className="flex flex-row flex-1 overflow-x-auto">
+        <div className="flex flex-1 flex-row overflow-x-auto">
           {formattedData?.map((healthCheck) => (
             <HealthCheckColumn
               key={healthCheck.id}

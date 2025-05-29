@@ -33,7 +33,7 @@ const HealthCheckColumn = ({
     <div
       key={healthCheck.id}
       className={cn(
-        'flex min-w-24 max-w-56 w-full flex-col border transition-transform duration-200',
+        'flex w-full max-w-56 min-w-24 flex-col border transition-transform duration-200',
         {
           'cursor-pointer bg-blue-50': isShowAddNew,
         },
@@ -61,7 +61,9 @@ const HealthCheckColumn = ({
             href={`/health-checks/${healthCheck.id}`}
             className="flex w-full flex-col items-center gap-2"
           >
-            <h2 className="text-lg font-bold">{healthCheck.title}</h2>
+            <h2 className="max-w-full truncate text-lg font-bold">
+              {healthCheck.title}
+            </h2>
             <p className="text-sm text-gray-500">
               {new Date(String(healthCheck.createdAt)).toLocaleDateString()}
             </p>

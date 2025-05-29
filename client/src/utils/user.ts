@@ -3,5 +3,5 @@ export const getAvatarCharacters = (name: string) =>
     .split(' ')
     .map((n) => n[0])
     .join('')
-    .slice(0, 2)
+    .slice(0, 1)
     .toUpperCase();

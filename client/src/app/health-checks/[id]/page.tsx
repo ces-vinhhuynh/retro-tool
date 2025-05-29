@@ -441,7 +441,7 @@ export default function HealthCheckPage() {
             </div>
           )}
         </div>
-        {!isMobile && (
+        {!isMobile && isFacilitator && (
           <SubMenu
             agreements={agreements || []}
             issues={issues || []}

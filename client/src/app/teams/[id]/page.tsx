@@ -78,7 +78,7 @@ const TeamPage = () => {
               <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
                 <Button
                   variant={'default'}
-                  className="self-start md:self-center"
+                  className="ml-auto"
                   onClick={() => setShowDialog(true)}
                 >
                   New Retro Session
@@ -107,15 +107,12 @@ const TeamPage = () => {
               {Object.entries(healthChecksGrouped).map(([key, value]) => {
                 if (value.length === 0) return null;
                 return (
-                  <Card className="mx-auto w-full" key={key}>
-                    <CardContent className="flex flex-col gap-2 p-2">
-                      <ScrumHealthCheck
-                        onAddNewSession={() => onAddNewSession(key)}
-                        scrumHealthChecks={value as HealthCheckWithTemplate[]}
-                        isShowAddNew={true}
-                      />
-                    </CardContent>
-                  </Card>
+                  <ScrumHealthCheck
+                    key={key}
+                    onAddNewSession={() => onAddNewSession(key)}
+                    scrumHealthChecks={value as HealthCheckWithTemplate[]}
+                    isShowAddNew={true}
+                  />
                 );
               })}
             </Card>
@@ -127,7 +124,7 @@ const TeamPage = () => {
               <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
                 <Button
                   variant={'default'}
-                  className="self-start md:self-center"
+                  className="self-start md:self-center ml-auto"
                   onClick={() => setShowInviteDialog(true)}
                 >
                   Invite member

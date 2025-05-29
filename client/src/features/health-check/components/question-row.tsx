@@ -1,13 +1,25 @@
 import { Info } from 'lucide-react';
 
+import { cn } from '@/utils/cn';
+
 interface QuestionRowProps {
   title: string;
   description: string;
+  isShowAddNew?: boolean;
 }
 
-const QuestionRow = ({ title, description }: QuestionRowProps) => {
+const QuestionRow = ({
+  title,
+  description,
+  isShowAddNew,
+}: QuestionRowProps) => {
   return (
-    <div className="flex h-16 w-40 min-w-0 items-center gap-1 border-r border-b border-gray-200 p-2 sm:w-48 sm:p-4 md:w-56 lg:w-64">
+    <div
+      className={cn(
+        'flex h-16 w-32 min-w-0 items-center gap-1 border-r border-b border-gray-200 p-2 md:w-56 lg:w-68',
+        { 'w-20': isShowAddNew },
+      )}
+    >
       <div className="flex w-full min-w-0 items-center justify-between">
         <span className="truncate text-xs font-medium sm:text-sm">{title}</span>
         <button
