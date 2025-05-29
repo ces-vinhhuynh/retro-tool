@@ -70,7 +70,7 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
         <Select defaultValue={role} onValueChange={handleUpdateWorkspaceUser}>
           <SelectTrigger
             className={cn(
-              'w-fit rounded-4xl border border-gray-200 px-3 py-1.5 focus:ring-0',
+              'w-fit cursor-pointer rounded-4xl border border-gray-200 bg-gray-100 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0 focus:ring-offset-0',
               {
                 'bg-ces-orange-500 text-white':
                   role === 'owner' || role === 'admin',
@@ -80,9 +80,15 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
             <SelectValue placeholder={WORKSPACE_ROLES[role]} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="owner">{WORKSPACE_ROLES['owner']}</SelectItem>
-            <SelectItem value="admin">{WORKSPACE_ROLES['admin']}</SelectItem>
-            <SelectItem value="member">{WORKSPACE_ROLES['member']}</SelectItem>
+            {Object.values(WORKSPACE_ROLES).map((role) => (
+              <SelectItem
+                key={role}
+                value={role}
+                className="text-gray-900 capitalize"
+              >
+                {role}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       );
@@ -99,7 +105,7 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
           {teams.map((team) => (
             <div
               key={`${id}_${team}`}
-              className="flex items-center rounded-sm bg-gray-100 p-1.5"
+              className="bg-ces-orange-100/60 text-ces-orange-600 flex items-center rounded-full px-3 py-2 font-semibold"
             >
               {team}
             </div>
@@ -120,8 +126,12 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
       };
 
       return (
-        <Button variant="ghost" onClick={() => handleDeleteWorkspaceUser(id)}>
-          <Trash2 className="text-ces-orange-500 h-4 w-4" />
+        <Button
+          variant="ghost"
+          onClick={() => handleDeleteWorkspaceUser(id)}
+          className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
+        >
+          <Trash2 />
         </Button>
       );
     },

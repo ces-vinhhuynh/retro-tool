@@ -22,9 +22,9 @@ import {
 } from '@/features/health-check/types/health-check';
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
+import { DataTable } from '@/features/workspace/components/data-table';
 import TeamInviteDialog from '@/features/workspace/components/team-invite-dialog';
 import { columns } from '@/features/workspace/components/team-members-table/columns';
-import { DataTable } from '@/features/workspace/components/user-table/data-table';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
 

@@ -1,8 +1,10 @@
-export const WORKSPACE_ROLES = {
-  owner: 'Owner',
-  admin: 'Admin',
-  member: 'Member',
-};
+export enum WORKSPACE_ROLES {
+  owner = 'owner',
+  admin = 'admin',
+  member = 'member',
+}
+
+export type WorkspaceRole = keyof typeof WORKSPACE_ROLES;
 
 export enum TEAM_ROLES {
   admin = 'admin',

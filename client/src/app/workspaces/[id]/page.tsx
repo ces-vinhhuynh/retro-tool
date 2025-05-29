@@ -41,7 +41,7 @@ export default function WorkspacePage({
 
   return (
     <Layout>
-      <div className="flex flex-col gap-4 py-4">
+      <div className="flex flex-col gap-4 px-3 py-5">
         <div className="flex justify-between">
           <div className="">
             <h1 className="text-2xl font-bold">Welcome back</h1>

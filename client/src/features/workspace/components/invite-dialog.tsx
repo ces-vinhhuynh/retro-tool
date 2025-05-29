@@ -41,9 +41,14 @@ const InviteDialog = ({ open, onClose, onInvite }: InviteDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogTrigger asChild>
-        <Button variant="default">Invite Member</Button>
+        <Button
+          variant="default"
+          className="primary h-8 rounded-md md:h-10 md:text-base"
+        >
+          Invite User
+        </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>Invite to Workspace</DialogTitle>
         </DialogHeader>

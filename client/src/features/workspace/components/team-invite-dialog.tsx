@@ -58,7 +58,7 @@ const TeamInviteDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>Invite to Team</DialogTitle>
         </DialogHeader>

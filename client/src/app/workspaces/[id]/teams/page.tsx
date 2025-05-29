@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation';
 import { Layout } from '@/components/layout/layout';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import CreateTeamDialog from '@/features/workspace/components/create-team-dialog';
+import { DataTable } from '@/features/workspace/components/data-table';
 import TeamCard from '@/features/workspace/components/team-card';
 import { columns } from '@/features/workspace/components/team-table/columns';
-import { DataTable } from '@/features/workspace/components/user-table/data-table';
 import { TEAM_ROLES } from '@/features/workspace/constants/user';
 import { useDeleteTeam } from '@/features/workspace/hooks/use-delete-team';
 import { useGetWorkspaceTeams } from '@/features/workspace/hooks/use-get-workspace-teams';
@@ -28,7 +28,7 @@ export default function WorkspacePage() {
           </div>
         </div>
         <div className="flex flex-col gap-6 rounded-xl bg-white p-3 shadow-sm sm:p-5">
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <h2 className="text-lg font-bold md:text-xl">All Teams</h2>
             <p className="text-sm text-gray-600">
               Manage teams and track their health
