@@ -4,19 +4,19 @@ import { Label } from '@/components/ui/label';
 
 import ToggleSwitch from './toggle-switch';
 
-interface DisplayModeOptionProps {
+interface SettingModeOptionProps {
   id: string;
   label: string;
   isSelected: boolean;
   onChange: () => void;
 }
 
-const DisplayModeOption = ({
+const SettingModeOption = ({
   id,
   label,
   isSelected,
   onChange,
-}: DisplayModeOptionProps) => {
+}: SettingModeOptionProps) => {
   return (
     <div className="flex cursor-pointer items-center justify-between rounded-md border bg-white p-2.5 transition-all hover:border-gray-300">
       <Label htmlFor={id} className="cursor-pointer text-gray-700">
@@ -27,4 +27,4 @@ const DisplayModeOption = ({
   );
 };
 
-export default DisplayModeOption;
+export default SettingModeOption;

@@ -94,6 +94,7 @@ const SessionTemplateDialog = ({
       current_step: 1,
       settings: {
         display_mode: formData.displayMode,
+        allow_navigation: formData.allowNavigation,
       },
     });
 

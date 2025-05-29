@@ -159,6 +159,13 @@ export type Database = {
             referencedRelation: 'health_checks';
             referencedColumns: ['id'];
           },
+          {
+            foreignKeyName: 'agreements_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
         ];
       };
       health_check_templates: {
@@ -210,6 +217,8 @@ export type Database = {
         Row: {
           average_score: Json | null;
           created_at: string | null;
+          current_group_index: number | null;
+          current_question_index: number | null;
           current_step: number | null;
           description: string | null;
           facilitator_id: string | null;
@@ -225,6 +234,8 @@ export type Database = {
         Insert: {
           average_score?: Json | null;
           created_at?: string | null;
+          current_group_index?: number | null;
+          current_question_index?: number | null;
           current_step?: number | null;
           description?: string | null;
           facilitator_id?: string | null;
@@ -240,6 +251,8 @@ export type Database = {
         Update: {
           average_score?: Json | null;
           created_at?: string | null;
+          current_group_index?: number | null;
+          current_question_index?: number | null;
           current_step?: number | null;
           description?: string | null;
           facilitator_id?: string | null;
@@ -310,6 +323,13 @@ export type Database = {
             columns: ['health_check_id'];
             isOneToOne: false;
             referencedRelation: 'health_checks';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'issues_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
             referencedColumns: ['id'];
           },
         ];

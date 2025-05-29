@@ -1,7 +1,7 @@
 import { DisplayMode } from '@/features/health-check/types/health-check';
 import { cn } from '@/lib/utils';
 
-import DisplayModeOption from './display-mode-option';
+import DisplayModeOption from './setting-mode-option';
 import ToggleOption from './toggle-option';
 
 interface DisplayModeSelectorProps {

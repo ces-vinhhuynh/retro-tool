@@ -15,14 +15,14 @@ import { useSubMenuStore } from '../stores/sub-menu-store';
 import { Agreement } from '../types/agreements';
 import {
   ActionItemWithAssignees,
-  DisplayMode,
   HealthCheck,
+  HealthCheckSettings,
   User,
 } from '../types/health-check';
 import { Issue } from '../types/issues';
 import { SUBMENU_ITEMS } from '../utils/constants';
 
-import DisplayModeDialog from './display-mode-dialog';
+import DisplayModeDialog from './setting-dialog';
 import TeamActions from './team-actions';
 import TeamAgreements from './team-agreements';
 import TeamIssues from './team-issues';
@@ -36,8 +36,8 @@ interface SubMenuProps {
   healthCheck: HealthCheck;
   teamId: string;
   teamMembers: User[];
-  onDisplayModeChange: (mode: DisplayMode) => void;
-  currentDisplayMode: DisplayMode;
+  onHealthCheckSettingsChange: (settings: HealthCheckSettings) => void;
+  settings: HealthCheckSettings;
 }
 
 const SubMenu = ({
@@ -48,8 +48,8 @@ const SubMenu = ({
   actionItems,
   teamId,
   teamMembers,
-  onDisplayModeChange,
-  currentDisplayMode,
+  onHealthCheckSettingsChange,
+  settings,
 }: SubMenuProps) => {
   const { selectedSubmenu, setSelectedSubmenu } = useSubMenuStore();
 
@@ -97,8 +97,8 @@ const SubMenu = ({
             item.value === SUBMENU_ITEMS.CUSTOMIZE ? (
               <DisplayModeDialog
                 key={item.value}
-                currentMode={currentDisplayMode}
-                onChange={onDisplayModeChange}
+                settings={settings}
+                onChange={onHealthCheckSettingsChange}
                 trigger={
                   <Button
                     variant="ghost"

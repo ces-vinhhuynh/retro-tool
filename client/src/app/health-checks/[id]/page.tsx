@@ -13,7 +13,7 @@ import HealthCheckSteps from '@/features/health-check/components/health-check-st
 import ReviewPhase from '@/features/health-check/components/review-phase';
 import WelcomeModal from '@/features/health-check/components/sessions/welcome-modal';
 import SubMenu from '@/features/health-check/components/sub-menu';
-import SurveyTab from '@/features/health-check/components/survey-tab';
+import SurveyTab from '@/features/health-check/components/survey-phase';
 import {
   FIRST_STEP,
   LAST_STEP,
@@ -43,7 +43,6 @@ import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/u
 import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
-  DisplayMode,
   HealthCheckSettings,
   HealthCheckStatus,
   HealthCheckWithTemplate,
@@ -239,11 +238,11 @@ export default function HealthCheckPage() {
     }
   };
 
-  const handleUpdateDisplayMode = (mode: DisplayMode) => {
+  const handleUpdateHealthCheckSettings = (settings: HealthCheckSettings) => {
     if (!isFacilitator) return;
     updateHealthCheck({
       id: healthCheckId,
-      healthCheck: { settings: { display_mode: mode } },
+      healthCheck: { settings },
     });
   };
 
@@ -343,15 +342,14 @@ export default function HealthCheckPage() {
               </div>
               {healthCheck.current_step === STEPS['survey'].key && (
                 <SurveyTab
+                  healthCheck={healthCheck as HealthCheckWithTemplate}
                   sections={sections}
                   currentUser={currentUser as unknown as User}
                   groupedQuestions={grouped}
                   minScore={template?.min_value}
                   maxScore={template?.max_value}
                   response={response}
-                  displayMode={
-                    (healthCheck.settings as HealthCheckSettings).display_mode
-                  }
+                  settings={healthCheck.settings as HealthCheckSettings}
                 />
               )}
               {healthCheck.current_step === STEPS['discuss'].key && (
@@ -424,10 +422,8 @@ export default function HealthCheckPage() {
           actionItems={actionItems || []}
           teamId={healthCheck?.team_id || ''}
           teamMembers={teamMembers as unknown as User[]}
-          onDisplayModeChange={handleUpdateDisplayMode}
-          currentDisplayMode={
-            (healthCheck.settings as HealthCheckSettings).display_mode
-          }
+          onHealthCheckSettingsChange={handleUpdateHealthCheckSettings}
+          settings={healthCheck.settings as HealthCheckSettings}
         />
       </div>
     </Layout>

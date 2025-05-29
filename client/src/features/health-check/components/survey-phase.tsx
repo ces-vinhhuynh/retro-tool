@@ -6,12 +6,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
+import { useHealthCheckMutations } from '../hooks/use-health-check';
 import { useUpdateResponse } from '../hooks/use-response';
 import { useUpdateParticipant } from '../hooks/use-update-participant';
 import {
   AnswerSurvey,
   DisplayMode,
   GroupedQuestions,
+  HealthCheckSettings,
+  HealthCheckWithTemplate,
   Response,
   Score,
   User,
@@ -29,26 +32,49 @@ interface QuestionAnswer {
   updated_at: string;
 }
 
-type SurveyTabProps = {
+type SurveyPhaseProps = {
   sections: string[];
   currentUser: User | null;
   groupedQuestions: GroupedQuestions;
   minScore: Score;
   maxScore: Score;
   response: Response | null | undefined;
-  displayMode: DisplayMode;
+  settings: HealthCheckSettings;
+  healthCheck: HealthCheckWithTemplate;
 };
 
-const SurveyTab = ({
+const SurveyPhase = ({
   sections,
   currentUser,
   groupedQuestions,
   minScore,
   maxScore,
   response,
-  displayMode,
-}: SurveyTabProps) => {
+  settings,
+  healthCheck,
+}: SurveyPhaseProps) => {
   const { id: healthCheckId } = useParams<{ id: string }>();
+  const { updateHealthCheck } = useHealthCheckMutations();
+  const isFacilitator = currentUser?.id === healthCheck?.facilitator_id;
+
+  const [localGroupIndex, setLocalGroupIndex] = useState(
+    healthCheck?.current_group_index ?? 0,
+  );
+  const [localQuestionIndex, setLocalQuestionIndex] = useState(
+    healthCheck?.current_question_index ?? 0,
+  );
+
+  // Update local indices when health check updates (for facilitator-controlled navigation)
+  useEffect(() => {
+    if (!settings.allow_participant_navigation) {
+      setLocalGroupIndex(healthCheck?.current_group_index ?? 0);
+      setLocalQuestionIndex(healthCheck?.current_question_index ?? 0);
+    }
+  }, [
+    healthCheck?.current_group_index,
+    healthCheck?.current_question_index,
+    settings.allow_participant_navigation,
+  ]);
 
   const [additionalItems, setAdditionalItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState('');
@@ -189,6 +215,61 @@ const SurveyTab = ({
     await saveAdditionalItemsImmediate(updatedItems);
   };
 
+  const calculateNewIndex = (
+    currentIndex: number,
+    direction: 'next' | 'previous',
+    maxIndex?: number,
+  ) => {
+    const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    if (maxIndex !== undefined) {
+      return newIndex >= 0 && newIndex < maxIndex ? newIndex : currentIndex;
+    }
+    return newIndex >= 0 ? newIndex : currentIndex;
+  };
+
+  const updateGroupIndex = (newIndex: number) => {
+    if (settings.allow_participant_navigation) {
+      setLocalGroupIndex(newIndex);
+    } else if (isFacilitator) {
+      updateHealthCheck({
+        id: healthCheckId,
+        healthCheck: { current_group_index: newIndex },
+      });
+    }
+  };
+
+  const updateQuestionIndex = (newIndex: number) => {
+    if (settings.allow_participant_navigation) {
+      setLocalQuestionIndex(newIndex);
+    } else if (isFacilitator) {
+      updateHealthCheck({
+        id: healthCheckId,
+        healthCheck: { current_question_index: newIndex },
+      });
+    }
+  };
+
+  const handleNavigation = (direction: 'next' | 'previous') => {
+    if (settings.display_mode === DisplayMode.GROUPED) {
+      const newIndex = calculateNewIndex(
+        localGroupIndex,
+        direction,
+        sections.length,
+      );
+      if (newIndex !== localGroupIndex) {
+        updateGroupIndex(newIndex);
+      }
+      return;
+    }
+
+    if (settings.display_mode === DisplayMode.SINGLE) {
+      const newIndex = calculateNewIndex(localQuestionIndex, direction);
+      if (newIndex !== localQuestionIndex) {
+        updateQuestionIndex(newIndex);
+      }
+    }
+  };
+
   const sharedProps = {
     sections,
     groupedQuestions,
@@ -205,6 +286,15 @@ const SurveyTab = ({
     setNewItem,
     handleItemChange,
     handleDeleteItem,
+    allowParticipantNavigation: settings.allow_participant_navigation,
+    isFacilitator,
+    handleNavigation: handleNavigation,
+    currentGroupIndex: settings.allow_participant_navigation
+      ? localGroupIndex
+      : (healthCheck?.current_group_index ?? 0),
+    currentQuestionIndex: settings.allow_participant_navigation
+      ? localQuestionIndex
+      : (healthCheck?.current_question_index ?? 0),
   };
 
   return (
@@ -218,13 +308,13 @@ const SurveyTab = ({
             </div>
           </div>
 
-          {displayMode === DisplayMode.SINGLE && (
+          {settings.display_mode === DisplayMode.SINGLE && (
             <OneQuestionMode {...sharedProps} />
           )}
-          {displayMode === DisplayMode.ALL && (
+          {settings.display_mode === DisplayMode.ALL && (
             <AllQuestionMode {...sharedProps} />
           )}
-          {displayMode === DisplayMode.GROUPED && (
+          {settings.display_mode === DisplayMode.GROUPED && (
             <SectionBySectionMode {...sharedProps} />
           )}
         </CardContent>
@@ -233,4 +323,4 @@ const SurveyTab = ({
   );
 };
 
-export default SurveyTab;
+export default SurveyPhase;

@@ -124,10 +124,12 @@ export type HealthCheckFormData = {
   title: string;
   dueDate: Date;
   displayMode: DisplayMode;
+  allowNavigation: boolean;
 };
 
 export type HealthCheckSettings = {
   display_mode: DisplayMode;
+  allow_participant_navigation: boolean;
 };
 
 export type AnswerSurvey = {
