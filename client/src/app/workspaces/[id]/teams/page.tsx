@@ -52,7 +52,7 @@ export default function WorkspacePage() {
           </div>
           {/* Desktop */}
           <div className="hidden w-full overflow-x-auto sm:block">
-            <DataTable columns={columns} data={teams} />
+            <DataTable columns={columns as any} data={teams} />
           </div>
         </div>
       </div>

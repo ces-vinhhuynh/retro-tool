@@ -31,4 +31,4 @@ async function createClient() {
   );
 }
 
-export default createClient();
+export default createClient;

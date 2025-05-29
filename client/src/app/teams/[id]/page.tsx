@@ -136,7 +136,7 @@ const TeamPage = () => {
                   teamId={teamId}
                 />
               </div>
-              <DataTable columns={columns} data={teamMembers} />
+              <DataTable columns={columns as any} data={teamMembers} />
             </Card>
           </div>
         </TabsContent>

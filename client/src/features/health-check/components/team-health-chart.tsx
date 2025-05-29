@@ -189,6 +189,7 @@ export default function TeamHealthChart({
             data={chartData}
             currentIndex={selectedIndex}
             setCurrentIndex={setSelectedIndex}
+            // @ts-ignore
             actionItems={actionItems}
             teamMembers={teamMembers}
           />
