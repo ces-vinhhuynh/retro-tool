@@ -1,7 +1,7 @@
 'use client';
 
 import _groupBy from 'lodash.groupby';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { Layout } from '@/components/layout/layout';
@@ -51,6 +51,7 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/utils/cn';
 
 export type GroupedQuestions = {
@@ -58,6 +59,8 @@ export type GroupedQuestions = {
 };
 
 export default function HealthCheckPage() {
+  const router = useRouter();
+  const isMobile = useIsMobile();
   const { id: healthCheckId } = useParams<{ id: string }>();
 
   const {
@@ -305,6 +308,19 @@ export default function HealthCheckPage() {
       return STEPS['close'].value;
   };
 
+  const handleButtonClick = () => {
+    if (healthCheck?.current_step !== LAST_STEP.key) {
+      return updateHealthCheck({
+        id: healthCheck?.id ?? '',
+        healthCheck: {
+          current_step: (healthCheck?.current_step || 1) + 1,
+        },
+      });
+    }
+    handleCompleteHealthCheck();
+    router.push(`/teams/${healthCheck.team_id}`);
+  };
+
   const isLoading =
     isLoadingUser ||
     isLoadingHealthCheck ||
@@ -330,7 +346,7 @@ export default function HealthCheckPage() {
       <div className="flex w-full justify-between px-3 lg:px-0">
         <div className={cn('w-full', selectedSubmenu && 'w-[80%]')}>
           <div className="flex w-full">
-            <div className="mx-auto w-full">
+            <div className="mx-auto w-full p-2 md:p-4 lg:p-6">
               <div className="pb-6">
                 <div className="flex items-center justify-center pt-3">
                   <HealthCheckSteps
@@ -358,6 +374,7 @@ export default function HealthCheckPage() {
                   questions={questions}
                   responses={responses ?? []}
                   actionItems={actionItems ?? []}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
                 />
               )}
@@ -369,11 +386,14 @@ export default function HealthCheckPage() {
                   actionItems={actionItems || []}
                   teamId={healthCheck?.team_id || ''}
                   teamSize={participants?.length || 0}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
                 />
               )}
               {healthCheck.current_step === STEPS['close'].key && (
                 <ClosePhase
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                  teamMembers={teamMembers as unknown as User[]}
                   healthCheck={healthCheck as HealthCheckWithTemplate}
                   questions={questions}
                   responses={responses as ResponseWithUser[]}
@@ -382,8 +402,8 @@ export default function HealthCheckPage() {
                     scrumHealthChecks as HealthCheckWithTemplate[]
                   }
                   teamSize={participants?.length || 0}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for currentUser
                   currentUser={currentUser as unknown as User}
-                  handleCompleteHealthCheck={handleCompleteHealthCheck}
                 />
               )}
             </div>
@@ -396,35 +416,36 @@ export default function HealthCheckPage() {
               />
             )}
           </div>
-          {isFacilitator && healthCheck?.current_step !== LAST_STEP.key && (
-            <div className="mx-auto flex w-[50%] justify-center py-5">
+          {isFacilitator && (
+            <div className="mx-auto flex w-[50%] py-5">
               <Button
-                className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white sm:w-auto"
-                onClick={() =>
-                  updateHealthCheck({
-                    id: healthCheck?.id ?? '',
-                    healthCheck: {
-                      current_step: (healthCheck?.current_step || 1) + 1,
-                    },
-                  })
-                }
+                className={cn(
+                  'ml-auto w-full text-white sm:w-auto',
+                  healthCheck?.current_step !== LAST_STEP.key &&
+                    'bg-ces-orange-500 hover:bg-ces-orange-600',
+                )}
+                onClick={handleButtonClick}
               >
-                {getNextPhaseButtonText()}
+                {healthCheck?.current_step !== LAST_STEP.key
+                  ? getNextPhaseButtonText()
+                  : 'Exit Health Check'}
               </Button>
             </div>
           )}
         </div>
-        <SubMenu
-          agreements={agreements || []}
-          issues={issues || []}
-          healthCheck={healthCheck}
-          healthCheckId={healthCheckId}
-          actionItems={actionItems || []}
-          teamId={healthCheck?.team_id || ''}
-          teamMembers={teamMembers as unknown as User[]}
-          onHealthCheckSettingsChange={handleUpdateHealthCheckSettings}
-          settings={healthCheck.settings as HealthCheckSettings}
-        />
+        {!isMobile && (
+          <SubMenu
+            agreements={agreements || []}
+            issues={issues || []}
+            healthCheck={healthCheck}
+            healthCheckId={healthCheckId}
+            actionItems={actionItems || []}
+            teamId={healthCheck?.team_id || ''}
+            teamMembers={teamMembers as unknown as User[]}
+            onHealthCheckSettingsChange={handleUpdateHealthCheckSettings}
+            settings={healthCheck.settings as HealthCheckSettings}
+          />
+        )}
       </div>
     </Layout>
   );

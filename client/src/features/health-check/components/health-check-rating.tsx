@@ -3,10 +3,13 @@
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 import { useUpdateHealthCheckRating } from '../hooks/use-update-health-check-rating';
 import { ResponseWithUser, User } from '../types/health-check';
+import { getScoreColors } from '../utils/color';
 import { RATING_OPTIONS } from '../utils/constants';
 
 import RatingOption from './rating-option';
@@ -19,11 +22,11 @@ interface SessionReviewProps {
   currentUser: User;
 }
 
-export function HealthCheckRating({
+const HealthCheckRating = ({
   teamSize,
   responses,
   currentUser,
-}: SessionReviewProps) {
+}: SessionReviewProps) => {
   const currentUserResponse = responses.find(
     (response) => response.user_id === currentUser?.id,
   );
@@ -55,15 +58,15 @@ export function HealthCheckRating({
   };
 
   return (
-    <div className="rounded-lg bg-white p-6">
+    <div className="flex w-full flex-col gap-2 overflow-x-auto rounded-lg bg-white p-6">
       <h2 className="py-3 text-2xl font-bold text-gray-900">Meeting Rating</h2>
       <div className="mx-auto w-full max-w-3xl space-y-6">
         <h2 className="text-center text-xl font-semibold">
           Was this meeting worth your time?
         </h2>
 
-        <div className="overflow-hidden bg-blue-100">
-          <div className="grid grid-cols-5">
+        <div className="hidden overflow-hidden bg-blue-100 md:block">
+          <div className="grid grid-cols-5 items-center">
             <TooltipProvider>
               {RATING_OPTIONS.map((option) => (
                 <RatingOption
@@ -74,6 +77,30 @@ export function HealthCheckRating({
                 />
               ))}
             </TooltipProvider>
+          </div>
+        </div>
+        <div className="pb-2 flex w-full flex-col gap-2 sm:block md:hidden">
+          <Slider
+            min={RATING_OPTIONS[0].value}
+            max={RATING_OPTIONS.at(-1)?.value ?? 0}
+            step={1}
+            value={[selectedRating ?? RATING_OPTIONS[0].value]}
+            onValueChange={([val]) => handleRatingSelect(val)}
+            className="w-full"
+            thumbClassName={getScoreColors(selectedRating ?? 0)?.circle}
+          />
+          <div className="flex justify-between text-xs">
+            {RATING_OPTIONS.map(({ value }) => (
+              <span
+                key={value}
+                className={cn('font-bold', {
+                  [getScoreColors(value)?.text ?? '']: selectedRating === value,
+                  'text-gray-500': selectedRating !== value,
+                })}
+              >
+                {value}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -100,4 +127,6 @@ export function HealthCheckRating({
       />
     </div>
   );
-}
+};
+
+export default HealthCheckRating;

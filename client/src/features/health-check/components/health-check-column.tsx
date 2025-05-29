@@ -33,7 +33,7 @@ const HealthCheckColumn = ({
     <div
       key={healthCheck.id}
       className={cn(
-        'flex w-[100px] flex-col border transition-transform duration-200 hover:scale-105 sm:w-[140px] md:w-[210px]',
+        'flex min-w-24 max-w-56 w-full flex-col border transition-transform duration-200',
         {
           'cursor-pointer bg-blue-50': isShowAddNew,
         },

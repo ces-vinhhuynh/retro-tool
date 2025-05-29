@@ -7,7 +7,7 @@ import { ChartContainer } from '@/components/ui/chart';
 import { cn } from '@/utils/cn';
 
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   AverageScores,
   HealthCheck,
   Question,
@@ -30,20 +30,20 @@ interface TeamHealthChartProps {
   healthCheck: HealthCheck;
   questions: Question[];
   responses: Response[];
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   isClosePhase?: boolean;
   teamMembers: User[];
 }
 
-export default function TeamHealthChart({
+const TeamHealthChart = ({
   healthCheck,
   questions,
   responses,
   actionItems,
   title,
   isClosePhase = false,
-  teamMembers
-}: TeamHealthChartProps) {
+  teamMembers,
+}: TeamHealthChartProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -83,6 +83,8 @@ export default function TeamHealthChart({
     const point = chartData.find((item) => item.subject === subject);
     const commentCount = point?.commentCount ?? 0;
 
+    const firstWord = subject.split(' ')[0];
+
     return (
       <g>
         {commentCount > 0 && (
@@ -118,8 +120,11 @@ export default function TeamHealthChart({
           onClick={() => handleClick(index)}
           className="cursor-pointer"
         >
-          <tspan x={x} dy="1.2em">
-            {payload.value}
+          <tspan x={x} dy="1.2em" className="hidden md:inline">
+            {subject}
+          </tspan>
+          <tspan x={x} dy="1.2em" className="inline md:hidden">
+            {firstWord}
           </tspan>
         </text>
       </g>
@@ -132,13 +137,13 @@ export default function TeamHealthChart({
   };
 
   return (
-    <div className="rounded-lg bg-white p-6">
+    <div className="flex w-full flex-col gap-2 overflow-x-auto rounded-lg bg-white p-6">
       <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
       <p className="mb-6 text-gray-500">
         Average scores from all participants for health check sprint
       </p>
 
-      <div className="mb-2 flex items-start gap-4">
+      <div className="mb-2 flex flex-col items-start gap-4 sm:flex-row">
         <div className="space-y-2">
           <ScoreMetric label="Avg. Score" value={overallAvg} />
           <ScoreMetric label="Avg. Delivery & Execution" value={deliveryAvg} />
@@ -159,7 +164,6 @@ export default function TeamHealthChart({
           colorClass="text-[#9b87f5]"
         />
       </div>
-
       <div className="h-[400px] w-full">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
@@ -196,4 +200,6 @@ export default function TeamHealthChart({
       </div>
     </div>
   );
-}
+};
+
+export default TeamHealthChart;

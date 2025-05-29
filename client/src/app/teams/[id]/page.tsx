@@ -63,7 +63,7 @@ const TeamPage = () => {
               className="cursor-pointer"
             >
               {tab.icon}
-              {tab.label}
+              <span className="hidden sm:inline">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>
@@ -94,7 +94,7 @@ const TeamPage = () => {
                 <CardContent className="space-y-8">
                   <div className="space-y-4">
                     <h3 className="flex items-center gap-2 text-base font-medium text-gray-600">
-                      Actions from this health check
+                      Actions from team
                     </h3>
                     <ActionItems
                       actionItems={actionItems || []}
@@ -104,17 +104,20 @@ const TeamPage = () => {
                   </div>
                 </CardContent>
               </Card>
-              {Object.entries(healthChecksGrouped).map(([key, value]) => (
-                <Card className="mx-auto w-full" key={key}>
-                  <CardContent className="flex flex-col gap-2 p-2">
-                    <ScrumHealthCheck
-                      onAddNewSession={() => onAddNewSession(key)}
-                      scrumHealthChecks={value as HealthCheckWithTemplate[]}
-                      isShowAddNew={true}
-                    />
-                  </CardContent>
-                </Card>
-              ))}
+              {Object.entries(healthChecksGrouped).map(([key, value]) => {
+                if (value.length === 0) return null;
+                return (
+                  <Card className="mx-auto w-full" key={key}>
+                    <CardContent className="flex flex-col gap-2 p-2">
+                      <ScrumHealthCheck
+                        onAddNewSession={() => onAddNewSession(key)}
+                        scrumHealthChecks={value as HealthCheckWithTemplate[]}
+                        isShowAddNew={true}
+                      />
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </Card>
           </div>
         </TabsContent>

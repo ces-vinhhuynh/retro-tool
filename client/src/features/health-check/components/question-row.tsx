@@ -3,12 +3,11 @@ import { Info } from 'lucide-react';
 interface QuestionRowProps {
   title: string;
   description: string;
-  isFirst: boolean;
 }
 
-export default function QuestionRow({ title, description }: QuestionRowProps) {
+const QuestionRow = ({ title, description }: QuestionRowProps) => {
   return (
-    <div className="flex h-16 min-w-0 items-center gap-1 border-r border-b border-gray-200 p-2 sm:p-4">
+    <div className="flex h-16 min-w-0 items-center gap-1 border-r border-b border-gray-200 p-2 sm:w-32 sm:p-4 md:w-56 lg:w-64">
       <div className="flex w-full min-w-0 items-center justify-between">
         <span className="truncate text-xs font-medium sm:text-sm">{title}</span>
         <button
@@ -20,4 +19,6 @@ export default function QuestionRow({ title, description }: QuestionRowProps) {
       </div>
     </div>
   );
-}
+};
+
+export default QuestionRow;

@@ -31,7 +31,7 @@ export const Slider = React.forwardRef<
         )}
       >
         <SliderPrimitive.Range
-          className={cn('bg-primary absolute h-full', rangeClassName)}
+          className={cn('bg-ces-orange-500 absolute h-full', rangeClassName)}
         />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb

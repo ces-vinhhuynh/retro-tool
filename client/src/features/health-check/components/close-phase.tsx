@@ -1,17 +1,15 @@
 'use client';
-import { useRouter } from 'next/navigation';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   HealthCheckWithTemplate,
   Question,
   ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
 
-import { HealthCheckRating } from './health-check-rating';
+import HealthCheckRating from './health-check-rating';
 import ScrumHealthCheck from './scrum-health-check';
 import TeamHealthChart from './team-health-chart';
 
@@ -19,11 +17,11 @@ interface ClosePhaseProps {
   healthCheck: HealthCheckWithTemplate;
   questions: Question[];
   responses: ResponseWithUser[];
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   scrumHealthChecks: HealthCheckWithTemplate[];
   teamSize: number;
   currentUser: User;
-  handleCompleteHealthCheck: () => void;
+  teamMembers: User[];
 }
 
 const ClosePhase = ({
@@ -34,53 +32,32 @@ const ClosePhase = ({
   scrumHealthChecks,
   teamSize,
   currentUser,
-  handleCompleteHealthCheck,
+  teamMembers,
 }: ClosePhaseProps) => {
-  const router = useRouter();
-
   return (
-    <div className="flex flex-col gap-4">
-      <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
-        <CardContent className="flex flex-col gap-2 p-2">
-          <TeamHealthChart
-            title="Health radar"
-            isClosePhase={true}
-            responses={responses}
-            healthCheck={healthCheck}
-            questions={questions}
-            actionItems={actionItems}
-          />
-        </CardContent>
-      </Card>
-
-      <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
-        <CardContent className="flex flex-col gap-2 p-2">
-          <ScrumHealthCheck scrumHealthChecks={scrumHealthChecks} />
-        </CardContent>
-      </Card>
-
-      <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
-        <CardContent className="flex flex-col gap-2 p-2">
-          <HealthCheckRating
-            teamSize={teamSize}
-            responses={responses}
-            currentUser={currentUser}
-          />
-        </CardContent>
-      </Card>
-      {currentUser.id === healthCheck.facilitator_id && (
-        <div className="mx-auto flex w-[10%] py-5">
-          <Button
-            onClick={() => {
-              handleCompleteHealthCheck();
-              router.push(`/teams/${healthCheck.team_id}`);
-            }}
-          >
-            Exit Health Check
-          </Button>
-        </div>
-      )}
-    </div>
+    <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
+      <CardContent className="flex w-full flex-col gap-2 p-2">
+        <TeamHealthChart
+          title="Health radar"
+          isClosePhase={true}
+          responses={responses}
+          healthCheck={healthCheck}
+          questions={questions}
+          actionItems={actionItems}
+          teamMembers={teamMembers}
+        />
+      </CardContent>
+      <CardContent className="flex w-full flex-col gap-2 p-2">
+        <ScrumHealthCheck scrumHealthChecks={scrumHealthChecks} />
+      </CardContent>
+      <CardContent className="flex w-full flex-col gap-2 p-2">
+        <HealthCheckRating
+          teamSize={teamSize}
+          responses={responses}
+          currentUser={currentUser}
+        />
+      </CardContent>
+    </Card>
   );
 };
 
