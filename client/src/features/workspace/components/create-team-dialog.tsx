@@ -20,7 +20,9 @@ interface CreateTeamDialogProps {
   workspaceId: string;
 }
 
-export default function CreateTeamDialog({ workspaceId }: CreateTeamDialogProps) {
+export default function CreateTeamDialog({
+  workspaceId,
+}: CreateTeamDialogProps) {
   const [open, setOpen] = useState(false);
 
   const { mutate: createTeam, isPending } = useCreateTeam();
@@ -36,6 +38,7 @@ export default function CreateTeamDialog({ workspaceId }: CreateTeamDialogProps)
   const {
     register,
     formState: { errors },
+    reset,
   } = methods;
 
   const handleSubmit = async (data: TeamFormValues) => {
@@ -47,11 +50,19 @@ export default function CreateTeamDialog({ workspaceId }: CreateTeamDialogProps)
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        reset();
+      }}
+    >
       <DialogTrigger asChild>
-        <Button className="primary">Create Team</Button>
+        <Button className="primary h-8 rounded-md md:h-10 md:text-base">
+          Create Team
+        </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="rounded-lg sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Create Team</DialogTitle>
         </DialogHeader>
@@ -70,6 +81,9 @@ export default function CreateTeamDialog({ workspaceId }: CreateTeamDialogProps)
                   placeholder="Enter team name"
                   type="text"
                   required
+                  autoComplete="off"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus
                 />
                 {errors?.teamName && (
                   <span className="text-xs text-red-500">

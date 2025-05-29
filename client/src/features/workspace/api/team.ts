@@ -18,8 +18,11 @@ class TeamService {
     const { data, error } = await supabaseClient
       .from('teams')
       .select('*')
-      .eq('workspace_id', workspaceId);
+      .eq('workspace_id', workspaceId)
+      .order('created_at');
+
     if (error) throw error;
+
     return data ?? [];
   }
 
@@ -40,7 +43,8 @@ class TeamService {
           )
         `,
       )
-      .eq('workspace_id', workspaceId);
+      .eq('workspace_id', workspaceId)
+      .order('created_at');
 
     if (error) throw error;
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
@@ -14,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { teamService } from '../api/team';
 import { useUpdateTeam } from '../hooks/use-update-team';
 import { TeamFormValues, teamSchema } from '../schema/team.schema';
 
@@ -28,14 +31,18 @@ export default function EditTeamDialog({ teamId }: EditTeamDialogProps) {
 
   const methods = useForm<TeamFormValues>({
     resolver: zodResolver(teamSchema),
-    defaultValues: {
-      teamName: '',
+    defaultValues: async () => {
+      const team = await teamService.getById(teamId);
+      return {
+        teamName: team?.name || '',
+      };
     },
     mode: 'onSubmit',
   });
 
   const {
     register,
+    reset,
     formState: { errors },
   } = methods;
 
@@ -48,13 +55,22 @@ export default function EditTeamDialog({ teamId }: EditTeamDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        reset();
+      }}
+    >
       <DialogTrigger asChild>
-        <Button variant="ghost" className="primary">
+        <Button
+          variant="ghost"
+          className="primary hover:text-ces-orange-500 p-0 hover:bg-transparent"
+        >
           <Pencil />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="rounded-lg sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Update Team</DialogTitle>
         </DialogHeader>
@@ -73,6 +89,9 @@ export default function EditTeamDialog({ teamId }: EditTeamDialogProps) {
                   placeholder="Enter team name"
                   type="text"
                   required
+                  autoComplete="off"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus
                 />
                 {errors?.teamName && (
                   <span className="text-xs text-red-500">

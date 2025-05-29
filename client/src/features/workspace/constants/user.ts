@@ -4,7 +4,9 @@ export const WORKSPACE_ROLES = {
   member: 'Member',
 };
 
-export const TEAM_ROLES = {
-  admin: 'admin',
-  member: 'member',
-};
+export enum TEAM_ROLES {
+  admin = 'admin',
+  member = 'member',
+}
+
+export type TeamRole = keyof typeof TEAM_ROLES;

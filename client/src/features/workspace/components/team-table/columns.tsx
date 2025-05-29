@@ -25,7 +25,7 @@ export type Team = {
   }[];
 };
 
-const MAX_MEMBERS_AMOUNT = 3;
+export const MAX_MEMBERS_AMOUNT = 3;
 
 export const columns: ColumnDef<Team>[] = [
   {
@@ -63,18 +63,18 @@ export const columns: ColumnDef<Team>[] = [
   },
   {
     accessorKey: 'role',
-    header: 'Role',
+    header: 'Your Role',
     cell: ({ row }) => {
       const { data: currentUser } = useCurrentUser();
       const { users } = row.original;
-      const currentUserRole = users.find(
-        ({ id }) => currentUser?.id === id,
-      )?.role || TEAM_ROLES.member;
+      const currentUserRole =
+        users.find(({ id }) => currentUser?.id === id)?.role ||
+        TEAM_ROLES.member;
 
       return (
         <div
           className={cn(
-            'w-fit rounded-4xl border border-gray-200 px-3 py-1.5 capitalize focus:ring-0',
+            'w-fit rounded-4xl border border-gray-200 bg-gray-300/50 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0',
             {
               'bg-ces-orange-500 text-white':
                 currentUserRole === TEAM_ROLES.admin,
@@ -98,9 +98,13 @@ export const columns: ColumnDef<Team>[] = [
       };
 
       return (
-        <div className="flex items-center">
+        <div className="flex items-center gap-10">
           <EditTeamDialog teamId={id} />
-          <Button variant="ghost" onClick={() => handleDeleteTeam(id)}>
+          <Button
+            variant="ghost"
+            onClick={() => handleDeleteTeam(id)}
+            className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
+          >
             <Trash2 />
           </Button>
         </div>

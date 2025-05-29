@@ -101,7 +101,8 @@ export function Header({ currentWorkspace }: HeaderProps) {
                     className={cn(
                       'text-sm text-gray-500 hover:text-black sm:text-base',
                       {
-                        'text-ces-orange-500 font-bold': pathname === href,
+                        'text-ces-orange-500 hover:text-ces-orange-500 font-bold':
+                          pathname === href,
                       },
                     )}
                   >
@@ -119,19 +120,10 @@ export function Header({ currentWorkspace }: HeaderProps) {
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="hidden flex-col text-right sm:flex">
                 <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                  {currentUser.user_metadata?.full_name ??
-                    currentUser.email?.split('@')[0] ??
-                    'User'}
+                  {currentUser.user_metadata?.full_name || 'User'}
                 </span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {currentUser.email}
-                </span>
-              </div>
-              <div className="flex flex-col text-right sm:hidden">
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                  {currentUser.user_metadata?.full_name ??
-                    currentUser.email?.split('@')[0] ??
-                    'User'}
                 </span>
               </div>
               <Popover>
@@ -145,9 +137,7 @@ export function Header({ currentWorkspace }: HeaderProps) {
                     ) : (
                       <AvatarFallback>
                         {getAvatarCharacters(
-                          currentUser.user_metadata?.full_name ??
-                            currentUser.email ??
-                            'U',
+                          currentUser.user_metadata?.full_name || 'U',
                         )}
                       </AvatarFallback>
                     )}
