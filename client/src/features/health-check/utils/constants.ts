@@ -107,3 +107,11 @@ export const HEALTH_CHECK_TABS = [
   { id: 'general', label: 'GENERAL' },
   { id: 'options', label: 'OPTIONS' },
 ];
+
+export const TIMER_CONFIG = {
+  DEFAULT_TIME: 5 * 60,
+  MIN_TIME: 0,
+  MAX_TIME: 59 * 60 + 59,
+  INCREMENT: 30,
+  WARNING_TIME: 60,
+} as const;

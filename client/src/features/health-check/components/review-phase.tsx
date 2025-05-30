@@ -144,7 +144,7 @@ const ReviewPhase = ({
   ];
 
   return (
-    <Card className="mx-auto w-full px-2 sm:px-4 md:px-6 lg:w-5/6">
+    <>
       <CardContent className="space-y-3 p-3 sm:space-y-4 sm:p-4 md:p-6 lg:p-8">
         <h3 className="text-base font-medium sm:text-lg md:text-xl">
           Session Summary
@@ -205,7 +205,7 @@ const ReviewPhase = ({
           />
         </EntryWrapper>
       </div>
-    </Card>
+    </>
   );
 };
 

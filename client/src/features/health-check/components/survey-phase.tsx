@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
 import { useHealthCheckMutations } from '../hooks/use-health-check';
@@ -298,28 +298,24 @@ const SurveyPhase = ({
   };
 
   return (
-    <div className="w-full px-2 sm:px-4 md:px-6">
-      <Card className="mx-auto w-full max-w-7xl flex-shrink-0 overflow-hidden md:w-[90%] lg:w-2/3">
-        <CardContent className="p-3 sm:p-4 md:p-5 lg:p-6">
-          <div className="min-w-0 flex-shrink-0 pb-2 md:w-1/2 lg:w-1/3">
-            <Progress value={progress} className="h-2" />
-            <div className="text-muted-foreground text-right text-sm">
-              {Math.round(progress)}%
-            </div>
-          </div>
+    <CardContent className="p-3 sm:p-4 md:p-5 lg:p-6">
+      <div className="min-w-0 flex-shrink-0 pb-2 md:w-1/2 lg:w-1/3">
+        <Progress value={progress} className="h-2" />
+        <div className="text-muted-foreground text-right text-sm">
+          {Math.round(progress)}%
+        </div>
+      </div>
 
-          {settings.display_mode === DisplayMode.SINGLE && (
-            <OneQuestionMode {...sharedProps} />
-          )}
-          {settings.display_mode === DisplayMode.ALL && (
-            <AllQuestionMode {...sharedProps} />
-          )}
-          {settings.display_mode === DisplayMode.GROUPED && (
-            <SectionBySectionMode {...sharedProps} />
-          )}
-        </CardContent>
-      </Card>
-    </div>
+      {settings.display_mode === DisplayMode.SINGLE && (
+        <OneQuestionMode {...sharedProps} />
+      )}
+      {settings.display_mode === DisplayMode.ALL && (
+        <AllQuestionMode {...sharedProps} />
+      )}
+      {settings.display_mode === DisplayMode.GROUPED && (
+        <SectionBySectionMode {...sharedProps} />
+      )}
+    </CardContent>
   );
 };
 

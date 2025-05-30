@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import {
   ActionItemWithAssignees,
   HealthCheckWithTemplate,
@@ -35,8 +35,8 @@ const ClosePhase = ({
   teamMembers,
 }: ClosePhaseProps) => {
   return (
-    <Card className="mx-auto w-full max-w-7xl lg:w-4/6">
-      <CardContent className="flex w-full flex-col gap-2 p-2">
+    <div className="flex w-full flex-col gap-4">
+      <CardContent className="flex flex-col gap-2 p-2">
         <TeamHealthChart
           title="Health radar"
           isClosePhase={true}
@@ -57,7 +57,7 @@ const ClosePhase = ({
           currentUser={currentUser}
         />
       </CardContent>
-    </Card>
+    </div>
   );
 };
 
