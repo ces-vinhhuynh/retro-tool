@@ -47,7 +47,10 @@ export async function middleware(request: NextRequest) {
       // no user, potentially respond by redirecting the user to the login page
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
-      url.searchParams.set('next', request.nextUrl.pathname);
+      url.searchParams.set(
+        'next',
+        request.nextUrl.pathname + request.nextUrl.search,
+      );
       return NextResponse.redirect(url);
     }
   }

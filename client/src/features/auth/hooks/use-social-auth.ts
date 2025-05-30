@@ -1,15 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { authService } from '../api/auth';
 
 export function useSocialAuth() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next') ?? '/';
 
   const { mutate: signInWithGoogle, isPending: isSigningInWithGoogle } =
     useMutation({
-      mutationFn: authService.signInWithGoogle,
+      mutationFn: () => authService.signInWithGoogle(next),
       onSuccess: (data) => {
         if (data?.url) {
           router.push(data.url);

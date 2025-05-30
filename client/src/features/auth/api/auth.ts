@@ -7,13 +7,18 @@ export type AuthResponse = {
 } | null;
 
 export const authService = {
-  signInWithGoogle: async (): Promise<AuthResponse> => {
+  signInWithGoogle: async (next?: string): Promise<AuthResponse> => {
+    const redirectTo = `${window.location.origin}/auth/callback${
+      next ? `?next=${encodeURIComponent(next)}` : ''
+    }`;
+
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo,
       },
     });
+
     if (error) throw error;
     return data;
   },
