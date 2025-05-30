@@ -8,7 +8,7 @@ export default function Page() {
       description="Check your email to confirm"
     >
       <CardContent>
-        <p className="text-muted-foreground text-center text-sm">
+        <p className="text-center text-sm text-gray-800">
           You&apos;ve successfully signed up. Please check your email to confirm
           your account before signing in.
         </p>

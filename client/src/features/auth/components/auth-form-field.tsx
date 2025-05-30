@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from 'lucide-react';
-import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
+import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,6 +36,7 @@ export function AuthFormField<T extends FieldValues>({
           id={id}
           type={showPassword ? 'text' : type}
           placeholder={placeholder}
+          className="placeholder:text-gray-500"
         />
         {showPasswordToggle && (
           <button

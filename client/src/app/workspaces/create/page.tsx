@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
@@ -80,13 +80,13 @@ export default function CreateWorkspacePage() {
   const teamName = methods.watch('team.teamName');
 
   return (
-    <div className="mx-auto flex h-screen w-full max-w-md flex-col items-center justify-center">
+    <div className="mx-auto flex h-screen w-full max-w-md flex-col items-center justify-center px-4 sm:px-0">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-ces-orange-500 text-center text-2xl">
+          <CardTitle className="text-ces-orange-500 text-center text-2xl font-bold">
             {STEPS[currentStep].title}
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-gray-700">
             {STEPS[currentStep].description}
           </CardDescription>
         </CardHeader>

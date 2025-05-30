@@ -15,9 +15,9 @@ interface AuthCardProps {
 
 export function AuthCard({ children, title, description }: AuthCardProps) {
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="gap-y-3">
+    <div className="sm:bg-background flex min-h-screen items-center justify-center bg-white p-4">
+      <Card className="flex w-full max-w-md flex-col gap-8 border-none shadow-none sm:gap-3 sm:border sm:shadow">
+        <CardHeader className="space-y-3">
           <Image
             src={logo}
             alt="logo"
