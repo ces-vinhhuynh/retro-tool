@@ -18,6 +18,7 @@ create table health_checks (
     }',
     current_group_index integer default 0,
     current_question_index integer default 0,
+    end_time timestamp with time zone,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now(),
     constraint valid_display_mode check (
