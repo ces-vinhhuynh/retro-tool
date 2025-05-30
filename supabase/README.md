@@ -104,6 +104,12 @@ Deploy specific functions
 npx supabase functions deploy hello-world
 ```
 
+Running Edge Functions locally
+
+```bash
+npx supabase functions serve --env-file .env
+```
+
 ---
 
 ## 🧬 Database Schema & Migrations

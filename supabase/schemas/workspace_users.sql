@@ -5,9 +5,11 @@ create type project_user_status as enum ('pending', 'accepted', 'expired');
 create table workspace_users (
     id uuid default gen_random_uuid() primary key,
     workspace_id uuid references workspaces(id) on delete cascade not null,
-    user_id uuid references users(id) on delete cascade not null,
+    user_id uuid references users(id) on delete cascade,
     role workspace_role,
+    email text,
     token text,
+    token_expires_at timestamp with time zone,
     status project_user_status default 'pending',
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now(),
