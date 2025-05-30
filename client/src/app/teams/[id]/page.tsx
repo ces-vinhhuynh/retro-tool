@@ -25,9 +25,12 @@ import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/hea
 import { DataTable } from '@/features/workspace/components/data-table';
 import TeamInviteDialog from '@/features/workspace/components/team-invite-dialog';
 import { columns } from '@/features/workspace/components/team-members-table/columns';
+import UserCard from '@/features/workspace/components/user-card';
+import { TeamRole } from '@/features/workspace/constants/user';
+import { useDeleteTeamMember } from '@/features/workspace/hooks/use-delete-team-member';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
-
+import { useUpdateTeamUser } from '@/features/workspace/hooks/use-update-team-user';
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
 
@@ -42,6 +45,9 @@ const TeamPage = () => {
   const { data: templates } = useTemplates();
   const { data: actionItems } = useGetActionItemsByTeamId(teamId);
 
+  const { mutate: deleteTeamMember } = useDeleteTeamMember();
+  const { mutate: updateTeamUser } = useUpdateTeamUser();
+
   const healthChecksGrouped = splitHealthChecksByTemplateId(
     templates as Template[],
     scrumHealthChecks as HealthCheck[],
@@ -54,7 +60,7 @@ const TeamPage = () => {
 
   return (
     <Layout>
-      <Tabs defaultValue={tabs[1].value} className="w-full p-10">
+      <Tabs defaultValue={tabs[1].value} className="w-full p-4 md:p-6 lg:p-8">
         <TabsList className="grid w-full grid-cols-4">
           {tabs.map((tab) => (
             <TabsTrigger
@@ -74,7 +80,7 @@ const TeamPage = () => {
           />
 
           <div className="pt-10">
-            <Card className="flex flex-col gap-8 p-10">
+            <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
               <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
                 <Button
                   variant={'default'}
@@ -120,11 +126,11 @@ const TeamPage = () => {
         </TabsContent>
         <TabsContent value="members">
           <div className="pt-10">
-            <Card className="flex flex-col gap-8 p-10">
+            <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
               <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
                 <Button
-                  variant={'default'}
-                  className="self-start md:self-center ml-auto"
+                  variant="default"
+                  className="self-end"
                   onClick={() => setShowInviteDialog(true)}
                 >
                   Invite member
@@ -136,7 +142,31 @@ const TeamPage = () => {
                   teamId={teamId}
                 />
               </div>
-              <DataTable columns={columns} data={teamMembers} />
+
+              {/* Mobile */}
+              <div className="flex flex-col gap-3 sm:hidden">
+                {teamMembers.map((user) => (
+                  <UserCard
+                    key={user.id}
+                    user={user}
+                    onDelete={(userId) => deleteTeamMember(userId)}
+                    onUpdateRole={(role) =>
+                      updateTeamUser({
+                        id: user.id,
+                        teamUser: {
+                          role: role as TeamRole,
+                        },
+                      })
+                    }
+                    isWorkspaceUserCard={false}
+                  />
+                ))}
+              </div>
+
+              {/* Desktop */}
+              <div className="hidden w-full overflow-x-auto sm:block">
+                <DataTable columns={columns} data={teamMembers} />
+              </div>
             </Card>
           </div>
         </TabsContent>

@@ -43,12 +43,11 @@ const NavTeams = ({ teams }: NavTeamsProps) => {
                     tooltip={team.name}
                     className={cn(
                       'cursor-pointer',
-                      isActive && 'bg-accent text-accent-foreground',
+                      isActive &&
+                        'bg-ces-orange-100 text-ces-orange-600 hover:bg-ces-orange-100 data-[state=open]:hover:bg-ces-orange-100 data-[state=open]:hover:text-ces-orange-600 font-medium',
                     )}
                   >
-                    <Users
-                      className={cn(isActive && 'text-accent-foreground')}
-                    />
+                    <Users className={cn(isActive && 'text-ces-orange-600')} />
                     <span>{team.name}</span>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>

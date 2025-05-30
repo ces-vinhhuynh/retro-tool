@@ -5,18 +5,26 @@ import { Trash2 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/utils/cn';
 import { getAvatarCharacters } from '@/utils/user';
 
-import { TEAM_ROLES } from '../../constants/user';
+import { TEAM_ROLES, TeamRole } from '../../constants/user';
 import { useDeleteTeamMember } from '../../hooks/use-delete-team-member';
+import { useUpdateTeamUser } from '../../hooks/use-update-team-user';
 
 export type TeamMember = {
   id: string;
   full_name: string;
   email: string;
   avatar_url: string;
-  role: (typeof TEAM_ROLES)[keyof typeof TEAM_ROLES];
+  role: TeamRole;
 };
 
 export const columns: ColumnDef<TeamMember>[] = [
@@ -48,19 +56,37 @@ export const columns: ColumnDef<TeamMember>[] = [
     accessorKey: 'role',
     header: 'Role',
     cell: ({ row }) => {
-      const { role } = row.original;
+      const { id, role } = row.original;
+      const { mutate: updateTeamUser } = useUpdateTeamUser();
+
+      const handleUpdateTeamUser = (newRole: TeamRole) => {
+        updateTeamUser({ id, teamUser: { role: newRole } });
+      };
 
       return (
-        <div
-          className={cn(
-            'w-fit rounded-4xl border border-gray-200 px-3 py-1.5 capitalize focus:ring-0',
-            {
-              'bg-ces-orange-500 text-white': role === TEAM_ROLES.admin,
-            },
-          )}
-        >
-          {TEAM_ROLES[role as keyof typeof TEAM_ROLES]}
-        </div>
+        <Select value={role} onValueChange={handleUpdateTeamUser}>
+          <SelectTrigger
+            className={cn(
+              'w-fit cursor-pointer rounded-4xl border border-gray-200 bg-gray-100 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0 focus:ring-offset-0',
+              {
+                'bg-ces-orange-500 text-white': role === TEAM_ROLES.admin,
+              },
+            )}
+          >
+            <SelectValue placeholder={TEAM_ROLES[role]} />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.values(TEAM_ROLES).map((role) => (
+              <SelectItem
+                key={role}
+                value={role}
+                className="text-gray-900 capitalize"
+              >
+                {role}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       );
     },
   },

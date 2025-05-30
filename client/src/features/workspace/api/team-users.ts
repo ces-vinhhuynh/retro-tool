@@ -1,5 +1,5 @@
 import supabaseClient from '@/lib/supabase/client';
-import { TeamUserInsert } from '@/types/team';
+import { TeamUser, TeamUserInsert, TeamUserUpdate } from '@/types/team';
 
 class TeamUsersService {
   async create(teamUser: TeamUserInsert): Promise<TeamUserInsert> {
@@ -38,6 +38,18 @@ class TeamUsersService {
       avatar_url: users.avatar_url,
       email: users.email,
     }));
+  }
+
+  async update(id: string, teamUser: TeamUserUpdate): Promise<TeamUser> {
+    const { data, error } = await supabaseClient
+      .from('team_users')
+      .update(teamUser)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 
   async delete(id: string): Promise<void> {

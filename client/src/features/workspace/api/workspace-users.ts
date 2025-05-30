@@ -50,7 +50,7 @@ class WorkspaceUsersService {
     return data;
   }
 
-  async getWorkspaceUsersByWorkspaceId(id: string) {
+  async getWorkspaceUsersByWorkspaceId(workspaceId: string) {
     const { data, error } = await supabaseClient
       .from('workspace_users')
       .select(
@@ -64,13 +64,14 @@ class WorkspaceUsersService {
             email,
             team_users (
               teams (
-                name
+                name,
+                workspace_id
               )
             )
           )
         `,
       )
-      .eq('workspace_id', id);
+      .eq('workspace_id', workspaceId);
 
     if (error) throw error;
 
@@ -80,7 +81,9 @@ class WorkspaceUsersService {
       full_name: users.full_name,
       avatar_url: users.avatar_url,
       email: users.email,
-      teams: users.team_users.map((tu) => tu.teams.name),
+      teams: users.team_users
+        .filter((tu) => tu.teams.workspace_id === workspaceId)
+        .map((tu) => tu.teams.name),
     }));
   }
 

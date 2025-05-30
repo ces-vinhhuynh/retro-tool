@@ -67,7 +67,7 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
       };
 
       return (
-        <Select defaultValue={role} onValueChange={handleUpdateWorkspaceUser}>
+        <Select value={role} onValueChange={handleUpdateWorkspaceUser}>
           <SelectTrigger
             className={cn(
               'w-fit cursor-pointer rounded-4xl border border-gray-200 bg-gray-100 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0 focus:ring-offset-0',
@@ -102,9 +102,9 @@ export const columns: ColumnDef<WorkspaceUser>[] = [
 
       return (
         <div className="flex gap-2">
-          {teams.map((team) => (
+          {teams.map((team, idx) => (
             <div
-              key={`${id}_${team}`}
+              key={`${id}_${team}_${idx}`}
               className="bg-ces-orange-100/60 text-ces-orange-600 flex items-center rounded-full px-3 py-2 font-semibold"
             >
               {team}
