@@ -44,7 +44,7 @@ const NavTeams = ({ teams }: NavTeamsProps) => {
                     className={cn(
                       'cursor-pointer',
                       isActive &&
-                        'bg-ces-orange-100 text-ces-orange-600 hover:bg-ces-orange-100 data-[state=open]:hover:bg-ces-orange-100 data-[state=open]:hover:text-ces-orange-600 font-medium',
+                        'bg-ces-orange-100/70 text-ces-orange-600 hover:bg-ces-orange-100/70 data-[state=open]:hover:bg-ces-orange-100/70 data-[state=open]:hover:text-ces-orange-600 font-medium',
                     )}
                   >
                     <Users className={cn(isActive && 'text-ces-orange-600')} />

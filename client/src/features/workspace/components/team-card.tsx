@@ -1,6 +1,7 @@
 'use client';
 
 import { Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -31,9 +32,11 @@ const TeamCard = ({ team, currentUserRole, onDelete }: TeamCardProps) => {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 shadow">
       <div className="flex items-center justify-between">
-        <span className="text-base font-semibold text-gray-900">
-          {team.name}
-        </span>
+        <Link href={`/teams/${team.id}`}>
+          <span className="text-base font-semibold text-gray-900">
+            {team.name}
+          </span>
+        </Link>
         <div className="flex items-center gap-4">
           <EditTeamDialog teamId={team.id} />
           <Button

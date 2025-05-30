@@ -310,19 +310,6 @@ export default function HealthCheckPage() {
       return STEPS['close'].value;
   };
 
-  const handleButtonClick = () => {
-    if (healthCheck?.current_step !== LAST_STEP.key) {
-      return updateHealthCheck({
-        id: healthCheck?.id ?? '',
-        healthCheck: {
-          current_step: (healthCheck?.current_step || 1) + 1,
-        },
-      });
-    }
-    handleCompleteHealthCheck();
-    router.push(`/teams/${healthCheck.team_id}`);
-  };
-
   const isLoading =
     isLoadingUser ||
     isLoadingHealthCheck ||

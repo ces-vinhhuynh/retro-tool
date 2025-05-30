@@ -107,13 +107,6 @@ export function Layout({ children }: LayoutProps) {
     setCurrentTeam,
   ]);
 
-  // Reset context on workspace change
-  useEffect(() => {
-    if (isWorkspaceRoute && currentWorkspace?.workspace?.id !== params.id) {
-      reset();
-    }
-  }, [isWorkspaceRoute, currentWorkspace?.workspace?.id, params.id, reset]);
-
   const isLoading =
     isLoadingWorkspaces ||
     (isTeamRoute && isLoadingTeam) ||

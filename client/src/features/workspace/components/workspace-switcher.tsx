@@ -35,22 +35,25 @@ export function WorkspaceSwitcher({
   const router = useRouter();
   const { isMobile } = useSidebar();
 
-  const handleWorkspaceChange = (workspace: WorkspaceUserWithWorkspace) => {
-    router.push(`/workspaces/${workspace.workspace.id}`);
+  const handleWorkspaceChange = (workspaceId: string) => {
+    router.push(`/workspaces/${workspaceId}`);
   };
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger
+            asChild
+            className="border-none ring-0 ring-offset-0 outline-none"
+          >
             <SidebarMenuButton
               size="lg"
               className={cn(
-                'data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground transition-all duration-200 ease-in-out',
+                'data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-0 ring-offset-0 transition-all duration-200 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0',
               )}
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg font-bold text-white">
+              <div className="flex size-8 items-center justify-center rounded-lg font-bold text-white">
                 <WorkspaceLogo
                   name={String(currentWorkspace?.workspace?.name)}
                 />
@@ -64,7 +67,7 @@ export function WorkspaceSwitcher({
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="flex w-[--radix-dropdown-menu-trigger-width] min-w-56 flex-col gap-1 rounded-lg"
             align="start"
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
@@ -72,20 +75,33 @@ export function WorkspaceSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Workspaces
             </DropdownMenuLabel>
-            {workspaces?.map((workspace) => (
-              <DropdownMenuItem
-                key={workspace.id}
-                onClick={() => handleWorkspaceChange(workspace)}
-                className="gap-2 p-2"
-              >
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg font-bold text-white">
-                  <WorkspaceLogo name={String(workspace?.workspace?.name)} />
-                </div>
-                {workspace?.workspace?.name}
-              </DropdownMenuItem>
-            ))}
+            {workspaces?.map((workspace) => {
+              const isActive =
+                currentWorkspace?.workspace_id === workspace.workspace_id;
+              return (
+                <DropdownMenuItem
+                  key={workspace.id}
+                  onClick={() => handleWorkspaceChange(workspace.workspace_id)}
+                  className={cn(
+                    'cursor-pointer p-2 text-gray-800 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800',
+                    {
+                      'bg-ces-orange-100/70 text-ces-orange-600 hover:bg-ces-orange-100/70 hover:text-ces-orange-600 focus:bg-ces-orange-100/70 focus:text-ces-orange-600 font-semibold':
+                        isActive,
+                    },
+                  )}
+                >
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg font-bold text-white">
+                    <WorkspaceLogo name={String(workspace?.workspace?.name)} />
+                  </div>
+                  {workspace?.workspace?.name}
+                </DropdownMenuItem>
+              );
+            })}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="cursor-pointer gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
+              onClick={() => router.push('/workspaces/create')}
+            >
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />
               </div>
