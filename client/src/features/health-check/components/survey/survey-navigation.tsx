@@ -1,42 +1,41 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/utils/cn';
 
 interface SurveyNavigationProps {
   allowParticipantNavigation: boolean;
   isFacilitator: boolean;
-  handleNavigation: (direction: 'next' | 'previous') => void;
-  isFirst: boolean;
-  isLast: boolean;
+  handleNavigation: (index: number) => void;
+  length: number;
+  index: number;
 }
 
 export const SurveyNavigation = ({
   allowParticipantNavigation,
   isFacilitator,
   handleNavigation,
-  isFirst,
-  isLast,
+  length,
+  index,
 }: SurveyNavigationProps) => {
   return (
-    <div className="flex justify-between gap-4 py-4">
-      {!isFirst && (
-        <Button
-          onClick={() => handleNavigation('previous')}
-          disabled={(!allowParticipantNavigation && !isFacilitator) || isFirst}
-          className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white disabled:opacity-50 sm:w-auto"
-        >
-          Previous
-        </Button>
-      )}
-      {!isLast && (
-        <Button
-          onClick={() => handleNavigation('next')}
-          disabled={!allowParticipantNavigation && !isFacilitator}
-          className="bg-ces-orange-500 hover:bg-ces-orange-600 ml-auto w-full text-white disabled:opacity-50 sm:w-auto"
-        >
-          Next
-        </Button>
-      )}
+    <div className="flex justify-center gap-4 py-4">
+      {allowParticipantNavigation ||
+        (isFacilitator &&
+          Array.from({ length }, (_, i) => i).map((i) => (
+            <Button
+              key={i}
+              variant="outline"
+              size="icon"
+              disabled={i === index}
+              className={cn(
+                `h-8 w-8 min-w-8 rounded-full bg-white font-bold transition hover:cursor-pointer`,
+              )}
+              onClick={() => handleNavigation(i)}
+            >
+              {i + 1}
+            </Button>
+          )))}
     </div>
   );
 };

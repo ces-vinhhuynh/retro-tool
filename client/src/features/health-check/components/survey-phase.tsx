@@ -218,18 +218,6 @@ const SurveyPhase = ({
     await saveAdditionalItemsImmediate(updatedItems);
   };
 
-  const calculateNewIndex = (
-    currentIndex: number,
-    direction: 'next' | 'previous',
-    maxIndex?: number,
-  ) => {
-    const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
-    if (maxIndex !== undefined) {
-      return newIndex >= 0 && newIndex < maxIndex ? newIndex : currentIndex;
-    }
-    return newIndex >= 0 ? newIndex : currentIndex;
-  };
-
   const updateGroupIndex = (newIndex: number) => {
     if (settings.allow_participant_navigation) {
       setLocalGroupIndex(newIndex);
@@ -252,13 +240,8 @@ const SurveyPhase = ({
     }
   };
 
-  const handleNavigation = (direction: 'next' | 'previous') => {
+  const handleNavigation = (newIndex: number) => {
     if (settings.display_mode === DisplayMode.GROUPED) {
-      const newIndex = calculateNewIndex(
-        localGroupIndex,
-        direction,
-        sections.length,
-      );
       if (newIndex !== localGroupIndex) {
         updateGroupIndex(newIndex);
       }
@@ -266,7 +249,6 @@ const SurveyPhase = ({
     }
 
     if (settings.display_mode === DisplayMode.SINGLE) {
-      const newIndex = calculateNewIndex(localQuestionIndex, direction);
       if (newIndex !== localQuestionIndex) {
         updateQuestionIndex(newIndex);
       }

@@ -29,7 +29,7 @@ interface SectionBySectionModeProps {
   handleDeleteItem: (index: number) => void;
   allowParticipantNavigation: boolean;
   isFacilitator: boolean;
-  handleNavigation: (direction: 'next' | 'previous') => void;
+  handleNavigation: (index: number) => void;
   currentGroupIndex: number;
 }
 
@@ -110,8 +110,8 @@ const SectionBySectionMode = ({
         allowParticipantNavigation={allowParticipantNavigation}
         isFacilitator={isFacilitator}
         handleNavigation={handleNavigation}
-        isFirst={currentGroupIndex === 0}
-        isLast={isAdditionalQuestion}
+        length={3}  // TODO: update this when implement custom section
+        index={currentGroupIndex}
       />
     </div>
   );

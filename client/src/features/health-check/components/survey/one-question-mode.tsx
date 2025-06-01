@@ -29,7 +29,7 @@ interface OneQuestionModeProps {
   handleDeleteItem: (index: number) => void;
   allowParticipantNavigation: boolean;
   isFacilitator: boolean;
-  handleNavigation: (direction: 'next' | 'previous') => void;
+  handleNavigation: (index: number) => void;
   currentQuestionIndex: number;
 }
 
@@ -128,8 +128,8 @@ const OneQuestionMode = ({
         allowParticipantNavigation={allowParticipantNavigation}
         isFacilitator={isFacilitator}
         handleNavigation={handleNavigation}
-        isFirst={currentQuestionIndex === 0}
-        isLast={isAdditionalQuestion}
+        length={allQuestions.length}
+        index={currentQuestionIndex}
       />
     </div>
   );
