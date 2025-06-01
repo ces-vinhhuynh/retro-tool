@@ -1,11 +1,18 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { cn } from '@/utils/cn';
 import { getAvatarCharacters } from '@/utils/user';
@@ -92,22 +99,44 @@ export const columns: ColumnDef<Team>[] = [
     cell: ({ row }) => {
       const { id } = row.original;
       const { mutate: deleteTeam } = useDeleteTeam();
+      const [dialogOpen, setDialogOpen] = useState(false);
 
       const handleDeleteTeam = (id: string) => {
         deleteTeam(id);
       };
 
       return (
-        <div className="flex items-center gap-10">
-          <EditTeamDialog teamId={id} />
-          <Button
-            variant="ghost"
-            onClick={() => handleDeleteTeam(id)}
-            className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
-          >
-            <Trash2 />
-          </Button>
-        </div>
+        <>
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onSelect={() => setDialogOpen(true)}
+                className="primary hover:text-ces-orange-500 w-full cursor-pointer justify-start px-5"
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => handleDeleteTeam(id)}
+                className="primary focus:text-ces-orange-500 w-full cursor-pointer justify-start px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <EditTeamDialog
+            teamId={id}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+          />
+        </>
       );
     },
   },

@@ -1,8 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Pencil } from 'lucide-react';
-import { useState } from 'react';
+import { ReactNode } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -22,11 +21,17 @@ import { TeamFormValues, teamSchema } from '../schema/team.schema';
 
 interface EditTeamDialogProps {
   teamId: string;
+  children?: ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function EditTeamDialog({ teamId }: EditTeamDialogProps) {
-  const [open, setOpen] = useState(false);
-
+export default function EditTeamDialog({
+  teamId,
+  children,
+  open,
+  onOpenChange,
+}: EditTeamDialogProps) {
   const { mutate: updateTeam, isPending } = useUpdateTeam();
 
   const methods = useForm<TeamFormValues>({
@@ -51,25 +56,18 @@ export default function EditTeamDialog({ teamId }: EditTeamDialogProps) {
       id: teamId,
       team: { name: data.teamName },
     });
-    setOpen(false);
+    onOpenChange(false);
   };
 
   return (
     <Dialog
       open={open}
       onOpenChange={(open) => {
-        setOpen(open);
+        onOpenChange(open);
         reset();
       }}
     >
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="primary hover:text-ces-orange-500 p-0 hover:bg-transparent"
-        >
-          <Pencil />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="rounded-lg sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Update Team</DialogTitle>
