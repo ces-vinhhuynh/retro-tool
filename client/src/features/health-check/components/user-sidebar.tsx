@@ -74,100 +74,97 @@ const UserSidebar = ({
   );
 
   return (
-    <div className="fixed top-20 right-24 border border-gray-200">
-      <div
-        className={cn(
-          'sticky top-0 h-[85vh] overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
-          isOpen ? 'right-0 w-100' : 'right-80 w-0',
-          className,
-        )}
-      >
-        <div className="flex h-full flex-col rounded-2xl">
-          <div className="flex items-center justify-between border-b p-4">
-            <Button
-              variant="ghost"
-              onClick={() => setSelectedSubmenu('')}
-              className="text-gray-500 transition-colors hover:text-gray-700"
-            >
-              {isOpen ? (
-                <ArrowRight size={18} />
-              ) : (
-                <ChevronLeft size={18} className="hidden md:block" />
-              )}
-            </Button>
-            <div
-              className={cn(
-                'flex items-center space-x-2',
-                !isOpen && 'md:hidden',
-              )}
-            >
-              <Users size={20} className="text-sidebar-primary" />
-              <span className="font-medium">{totalMembers} Members</span>
-            </div>
-            {!isOpen && (
-              <Users
-                size={20}
-                className="text-sidebar-primary mx-auto hidden md:block"
-              />
+    <div
+      className={cn(
+        'top-0 h-full w-100 overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
+        className,
+      )}
+    >
+      <div className="flex h-full flex-col rounded-2xl">
+        <div className="flex items-center justify-between border-b p-4">
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedSubmenu('')}
+            className="text-gray-500 transition-colors hover:text-gray-700"
+          >
+            {isOpen ? (
+              <ArrowRight size={18} />
+            ) : (
+              <ChevronLeft size={18} className="hidden md:block" />
             )}
+          </Button>
+          <div
+            className={cn(
+              'flex items-center space-x-2',
+              !isOpen && 'md:hidden',
+            )}
+          >
+            <Users size={20} className="text-sidebar-primary" />
+            <span className="font-medium">{totalMembers} Members</span>
           </div>
+          {!isOpen && (
+            <Users
+              size={20}
+              className="text-sidebar-primary mx-auto hidden md:block"
+            />
+          )}
+        </div>
 
-          <div className="flex flex-1 flex-col rounded-2xl">
-            <div className={cn('p-4', !isOpen && 'md:hidden')}>
+        <div className="flex flex-1 flex-col rounded-2xl">
+          <div className={cn('p-4', !isOpen && 'md:hidden')}>
+            <Button
+              variant="default"
+              className="flex w-full items-center justify-center gap-2 bg-[#E15D2F] font-medium text-white hover:bg-[#d04e22]"
+              onClick={handleInviteClick}
+            >
+              <Plus size={16} />
+              Invite participants
+            </Button>
+          </div>
+          {!isOpen && (
+            <div className="hidden justify-center p-4 md:flex">
               <Button
-                variant="default"
-                className="flex w-full items-center justify-center gap-2 bg-[#E15D2F] font-medium text-white hover:bg-[#d04e22]"
+                size="icon"
+                className="bg-[#E15D2F] text-white hover:bg-[#d04e22]"
                 onClick={handleInviteClick}
               >
                 <Plus size={16} />
-                Invite participants
               </Button>
             </div>
-            {!isOpen && (
-              <div className="hidden justify-center p-4 md:flex">
-                <Button
-                  size="icon"
-                  className="bg-[#E15D2F] text-white hover:bg-[#d04e22]"
-                  onClick={handleInviteClick}
-                >
-                  <Plus size={16} />
-                </Button>
-              </div>
+          )}
+
+          <div className="flex flex-1 flex-col overflow-auto rounded-2xl p-4">
+            {isOpen && (
+              <>
+                <div className="mb-6">
+                  <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase">
+                    Facilitators
+                  </h3>
+                  <div className="space-y-2">
+                    {facilitators?.map((facilitator) => (
+                      <UserItem
+                        key={facilitator.user_id}
+                        participant={facilitator}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase">
+                    Participants
+                  </h3>
+                  <div className="max-h-3/6 flex-1 space-y-2 overflow-y-auto">
+                    {participantsFiltered?.map((participant) => (
+                      <UserItem
+                        key={participant.user_id}
+                        participant={participant}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
-
-            <div className="flex flex-1 flex-col overflow-auto rounded-2xl p-4">
-              {isOpen && (
-                <>
-                  <div className="mb-6">
-                    <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase">
-                      Facilitators
-                    </h3>
-                    <div className="space-y-2">
-                      {facilitators?.map((facilitator) => (
-                        <UserItem
-                          key={facilitator.user_id}
-                          participant={facilitator}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex min-h-0 flex-1 flex-col">
-                    <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase">
-                      Participants
-                    </h3>
-                    <div className="max-h-3/6 flex-1 space-y-2 overflow-y-auto">
-                      {participantsFiltered?.map((participant) => (
-                        <UserItem
-                          key={participant.user_id}
-                          participant={participant}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         </div>
       </div>

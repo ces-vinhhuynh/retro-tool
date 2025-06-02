@@ -5,6 +5,7 @@ import { ReactNode, useEffect } from 'react';
 
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import SubMenu from '@/features/health-check/components/sub-menu';
 import { useHealthCheck } from '@/features/health-check/hooks/use-health-check';
 import { HealthCheckWithTeam } from '@/features/health-check/types/health-check';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
@@ -12,6 +13,7 @@ import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-get-workspace-user';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace-store';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Team } from '@/types/team';
 
 import { AppSidebar } from './app-sidebar';
@@ -24,9 +26,10 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
   const params = useParams<{ id: string }>();
-  const { currentWorkspace, setCurrentWorkspace, setCurrentTeam, reset } =
+  const { currentWorkspace, setCurrentWorkspace, setCurrentTeam } =
     useWorkspaceStore();
   const { data: currentUser } = useCurrentUser();
+  const isMobile = useIsMobile();
 
   // Route-based data fetching
   const isTeamRoute = pathname.startsWith('/teams/');
@@ -127,6 +130,7 @@ export function Layout({ children }: LayoutProps) {
         />
         <main className="w-full">{children}</main>
       </SidebarInset>
+      {!isMobile && isHealthCheckRoute && <SubMenu />}
     </SidebarProvider>
   );
 }

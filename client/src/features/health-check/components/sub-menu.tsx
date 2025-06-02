@@ -7,19 +7,13 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Sidebar, SidebarContent, SidebarRail } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent } from '@/components/ui/sidebar';
 
 import { useAgreementMutation } from '../hooks/agreements/use-agreements-mutation';
 import { useIssuesMutation } from '../hooks/issues/use-issues-mutation';
+import { useHealthCheckMutations } from '../hooks/use-health-check';
 import { useSubMenuStore } from '../stores/sub-menu-store';
-import { Agreement } from '../types/agreements';
-import {
-  ActionItemWithAssignees,
-  HealthCheck,
-  HealthCheckSettings,
-  User,
-} from '../types/health-check';
-import { Issue } from '../types/issues';
+import { HealthCheckSettings } from '../types/health-check';
 import { SUBMENU_ITEMS } from '../utils/constants';
 
 import DisplayModeDialog from './setting-dialog';
@@ -28,30 +22,17 @@ import TeamAgreements from './team-agreements';
 import TeamIssues from './team-issues';
 import UserSidebar from './user-sidebar';
 
-interface SubMenuProps {
-  agreements: Agreement[];
-  issues: Issue[];
-  actionItems: ActionItemWithAssignees[];
-  healthCheckId: string;
-  healthCheck: HealthCheck;
-  teamId: string;
-  teamMembers: User[];
-  onHealthCheckSettingsChange: (settings: HealthCheckSettings) => void;
-  settings: HealthCheckSettings;
-}
-
-const SubMenu = ({
-  agreements,
-  issues,
-  healthCheck,
-  healthCheckId,
-  actionItems,
-  teamId,
-  teamMembers,
-  onHealthCheckSettingsChange,
-  settings,
-}: SubMenuProps) => {
-  const { selectedSubmenu, setSelectedSubmenu } = useSubMenuStore();
+const SubMenu = () => {
+  const {
+    selectedSubmenu,
+    setSelectedSubmenu,
+    teamMembers,
+    issues,
+    agreements,
+    actionItems,
+    healthCheck,
+    isFacilitator,
+  } = useSubMenuStore();
 
   const {
     createAgreements,
@@ -65,10 +46,12 @@ const SubMenu = ({
     isLoading: isLoadingIssues,
   } = useIssuesMutation();
 
+  const { updateHealthCheck } = useHealthCheckMutations();
+
   const handleCreateAgreement = (title: string) => {
     createAgreements({
       title,
-      team_id: teamId,
+      team_id: healthCheck.team_id,
       health_check_id: healthCheck.id,
     });
   };
@@ -80,7 +63,7 @@ const SubMenu = ({
   const handleCreateIssue = (title: string) => {
     createIssue({
       title,
-      team_id: teamId,
+      team_id: healthCheck.team_id,
       health_check_id: healthCheck.id,
     });
   };
@@ -89,16 +72,57 @@ const SubMenu = ({
     deleteIssue(id);
   };
 
+  const handleUpdateHealthCheckSettings = (settings: HealthCheckSettings) => {
+    updateHealthCheck({
+      id: healthCheck.id,
+      healthCheck: { settings },
+    });
+  };
+
+  if (!isFacilitator) return null;
+
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent className="sticky top-0 right-0 h-full w-22 overflow-hidden border border-gray-200 bg-white p-6">
-        <div className="flex w-full flex-col gap-8">
+      <SidebarContent className="top-0 right-0 flex h-full flex-row overflow-hidden border border-gray-200 bg-white">
+        {selectedSubmenu === SUBMENU_ITEMS.PROGRESS_BAR && (
+          <UserSidebar
+            healthCheck={healthCheck}
+            isOpen={selectedSubmenu === SUBMENU_ITEMS.PROGRESS_BAR}
+            healthCheckId={healthCheck.id}
+          />
+        )}
+        {selectedSubmenu === SUBMENU_ITEMS.ACTIONS && (
+          <TeamActions
+            actionItems={actionItems}
+            teamId={healthCheck.team_id ?? ''}
+            healthCheckId={healthCheck.id}
+            teamMembers={teamMembers}
+          />
+        )}
+        {selectedSubmenu === SUBMENU_ITEMS.AGREEMENT && (
+          <TeamAgreements
+            isOpen={selectedSubmenu === SUBMENU_ITEMS.AGREEMENT}
+            agreements={agreements}
+            handleCreateAgreement={handleCreateAgreement}
+            handleDeleteAgreement={handleDeleteAgreement}
+            isLoadingAgreements={isLoadingAgreements}
+          />
+        )}
+        {selectedSubmenu === SUBMENU_ITEMS.ISSUES && (
+          <TeamIssues
+            issues={issues}
+            handleCreateIssue={handleCreateIssue}
+            handleDeleteIssue={handleDeleteIssue}
+            isLoadingIssues={isLoadingIssues}
+          />
+        )}
+        <div className="flex flex-col w-24 gap-8 border border-gray-200 bg-white px-2 py-6">
           {menuItems.map((item) =>
             item.value === SUBMENU_ITEMS.CUSTOMIZE ? (
               <DisplayModeDialog
                 key={item.value}
-                settings={settings}
-                onChange={onHealthCheckSettingsChange}
+                settings={healthCheck.settings as HealthCheckSettings}
+                onChange={handleUpdateHealthCheckSettings}
                 trigger={
                   <Button
                     variant="ghost"
@@ -127,33 +151,6 @@ const SubMenu = ({
           )}
         </div>
       </SidebarContent>
-      <UserSidebar
-        healthCheck={healthCheck}
-        isOpen={selectedSubmenu === SUBMENU_ITEMS.PROGRESS_BAR}
-        healthCheckId={healthCheckId}
-      />
-      <TeamActions
-        isOpen={selectedSubmenu === SUBMENU_ITEMS.ACTIONS}
-        actionItems={actionItems}
-        teamId={teamId}
-        healthCheckId={healthCheckId}
-        teamMembers={teamMembers}
-      />
-      <TeamAgreements
-        isOpen={selectedSubmenu === SUBMENU_ITEMS.AGREEMENT}
-        agreements={agreements}
-        handleCreateAgreement={handleCreateAgreement}
-        handleDeleteAgreement={handleDeleteAgreement}
-        isLoadingAgreements={isLoadingAgreements}
-      />
-      <TeamIssues
-        isOpen={selectedSubmenu === SUBMENU_ITEMS.ISSUES}
-        issues={issues}
-        handleCreateIssue={handleCreateIssue}
-        handleDeleteIssue={handleDeleteIssue}
-        isLoadingIssues={isLoadingIssues}
-      />
-      <SidebarRail />
     </Sidebar>
   );
 };

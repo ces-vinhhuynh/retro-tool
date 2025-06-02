@@ -3,11 +3,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
+import useUserStore from '@/stores/user-store';
+
 import { healthCheckService } from '../api/health-check';
+import { useSubMenuStore } from '../stores/sub-menu-store';
 import {
-  HealthCheckUpdate,
   HealthCheck,
   HealthCheckInsert,
+  HealthCheckUpdate,
 } from '../types/health-check';
 
 export function useHealthChecks() {
@@ -26,9 +29,18 @@ export function useHealthCheck(id: string) {
 }
 
 export function useHealthCheckWithTemplate(id: string) {
+  const { setHealthCheck, setIsFacilitator } = useSubMenuStore();
+  const { user } = useUserStore();
+  const getHealthCheck = async () => {
+    const response = await healthCheckService.getWithTemplateById(id);
+    setIsFacilitator(response.facilitator_id === user?.id);
+    setHealthCheck(response);
+    return response;
+  };
+
   return useQuery({
     queryKey: ['healthCheck', id],
-    queryFn: () => healthCheckService.getWithTemplateById(id),
+    queryFn: getHealthCheck,
     enabled: !!id,
   });
 }

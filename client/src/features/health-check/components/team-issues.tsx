@@ -6,7 +6,6 @@ import EntryList from './entry-list';
 import SubMenuWrapper from './sub-menu-wrapper';
 
 interface TeamIssuesProps {
-  isOpen: boolean;
   className?: string;
   issues: Issue[];
   handleCreateIssue: (title: string) => void;
@@ -15,7 +14,6 @@ interface TeamIssuesProps {
 }
 
 const TeamIssues = ({
-  isOpen,
   className,
   issues,
   handleCreateIssue,
@@ -23,12 +21,7 @@ const TeamIssues = ({
   isLoadingIssues,
 }: TeamIssuesProps) => {
   return (
-    <SubMenuWrapper
-      Icon={BadgeAlert}
-      title="Team Issues"
-      isOpen={isOpen}
-      className={className}
-    >
+    <SubMenuWrapper Icon={BadgeAlert} title="Team Issues" className={className}>
       <EntryList
         items={issues}
         emptyItemMessage="No issues yet"

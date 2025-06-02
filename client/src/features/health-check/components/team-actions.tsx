@@ -6,7 +6,6 @@ import ActionItems from './action-items';
 import SubMenuWrapper from './sub-menu-wrapper';
 
 interface TeamActionsProps {
-  isOpen: boolean;
   className?: string;
   actionItems: ActionItemWithAssignees[];
   teamId: string;
@@ -15,7 +14,6 @@ interface TeamActionsProps {
 }
 
 const TeamActions = ({
-  isOpen,
   className,
   actionItems,
   teamId,
@@ -27,7 +25,6 @@ const TeamActions = ({
     <SubMenuWrapper
       Icon={CircleCheck}
       title="Team Actions"
-      isOpen={isOpen}
       className={className}
     >
       <ActionItems
