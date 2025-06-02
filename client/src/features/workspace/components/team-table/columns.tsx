@@ -116,17 +116,17 @@ export const columns: ColumnDef<Team>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onSelect={() => setDialogOpen(true)}
-                className="primary hover:text-ces-orange-500 w-full cursor-pointer justify-start px-5"
+                className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
               >
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit
+                <Pencil className="h-4 w-4" />
+                <span>Edit</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => handleDeleteTeam(id)}
-                className="primary focus:text-ces-orange-500 w-full cursor-pointer justify-start px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+                className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                <Trash2 className="h-4 w-4" />
+                <span>Delete</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
