@@ -9,7 +9,10 @@ export interface WorkspaceInvitePayload {
 export interface WorkspaceInvitationData {
   workspace_id: string;
   token: string;
-  status: INVITATION_STATUS.PENDING | INVITATION_STATUS.ACCEPTED;
+  status:
+    | INVITATION_STATUS.PENDING
+    | INVITATION_STATUS.ACCEPTED
+    | INVITATION_STATUS.EXPIRED;
   token_expires_at: string;
   role: string;
   email: string;
@@ -23,4 +26,31 @@ export interface EmailTemplate {
   content: string;
   isExistingUser: boolean;
   workspaceName: string;
+}
+
+export interface TeamInvitePayload {
+  email: string;
+  team_id: string;
+  workspace_id: string;
+  role?: string;
+}
+
+export interface TeamInvitationData {
+  team_id: string;
+  workspace_id: string;
+  token: string;
+  status:
+    | INVITATION_STATUS.PENDING
+    | INVITATION_STATUS.ACCEPTED
+    | INVITATION_STATUS.EXPIRED;
+  token_expires_at: string;
+  role: string;
+  email: string;
+  updated_at: string;
+  user_id: string | null;
+}
+
+export interface TeamEmailTemplate extends EmailTemplate {
+  teamName: string;
+  isWorkspaceMember: boolean;
 }

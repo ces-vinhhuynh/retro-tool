@@ -1,11 +1,15 @@
 create type team_role as enum ('admin', 'member');
-
+create type team_user_status as enum ('pending', 'accepted', 'expired');
 -- Create the team_users table
 create table team_users (
     id uuid default gen_random_uuid() primary key,
     team_id uuid references teams(id) on delete cascade not null,
-    user_id uuid references users(id) on delete cascade not null,
+    user_id uuid references users(id) on delete cascade,
     role team_role,
+    email text,
+    token text,
+    token_expires_at timestamp with time zone,
+    status team_user_status default 'pending',
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now(),
     unique (team_id, user_id)
@@ -117,8 +121,8 @@ create trigger handle_updated_at before update on team_users
 create or replace function public.handle_new_team_user()
 returns trigger as $$
 begin
-  insert into team_users (team_id, user_id, role)
-  values (new.id, auth.uid(), 'admin');
+  insert into team_users (team_id, user_id, role, status)
+  values (new.id, auth.uid(), 'admin', 'accepted');
   return new;
 end;
 $$ language plpgsql security definer;

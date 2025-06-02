@@ -13,15 +13,23 @@ export const ERROR_MESSAGES = {
   SENDGRID_API_MISSING: "SendGrid API key not set",
   EMAIL_SEND_FAILED: "Failed to send email:",
   UNEXPECTED_ERROR: "An unexpected error occurred",
+  ALREADY_TEAM_MEMBER: "User is already a member of this team",
+  WORKSPACE_REQUIRED: "User must be a member of the workspace to join the team",
 } as const;
 
 export const INVITATION_STATUS = {
   PENDING: "pending",
   ACCEPTED: "accepted",
+  EXPIRED: "expired",
 } as const;
 
 export const WORKSPACE_ROLES = {
   OWNER: "owner",
+  ADMIN: "admin",
+  MEMBER: "member",
+} as const;
+
+export const TEAM_ROLES = {
   ADMIN: "admin",
   MEMBER: "member",
 } as const;

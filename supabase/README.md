@@ -107,7 +107,7 @@ npx supabase functions deploy hello-world
 Running Edge Functions locally
 
 ```bash
-npx supabase functions serve --env-file .env
+cd supabase && npx supabase functions serve --env-file .env
 ```
 
 ---

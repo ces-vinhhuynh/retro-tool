@@ -61,3 +61,39 @@ export async function getWorkspaceName(
 
   return data.name;
 }
+
+export async function getTeamName(
+  supabase: ReturnType<typeof createClient>,
+  teamId: string
+) {
+  const { data, error } = await supabase
+    .from("teams")
+    .select("name")
+    .eq("id", teamId)
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to get team name: ${error.message}`);
+  }
+
+  return data.name;
+}
+
+export async function findExistingTeamInvite(
+  supabase: ReturnType<typeof createClient>,
+  teamId: string,
+  email: string
+) {
+  const { data, error } = await supabase
+    .from("team_users")
+    .select("*")
+    .eq("team_id", teamId)
+    .eq("email", email)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    throw error;
+  }
+
+  return data;
+}
