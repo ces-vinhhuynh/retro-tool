@@ -13,51 +13,54 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User } from '@/features/health-check/types/health-check';
 import { inviteSchema } from '@/features/workspace/schema/workspace-user.schema';
-import { Role } from '@/features/workspace/utils/role';
 
-import { useCreateTeamUser } from '../hooks/use-create-team-user';
+import { useInviteUserToTeam } from '../hooks/use-invite-user-to-team';
 
 type InviteFormData = z.infer<typeof inviteSchema>;
 
 interface TeamInviteDialogProps {
   open: boolean;
   onClose: () => void;
-  users: User[];
   teamId: string;
+  workspaceId: string;
 }
 
 const TeamInviteDialog = ({
   open,
   onClose,
-  users,
   teamId,
+  workspaceId,
 }: TeamInviteDialogProps) => {
-  const { mutate: createTeamUser } = useCreateTeamUser();
+  const { mutate: inviteUserToTeam, isPending: isInvitingUserToTeam } =
+    useInviteUserToTeam();
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<InviteFormData>({
     resolver: zodResolver(inviteSchema),
   });
 
   const onSubmit = async (data: InviteFormData) => {
-    const { email } = data;
-    const user = users.find((user) => user.email === email);
-
-    createTeamUser({
-      team_id: teamId,
-      user_id: user?.id ?? email,
-      role: Role.MEMBER,
+    inviteUserToTeam({
+      email: data.email,
+      teamId,
+      workspaceId,
     });
-
+    reset();
     onClose();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        onClose();
+        reset();
+      }}
+    >
       <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>Invite to Team</DialogTitle>
@@ -94,8 +97,13 @@ const TeamInviteDialog = ({
                 </p>
               )}
             </div>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Invite'}
+            <Button
+              type="submit"
+              disabled={isSubmitting || isInvitingUserToTeam}
+            >
+              {isSubmitting || isInvitingUserToTeam
+                ? 'Sending...'
+                : 'Send Invite'}
             </Button>
           </div>
         </form>

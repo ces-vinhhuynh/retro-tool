@@ -28,18 +28,19 @@ import { columns } from '@/features/workspace/components/team-members-table/colu
 import UserCard from '@/features/workspace/components/user-card';
 import { TeamRole } from '@/features/workspace/constants/user';
 import { useDeleteTeamMember } from '@/features/workspace/hooks/use-delete-team-member';
+import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
-import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
 import { useUpdateTeamUser } from '@/features/workspace/hooks/use-update-team-user';
+
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
 
   const [showDialog, setShowDialog] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const { data: team } = useGetTeam(teamId);
 
   const { setTemplateId } = useNewSessionModalStore();
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
-  const { data: users } = useGetUsers();
 
   const { data: scrumHealthChecks } = useGetHealthChecksByTeam(teamId);
   const { data: templates } = useTemplates();
@@ -138,8 +139,8 @@ const TeamPage = () => {
                 <TeamInviteDialog
                   open={showInviteDialog}
                   onClose={() => setShowInviteDialog(false)}
-                  users={users ?? []}
                   teamId={teamId}
+                  workspaceId={String(team?.workspace_id)}
                 />
               </div>
 

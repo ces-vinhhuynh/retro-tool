@@ -78,7 +78,7 @@ class TeamService {
     if (error) throw error;
   }
 
-  async getById(id: string): Promise<Team | null> {
+  async getById(id: string): Promise<Team> {
     const { data, error } = await supabaseClient
       .from('teams')
       .select('*')

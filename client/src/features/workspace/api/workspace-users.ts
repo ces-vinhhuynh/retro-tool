@@ -113,6 +113,21 @@ class WorkspaceUsersService {
     if (error) throw error;
     return data;
   }
+
+  async getWorkspaceUserByEmailAndWorkspaceId(
+    email: string,
+    workspaceId: string,
+  ) {
+    const { data, error } = await supabaseClient
+      .from('workspace_users')
+      .select('*')
+      .eq('email', email)
+      .eq('workspace_id', workspaceId)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
 }
 
 export const workspaceUsersService = new WorkspaceUsersService();

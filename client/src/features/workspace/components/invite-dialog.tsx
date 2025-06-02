@@ -34,6 +34,7 @@ const InviteDialog = ({
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<InviteFormData>({
     resolver: zodResolver(inviteSchema),
@@ -45,7 +46,13 @@ const InviteDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        onClose();
+        reset();
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           variant="default"

@@ -27,7 +27,8 @@ class TeamUsersService {
           )
         `,
       )
-      .eq('team_id', teamId);
+      .eq('team_id', teamId)
+      .eq('status', 'accepted');
 
     if (error) throw error;
 
@@ -59,6 +60,22 @@ class TeamUsersService {
       .eq('id', id);
 
     if (error) throw error;
+  }
+  async inviteUserToTeam(email: string, teamId: string, workspaceId: string) {
+    return await supabaseClient.functions.invoke('invite-user-to-team', {
+      body: { email, team_id: teamId, workspace_id: workspaceId },
+    });
+  }
+
+  async getTeamUserByToken(token: string) {
+    const { data, error } = await supabaseClient
+      .from('team_users')
+      .select('*')
+      .eq('token', token)
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 }
 

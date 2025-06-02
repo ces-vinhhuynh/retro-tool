@@ -1,4 +1,4 @@
-export const WORKSPACE_USER_STATUS = {
+export const INVITATION_STATUS = {
   PENDING: 'pending',
   ACCEPTED: 'accepted',
   EXPIRED: 'expired',
