@@ -349,7 +349,7 @@ export default function HealthCheckPage() {
   return (
     <Layout>
       <div className="flex w-full justify-between px-3 lg:px-0">
-        <div className="w-full">
+        <div className="w-full flex flex-col">
           <div className="flex w-full">
             <div className="mx-auto w-full p-2 md:p-4 lg:p-8">
               <div className="pb-6">
@@ -429,7 +429,7 @@ export default function HealthCheckPage() {
             )}
           </div>
           {isFacilitator && (
-            <div className={`mx-auto flex w-[50%] py-5`}>
+            <div className={`mx-auto flex py-5`}>
               <Button
                 className={`ml-auto w-full text-white sm:w-auto ${healthCheck?.current_step !== LAST_STEP.key ? 'bg-ces-orange-500 hover:bg-ces-orange-600' : ''}`}
                 onClick={handleChangePhase}
