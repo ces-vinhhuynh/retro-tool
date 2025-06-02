@@ -128,7 +128,7 @@ const OneQuestionMode = ({
         allowParticipantNavigation={allowParticipantNavigation}
         isFacilitator={isFacilitator}
         handleNavigation={handleNavigation}
-        length={allQuestions.length}
+        length={allQuestions.length + 1}
         index={currentQuestionIndex}
       />
     </div>

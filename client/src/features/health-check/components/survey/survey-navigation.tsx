@@ -1,6 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from '@/components/ui/pagination';
 import { cn } from '@/utils/cn';
 
 interface SurveyNavigationProps {
@@ -20,22 +25,29 @@ export const SurveyNavigation = ({
 }: SurveyNavigationProps) => {
   return (
     <div className="flex justify-center gap-4 py-4">
-      {allowParticipantNavigation ||
-        (isFacilitator &&
-          Array.from({ length }, (_, i) => i).map((i) => (
-            <Button
-              key={i}
-              variant="outline"
-              size="icon"
-              disabled={i === index}
-              className={cn(
-                `h-8 w-8 min-w-8 rounded-full bg-white font-bold transition hover:cursor-pointer`,
-              )}
-              onClick={() => handleNavigation(i)}
-            >
-              {i + 1}
-            </Button>
-          )))}
+      <Pagination>
+        <PaginationContent>
+          {(allowParticipantNavigation || isFacilitator) &&
+            Array.from({ length }, (_, i) => i).map((i) => (
+              <PaginationItem key={i}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className={cn(
+                    `h-8 w-8 min-w-8 rounded-full border-gray-400 bg-white font-bold text-gray-400 transition hover:cursor-pointer`,
+                    {
+                      'pointer-events-none border-black text-black':
+                        i === index,
+                    },
+                  )}
+                  onClick={() => handleNavigation(i)}
+                >
+                  {i + 1}
+                </Button>
+              </PaginationItem>
+            ))}
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };
