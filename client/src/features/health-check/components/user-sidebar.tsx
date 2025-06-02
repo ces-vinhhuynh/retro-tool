@@ -1,5 +1,4 @@
 import { ArrowRight, ChevronLeft, Plus, Users } from 'lucide-react';
-import React from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -76,11 +75,11 @@ const UserSidebar = ({
   return (
     <div
       className={cn(
-        'top-0 h-full w-100 overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
+        'absolute top-0 right-[100%] h-screen w-[300px] overflow-hidden border border-gray-200 bg-white transition-all duration-500 ease-in-out xl:w-[400px]',
         className,
       )}
     >
-      <div className="flex h-full flex-col rounded-2xl">
+      <div className="flex h-full flex-col">
         <div className="flex items-center justify-between border-b p-4">
           <Button
             variant="ghost"

@@ -43,6 +43,7 @@ import {
 } from '@/features/health-check/hooks/use-response';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
+import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckSettings,
@@ -53,6 +54,8 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 export type GroupedQuestions = {
   [section: string]: Question[];
@@ -69,6 +72,9 @@ export default function HealthCheckPage() {
     hasSeenModal,
     markAsSeen,
   } = useWelcomeModalStore();
+
+  const isMobile = useIsMobile();
+  const { selectedSubmenu } = useSubMenuStore();
 
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: healthCheck, isLoading: isLoadingHealthCheck } =
@@ -348,7 +354,12 @@ export default function HealthCheckPage() {
   return (
     <Layout>
       <div className="flex w-full justify-between px-3 lg:px-0">
-        <div className="w-full flex flex-col">
+        <div
+          className={cn('w-full transition-all duration-200 ease-linear', {
+            'w-[calc(100%-300px)] xl:w-[calc(100%-400px)]':
+              !isMobile && selectedSubmenu,
+          })}
+        >
           <div className="flex w-full">
             <div className="mx-auto w-full p-2 md:p-4 lg:p-8">
               <div className="pb-6">

@@ -116,7 +116,8 @@ const SubMenu = () => {
             isLoadingIssues={isLoadingIssues}
           />
         )}
-        <div className="flex w-24 flex-col gap-8 border border-gray-200 bg-white px-2 py-6">
+
+        <div className="flex w-24 flex-col gap-8 bg-white px-2 py-6">
           {menuItems.map((item) =>
             item.value === SUBMENU_ITEMS.CUSTOMIZE ? (
               <DisplayModeDialog
