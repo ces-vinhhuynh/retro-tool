@@ -296,6 +296,19 @@ export default function HealthCheckPage() {
   };
 
   const handleChangePhase = () => {
+    if (healthCheck?.current_step === FIRST_STEP.key) {
+      const averageScores = calculateAverageScores();
+
+      if (averageScores && Object.keys(averageScores).length > 0) {
+        updateHealthCheck({
+          id: healthCheck.id,
+          healthCheck: {
+            current_step: (healthCheck?.current_step || 1) + 1,
+            average_score: averageScores,
+          },
+        });
+      }
+    }
     if (healthCheck?.current_step !== LAST_STEP.key) {
       return updateHealthCheck({
         id: healthCheck?.id ?? '',
