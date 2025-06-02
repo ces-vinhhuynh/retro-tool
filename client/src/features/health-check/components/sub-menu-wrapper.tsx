@@ -21,24 +21,26 @@ const SubMenuWrapper = ({
   const { setSelectedSubmenu } = useSubMenuStore();
 
   return (
-    <div
-      className={cn(
-        'absolute top-0 right-[100%] h-screen w-[300px] overflow-hidden border border-gray-200 bg-white transition-all duration-500 ease-in-out xl:w-[400px]',
-        className,
-      )}
-    >
-      <div className="flex h-full flex-col p-6">
-        <div className="flex h-full flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <Icon size={30} className="text-ces-orange-500" />
-            <ArrowRightToLine
-              size={25}
-              className="hover:text-ces-orange-500 cursor-pointer"
-              onClick={() => setSelectedSubmenu('')}
-            />
+    <div className="border border-gray-200">
+      <div
+        className={cn(
+          'w-100 overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
+          className,
+        )}
+      >
+        <div className="flex h-full flex-col rounded-2xl p-6">
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between">
+              <Icon size={30} className="text-ces-orange-500" />
+              <ArrowRightToLine
+                size={25}
+                className="hover:text-ces-orange-500 cursor-pointer"
+                onClick={() => setSelectedSubmenu('')}
+              />
+            </div>
+            <h1 className="text-xl font-bold">{title}</h1>
+            <div className="h-full">{children}</div>
           </div>
-          <h1 className="text-xl font-bold">{title}</h1>
-          <div className="h-full">{children}</div>
         </div>
       </div>
     </div>

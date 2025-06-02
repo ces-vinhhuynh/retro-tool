@@ -75,11 +75,11 @@ const UserSidebar = ({
   return (
     <div
       className={cn(
-        'absolute top-0 right-[100%] h-screen w-[300px] overflow-hidden border border-gray-200 bg-white transition-all duration-500 ease-in-out xl:w-[400px]',
+        'top-0 h-full w-100 overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
         className,
       )}
     >
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col rounded-2xl">
         <div className="flex items-center justify-between border-b p-4">
           <Button
             variant="ghost"
