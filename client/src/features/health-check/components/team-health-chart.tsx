@@ -94,6 +94,8 @@ const TeamHealthChart = ({
             width="60"
             height="20"
             style={{ overflow: 'visible' }}
+            onClick={() => handleOpenScoreDialog(index)}
+            className="cursor-pointer"
           >
             <div
               className={cn(
@@ -117,7 +119,7 @@ const TeamHealthChart = ({
           textAnchor={x > cx ? 'start' : x < cx ? 'end' : 'middle'}
           fill="#555555"
           fontSize={12}
-          onClick={() => handleClick(index)}
+          onClick={() => handleOpenScoreDialog(index)}
           className="cursor-pointer"
         >
           <tspan x={x} dy="1.2em" className="hidden md:inline">
@@ -131,7 +133,7 @@ const TeamHealthChart = ({
     );
   };
 
-  const handleClick = (index: number) => {
+  const handleOpenScoreDialog = (index: number) => {
     setSelectedIndex(index);
     setDialogOpen(true);
   };
