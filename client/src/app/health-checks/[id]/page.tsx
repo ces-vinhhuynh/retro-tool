@@ -21,7 +21,9 @@ import {
   STEPS,
 } from '@/features/health-check/constants/health-check';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
+import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
+import { useIssuesSubscription } from '@/features/health-check/hooks/issues/use-issues-subscription';
 import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
 import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeamsAndTemplate } from '@/features/health-check/hooks/use-get-health-checks-by-teams-and-template';
@@ -126,6 +128,10 @@ export default function HealthCheckPage() {
   useHealthCheckSubscription(healthCheckId);
   useResponsesSubscription(healthCheckId);
   useParticipantsSubscription(healthCheckId);
+  useAgreementsSubscription(healthCheck?.team_id || '');
+  useIssuesSubscription(healthCheck?.team_id || '');
+
+  
   useScrumHealthCheckSubscription(
     healthCheck?.template_id || '',
     healthCheck?.team_id || '',

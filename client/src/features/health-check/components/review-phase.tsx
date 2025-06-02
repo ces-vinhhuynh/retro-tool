@@ -4,9 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
 
 import { useAgreementMutation } from '../hooks/agreements/use-agreements-mutation';
-import { useAgreementsSubscription } from '../hooks/agreements/use-agreements-subscription';
 import { useIssuesMutation } from '../hooks/issues/use-issues-mutation';
-import { useIssuesSubscription } from '../hooks/issues/use-issues-subscription';
 import { Agreement } from '../types/agreements';
 import {
   ActionItemWithAssignees,
@@ -91,8 +89,6 @@ const ReviewPhase = ({
     isLoading: isLoadingIssues,
   } = useIssuesMutation();
 
-  useAgreementsSubscription(teamId);
-  useIssuesSubscription(teamId);
 
   const handleCreateAgreement = (title: string) => {
     createAgreements({
