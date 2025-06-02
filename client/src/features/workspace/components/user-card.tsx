@@ -24,10 +24,10 @@ import {
 interface UserCardProps {
   user: {
     id: string;
-    email: string | null;
-    full_name: string | null;
-    avatar_url: string | null;
-    role: WorkspaceRole | TeamRole | null;
+    email?: string | null;
+    full_name?: string | null;
+    avatar_url?: string | null;
+    role?: WorkspaceRole | TeamRole | null;
     teams?: string[];
   };
   onDelete: (userId: string) => void;

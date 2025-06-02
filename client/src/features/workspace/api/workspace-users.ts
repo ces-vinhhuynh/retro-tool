@@ -71,17 +71,18 @@ class WorkspaceUsersService {
           )
         `,
       )
-      .eq('workspace_id', workspaceId);
+      .eq('workspace_id', workspaceId)
+      .eq('status', 'accepted');
 
     if (error) throw error;
 
     return data.map(({ id, role, users }) => ({
       id,
       role,
-      full_name: users.full_name,
-      avatar_url: users.avatar_url,
-      email: users.email,
-      teams: users.team_users
+      full_name: users?.full_name,
+      avatar_url: users?.avatar_url,
+      email: users?.email,
+      teams: users?.team_users
         .filter((tu) => tu.teams.workspace_id === workspaceId)
         .map((tu) => tu.teams.name),
     }));
@@ -94,6 +95,23 @@ class WorkspaceUsersService {
       .eq('id', id);
 
     if (error) throw error;
+  }
+
+  async inviteUserToWorkspace(email: string, workspaceId: string) {
+    return await supabaseClient.functions.invoke('invite-user-to-workspace', {
+      body: { email, workspace_id: workspaceId },
+    });
+  }
+
+  async getWorkspaceUserByToken(token: string) {
+    const { data, error } = await supabaseClient
+      .from('workspace_users')
+      .select('*, workspaces(*)')
+      .eq('token', token)
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 }
 

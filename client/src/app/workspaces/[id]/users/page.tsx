@@ -2,43 +2,35 @@
 
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 import { Layout } from '@/components/layout/layout';
 import { DataTable } from '@/features/workspace/components/data-table';
 import InviteDialog from '@/features/workspace/components/invite-dialog';
 import UserCard from '@/features/workspace/components/user-card';
 import { columns } from '@/features/workspace/components/user-table/columns';
-import { useCreateWorkspaceUser } from '@/features/workspace/hooks/use-create-workspace-user';
 import { useDeleteWorkspaceUser } from '@/features/workspace/hooks/use-delete-workspace-user';
-import { useGetUsers } from '@/features/workspace/hooks/use-get-users';
 import { useGetWorkspaceMembers } from '@/features/workspace/hooks/use-get-workspace-members';
+import { useInviteUserToWorkspace } from '@/features/workspace/hooks/use-invite-user-to-workspace';
 import { useUpdateWorkspaceUser } from '@/features/workspace/hooks/use-update-workspace-user';
-import { Role } from '@/features/workspace/utils/role';
 
 export default function WorkspacePage() {
   const { id: workspaceId } = useParams<{ id: string }>();
   const { data: workspaceUsers = [] } = useGetWorkspaceMembers(workspaceId);
   const { mutate: deleteWorkspaceUser } = useDeleteWorkspaceUser();
   const { mutate: updateWorkspaceUser } = useUpdateWorkspaceUser();
-  const { mutate: createWorkspaceUser } = useCreateWorkspaceUser();
+  const { mutate: inviteUserToWorkspace, isPending } =
+    useInviteUserToWorkspace();
 
   const [open, setOpen] = useState(false);
-
-  const { data: users } = useGetUsers();
 
   const handleClose = () => {
     setOpen(!open);
   };
 
   const handleInvite = async (email: string) => {
-    const user = users?.find((user) => user.email === email);
-
-    createWorkspaceUser({
+    inviteUserToWorkspace({
+      email,
       workspaceId,
-      userId: user?.id ?? email,
-      token: uuidv4(),
-      role: Role.MEMBER,
     });
 
     handleClose();
@@ -54,6 +46,7 @@ export default function WorkspacePage() {
               open={open}
               onClose={handleClose}
               onInvite={handleInvite}
+              isPending={isPending}
             />
           </div>
         </div>

@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { TeamUserInsert } from '@/types/team';
+
 import { teamUsersService } from '../api/team-users';
-import { TeamUserInsert } from '../types/team';
 
 export function useCreateTeamUser() {
   const queryClient = useQueryClient();

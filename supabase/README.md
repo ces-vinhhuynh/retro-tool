@@ -86,7 +86,7 @@ Located in `supabase/functions/`.
 
 ### Create a New Function
 
-```bash
+```bash`
 npx supabase functions new hello-world
 ```
 

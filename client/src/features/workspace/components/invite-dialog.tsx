@@ -22,9 +22,15 @@ interface InviteDialogProps {
   open: boolean;
   onClose: () => void;
   onInvite: (email: string) => void;
+  isPending: boolean;
 }
 
-const InviteDialog = ({ open, onClose, onInvite }: InviteDialogProps) => {
+const InviteDialog = ({
+  open,
+  onClose,
+  onInvite,
+  isPending,
+}: InviteDialogProps) => {
   const {
     control,
     handleSubmit,
@@ -84,8 +90,8 @@ const InviteDialog = ({ open, onClose, onInvite }: InviteDialogProps) => {
                 </p>
               )}
             </div>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Invite'}
+            <Button type="submit" disabled={isSubmitting || isPending}>
+              {isSubmitting || isPending ? 'Sending...' : 'Send Invite'}
             </Button>
           </div>
         </form>
