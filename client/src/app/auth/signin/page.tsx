@@ -40,7 +40,7 @@ const SignInPage = () => {
 
   return (
     <AuthCard
-      title="CES Retro Tool"
+      title="Project Health Mate"
       description="Sign in to access your account"
     >
       <CardContent>

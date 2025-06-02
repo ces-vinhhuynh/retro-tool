@@ -4,7 +4,7 @@ const EnvSchema = z.object({
   // Application
   APP_URL: z.string().url(),
   FROM_EMAIL: z.string().email(),
-  APP_NAME: z.string().default("Retro Tool"),
+  APP_NAME: z.string().default("Project Health Mate"),
 
   // Authentication
   TOKEN_EXPIRY_DAYS: z.number().default(3),
@@ -25,7 +25,7 @@ export const CONFIG = {
   // Application
   APP_URL: Deno.env.get("APP_URL"),
   FROM_EMAIL: Deno.env.get("FROM_EMAIL") ?? "retrotoolteam@gmail.com",
-  APP_NAME: Deno.env.get("APP_NAME") ?? "Retro Tool",
+  APP_NAME: Deno.env.get("APP_NAME") ?? "Project Health Mate",
 
   // Authentication
   TOKEN_EXPIRY_DAYS: Number(Deno.env.get("TOKEN_EXPIRY_DAYS") ?? 3),

@@ -27,13 +27,13 @@ export function AppSidebar({
 }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props} className="md:max-lg:hidden">
-      <SidebarHeader>
+      <SidebarHeader className="p-3">
         <WorkspaceSwitcher
           workspaces={workspaces}
           currentWorkspace={currentWorkspace}
         />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="p-3">
         <NavTeams teams={teams} />
       </SidebarContent>
       <SidebarRail />

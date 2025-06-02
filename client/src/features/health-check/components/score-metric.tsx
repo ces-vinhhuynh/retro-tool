@@ -13,12 +13,12 @@ const ScoreMetric = ({
   label,
   value,
   unit = '/10',
-  colorClass = 'text-orange-500',
+  colorClass = 'text-ces-orange-500',
 }: ScoreMetricProps) => {
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 rounded-lg border bg-[#FAFAFB] px-3 py-2 sm:flex-row',
+        'flex flex-col gap-2 rounded-lg border bg-gray-50 px-3 py-2 sm:flex-row',
       )}
     >
       <span className="text-[15px] font-medium text-gray-500">{label}:</span>

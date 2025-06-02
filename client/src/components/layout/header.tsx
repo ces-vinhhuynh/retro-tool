@@ -20,18 +20,26 @@ import {
 } from '@/components/ui/select';
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import WorkspaceLogo from '@/features/workspace/components/workspace-logo';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { cn } from '@/lib/utils';
+import { Team } from '@/types/team';
 import { getAvatarCharacters } from '@/utils/user';
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '../ui/breadcrumb';
 import { SidebarTrigger } from '../ui/sidebar';
 
 interface HeaderProps {
   currentWorkspace: WorkspaceUserWithWorkspace;
+  currentTeam: Team;
 }
 
-export function Header({ currentWorkspace }: HeaderProps) {
+export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -46,6 +54,10 @@ export function Header({ currentWorkspace }: HeaderProps) {
     { href: `${base}/users`, label: 'Users' },
     { href: `${base}/settings`, label: 'Settings' }, // fix duplicate href with Home
   ];
+
+  const isTeamRoute =
+    pathname.startsWith('/teams/') || pathname.startsWith('/health-checks/');
+  const isWorkspaceRoute = pathname.startsWith('/workspaces/');
 
   const handleSignOut = async () => {
     try {
@@ -64,18 +76,38 @@ export function Header({ currentWorkspace }: HeaderProps) {
       <div className="lg:max-w-screen-3xl flex w-full items-center justify-start gap-3 p-3">
         <SidebarTrigger />
         <div className="flex w-full items-center justify-between">
-          <Link href={base} className="flex items-center gap-2">
-            <div className="flex aspect-square size-7 items-center justify-center rounded-lg font-bold text-white sm:size-8">
-              <WorkspaceLogo name={String(currentWorkspace?.workspace?.name)} />
-            </div>
-            <div className="truncate">
-              <span className="text-lg font-semibold sm:text-xl">
-                {currentWorkspace?.workspace?.name}
-              </span>
-            </div>
-          </Link>
+          <Breadcrumb>
+            <BreadcrumbList className="text-lg font-medium text-gray-800 sm:text-xl">
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  href={`/workspaces/${currentWorkspace?.workspace_id}`}
+                  className={cn(
+                    'font-medium text-gray-800 hover:text-gray-800',
+                    {
+                      'text-gray-400 hover:text-gray-500': isTeamRoute,
+                    },
+                  )}
+                >
+                  {currentWorkspace?.workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {currentTeam?.id && (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink
+                      href={`/teams/${currentTeam?.id}`}
+                      className="font-medium text-gray-800 hover:text-gray-800"
+                    >
+                      {currentTeam?.name}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
 
-          {currentWorkspace?.workspace_id && pathname.includes(base) && (
+          {currentWorkspace?.workspace_id && isWorkspaceRoute && (
             <>
               <Select
                 value={pathname}

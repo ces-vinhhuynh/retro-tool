@@ -26,7 +26,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
   const params = useParams<{ id: string }>();
-  const { currentWorkspace, setCurrentWorkspace, setCurrentTeam } =
+  const { currentWorkspace, setCurrentWorkspace, currentTeam, setCurrentTeam } =
     useWorkspaceStore();
   const { data: currentUser } = useCurrentUser();
   const isMobile = useIsMobile();
@@ -127,6 +127,7 @@ export function Layout({ children }: LayoutProps) {
       <SidebarInset>
         <Header
           currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
+          currentTeam={currentTeam as Team}
         />
         <main className="w-full">{children}</main>
       </SidebarInset>

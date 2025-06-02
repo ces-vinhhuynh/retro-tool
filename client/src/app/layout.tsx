@@ -6,8 +6,8 @@ import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  title: 'Retro Tool',
-  description: 'Retro Tool - Code Engine Studio',
+  title: 'Project Health Mate',
+  description: 'Project Health Mate - Code Engine Studio',
 };
 
 export default function RootLayout({

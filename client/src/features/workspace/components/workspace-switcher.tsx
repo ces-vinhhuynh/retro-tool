@@ -50,7 +50,7 @@ export function WorkspaceSwitcher({
             <SidebarMenuButton
               size="lg"
               className={cn(
-                'data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-0 ring-offset-0 transition-all duration-200 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0',
+                'data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-max p-0 ring-0 ring-offset-0 transition-all duration-200 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0',
               )}
             >
               <div className="flex size-8 items-center justify-center rounded-lg font-bold text-white">

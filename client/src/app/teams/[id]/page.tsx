@@ -74,7 +74,7 @@ const TeamPage = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent value="retrospective">
+        <TabsContent value="health-checks">
           <SessionTemplateDialog
             open={showDialog}
             onOpenChange={() => setShowDialog(!showDialog)}
@@ -88,7 +88,7 @@ const TeamPage = () => {
                   className="ml-auto"
                   onClick={() => setShowDialog(true)}
                 >
-                  New Retro Session
+                  New Health Check
                 </Button>
               </div>
               <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
@@ -181,9 +181,9 @@ export default TeamPage;
 const tabs = [
   { value: 'home', icon: <House className="size-4" />, label: 'Home' },
   {
-    value: 'retrospective',
+    value: 'health-checks',
     icon: <Menu className="size-4" />,
-    label: 'Retrospective',
+    label: 'Health Checks',
   },
   { value: 'members', icon: <UserIcon className="size-4" />, label: 'Members' },
   {

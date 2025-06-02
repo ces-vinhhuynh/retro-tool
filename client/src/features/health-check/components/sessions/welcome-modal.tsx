@@ -66,7 +66,7 @@ const WelcomeModal = ({
             </p>
           </div>
 
-          <div className="rounded-lg bg-orange-50 p-6">
+          <div className="bg-ces-orange-50 rounded-lg p-6">
             <div className="flex flex-col md:flex-row md:items-start">
               <div className="md:w-2/5">
                 <h4 className="mb-2 text-lg font-medium">Scan to Join</h4>

@@ -27,9 +27,10 @@ const HealthCheckSteps = ({
               className={cn(
                 'z-10 flex min-h-8 min-w-8 cursor-default items-center justify-center rounded-full border-2 border-gray-200 bg-white text-sm font-semibold text-gray-400/80 transition-colors duration-150 sm:min-h-10 sm:min-w-10 sm:text-base',
                 {
-                  'border-orange-500 bg-orange-500 text-white':
+                  'border-ces-orange-500 bg-ces-orange-500 text-white':
                     key < currentStep,
-                  'border-orange-500 text-orange-500': key === currentStep,
+                  'border-ces-orange-500 text-ces-orange-500':
+                    key === currentStep,
                   'cursor-pointer': isFacilitator,
                 },
               )}

@@ -35,7 +35,7 @@ const UserItem = ({ participant }: { participant: ParticipantWithUser }) => (
         <p className="truncate text-sm font-medium">
           {participant.user.full_name}
         </p>
-        <span className="text-xs font-medium text-orange-600">
+        <span className="text-ces-orange-600 text-xs font-medium">
           {participant.progress} %
         </span>
       </div>
