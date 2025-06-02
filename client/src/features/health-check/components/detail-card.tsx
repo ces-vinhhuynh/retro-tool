@@ -10,6 +10,7 @@ import {
 } from '@/features/health-check/types/health-check';
 import { scoreColorMap } from '@/features/health-check/utils/color';
 import { cn } from '@/utils/cn';
+import { roundAndRemoveTrailingZero } from '@/utils/number';
 
 interface DetailCardProps {
   item: {
@@ -52,7 +53,7 @@ const DetailCard = ({
                 )}
               >
                 <span className="text-4xl font-bold text-white">
-                  {Number(item.value).toFixed(1)}
+                  {roundAndRemoveTrailingZero(item.value)}
                 </span>
               </div>
               <div className="flex flex-col gap-2 self-center">

@@ -24,7 +24,7 @@ export default function RatingOption({
         <button
           onClick={() => onSelect(option.value)}
           className={cn(
-            'flex cursor-pointer flex-col items-center justify-center p-4',
+            'flex cursor-pointer flex-col items-center justify-center border-2 border-transparent p-4',
             'hover:border-2 hover:border-[#00b8d4] focus:outline-none',
             isSelected && 'bg-[#00b8d4]',
           )}

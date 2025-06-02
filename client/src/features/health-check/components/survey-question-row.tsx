@@ -109,10 +109,10 @@ const SurveyQuestionRow = ({
           className="text-foreground flex min-w-0 items-center gap-2 text-base font-bold tracking-tight uppercase sm:text-lg"
           htmlFor={'comment_' + question.id}
         >
-          <span className="truncate">{question.text}</span>
+          <span>{question.text}</span>
         </Label>
         {question.description && (
-          <span className="text-muted-foreground min-w-0 truncate text-xs sm:text-sm">
+          <span className="text-muted-foreground min-w-0 text-xs sm:text-sm">
             {question.description}
           </span>
         )}
@@ -220,7 +220,7 @@ const SurveyQuestionRow = ({
               Saved
             </span>
           )}
-          <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
+          <p className="text-muted-foreground mt-1 text-[10px] sm:text-xs">
             Press Enter for new line. Each line will be saved as a separate
             comment.
           </p>

@@ -6,6 +6,7 @@ import { getScoreColors } from '@/features/health-check/utils/color';
 import { getCommentCount } from '@/features/health-check/utils/comment';
 import { getRatings } from '@/features/health-check/utils/rating';
 import { cn } from '@/utils/cn';
+import { roundAndRemoveTrailingZero } from '@/utils/number';
 
 interface QuestionAccordionItemProps {
   question: Question;
@@ -51,7 +52,7 @@ export default function QuestionAccordionItem({
                 )}
               >
                 <span className="text-2xl font-bold text-white">
-                  {Number(avgScore).toFixed(1)}
+                  {roundAndRemoveTrailingZero(avgScore || 0)}
                 </span>
               </div>
             ) : null}
