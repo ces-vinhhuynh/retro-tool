@@ -1,5 +1,6 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -41,6 +42,7 @@ type SurveyPhaseProps = {
   response: Response | null | undefined;
   settings: HealthCheckSettings;
   healthCheck: HealthCheckWithTemplate;
+  isLoading: boolean;
 };
 
 const SurveyPhase = ({
@@ -52,6 +54,7 @@ const SurveyPhase = ({
   response,
   settings,
   healthCheck,
+  isLoading,
 }: SurveyPhaseProps) => {
   const { id: healthCheckId } = useParams<{ id: string }>();
   const { updateHealthCheck } = useHealthCheckMutations();
@@ -299,21 +302,29 @@ const SurveyPhase = ({
 
   return (
     <CardContent className="p-3 sm:p-4 md:p-5 lg:p-6">
-      <div className="min-w-0 flex-shrink-0 pb-2 md:w-1/2 lg:w-1/3">
-        <Progress value={progress} className="h-2" />
-        <div className="text-muted-foreground text-right text-sm">
-          {Math.round(progress)}%
+      {isLoading ? (
+        <div className="flex h-full items-center justify-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="min-w-0 flex-shrink-0 pb-2 md:w-1/2 lg:w-1/3">
+            <Progress value={progress} className="h-2" />
+            <div className="text-muted-foreground text-right text-sm">
+              {Math.round(progress)}%
+            </div>
+          </div>
 
-      {settings.display_mode === DisplayMode.SINGLE && (
-        <OneQuestionMode {...sharedProps} />
-      )}
-      {settings.display_mode === DisplayMode.ALL && (
-        <AllQuestionMode {...sharedProps} />
-      )}
-      {settings.display_mode === DisplayMode.GROUPED && (
-        <SectionBySectionMode {...sharedProps} />
+          {settings.display_mode === DisplayMode.SINGLE && (
+            <OneQuestionMode {...sharedProps} />
+          )}
+          {settings.display_mode === DisplayMode.ALL && (
+            <AllQuestionMode {...sharedProps} />
+          )}
+          {settings.display_mode === DisplayMode.GROUPED && (
+            <SectionBySectionMode {...sharedProps} />
+          )}
+        </>
       )}
     </CardContent>
   );

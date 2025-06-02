@@ -131,7 +131,6 @@ export default function HealthCheckPage() {
   useAgreementsSubscription(healthCheck?.team_id || '');
   useIssuesSubscription(healthCheck?.team_id || '');
 
-  
   useScrumHealthCheckSubscription(
     healthCheck?.template_id || '',
     healthCheck?.team_id || '',
@@ -139,7 +138,7 @@ export default function HealthCheckPage() {
   useHealthChecksSubscription();
 
   const { updateHealthCheck } = useHealthCheckMutations();
-  const { mutate: createResponse } = useCreateResponse();
+  const { mutate: createResponse, isSuccess } = useCreateResponse();
 
   const questions: Question[] = template?.questions || [];
   const grouped = _groupBy(questions, 'section');
@@ -377,6 +376,7 @@ export default function HealthCheckPage() {
                     maxScore={template?.max_value}
                     response={response}
                     settings={healthCheck.settings as HealthCheckSettings}
+                    isLoading={!response && !isSuccess}
                   />
                 )}
                 {healthCheck.current_step === STEPS['discuss'].key && (

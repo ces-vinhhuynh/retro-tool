@@ -24,7 +24,7 @@ export function useResponse(healthCheckId: string, userId: string) {
 export const useCreateResponse = () => {
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (response: ResponseInsert) => responseService.create(response),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -36,7 +36,7 @@ export const useCreateResponse = () => {
     },
   });
 
-  return { mutate, isPending };
+  return { mutate, isPending, isSuccess };
 };
 
 export const useUpdateResponse = () => {
