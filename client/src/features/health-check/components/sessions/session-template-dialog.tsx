@@ -62,6 +62,7 @@ const SessionTemplateDialog = ({
       title: '',
       dueDate: new Date(),
       displayMode: DisplayMode.GROUPED,
+      allowNavigation: false,
     },
   });
 
@@ -94,7 +95,7 @@ const SessionTemplateDialog = ({
       current_step: 1,
       settings: {
         display_mode: formData.displayMode,
-        allow_navigation: formData.allowNavigation,
+        allow_participant_navigation: formData.allowNavigation,
       },
     });
 

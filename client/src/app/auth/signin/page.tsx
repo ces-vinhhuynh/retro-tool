@@ -3,7 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -18,10 +19,12 @@ import { useSignIn } from '@/features/auth/hooks/use-signin';
 import { useSocialAuth } from '@/features/auth/hooks/use-social-auth';
 import { loginSchema, LoginInputs } from '@/features/auth/schemas/auth.schema';
 
-export default function SignInPage() {
+const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signInWithGoogle, isSigningInWithGoogle } = useSocialAuth();
   const { signInWithEmail, isSigningInWithEmail } = useSignIn();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next') ?? '/';
   const {
     register,
     handleSubmit,
@@ -108,7 +111,7 @@ export default function SignInPage() {
         </div>
         <GoogleSignInButton
           isLoading={isSigningInWithGoogle}
-          onClick={signInWithGoogle}
+          onClick={() => signInWithGoogle(next)}
         />
       </CardContent>
       <CardFooter className="justify-center">
@@ -121,4 +124,24 @@ export default function SignInPage() {
       </CardFooter>
     </AuthCard>
   );
-}
+};
+
+// Wrap the SignInPage in a Suspense boundary
+const SignInPageWithSuspense = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <p className="text-lg">Loading sign-in page...</p>
+          </div>
+        </div>
+      }
+    >
+      <SignInPage />
+    </Suspense>
+  );
+};
+
+export default SignInPageWithSuspense;

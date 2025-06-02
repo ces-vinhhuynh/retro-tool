@@ -1,7 +1,8 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import InviteHandler from '@/features/workspace/components/invite-handler';
@@ -53,4 +54,21 @@ const WorkspaceInvitePage = () => {
   return <InviteHandler isLoading={isLoading} error={error} />;
 };
 
-export default WorkspaceInvitePage;
+const WorkspaceInvitePageWithSuspense = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <p className="text-lg">Loading invitation...</p>
+          </div>
+        </div>
+      }
+    >
+      <WorkspaceInvitePage />
+    </Suspense>
+  );
+};
+
+export default WorkspaceInvitePageWithSuspense;
