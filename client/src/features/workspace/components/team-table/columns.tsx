@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -110,7 +110,7 @@ export const columns: ColumnDef<Team>[] = [
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
+                <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
