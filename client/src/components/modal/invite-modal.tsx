@@ -13,27 +13,32 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { inviteSchema } from '@/features/workspace/schema/workspace-user.schema';
 
-import { useInviteUserToTeam } from '../hooks/use-invite-user-to-team';
+type InviteFormData = {
+  email: string;
+};
 
-type InviteFormData = z.infer<typeof inviteSchema>;
-
-interface TeamInviteDialogProps {
+interface InviteModalProps {
   open: boolean;
   onClose: () => void;
-  teamId: string;
-  workspaceId: string;
+  onSubmit: (email: string) => void;
+  title: string;
+  description: string;
+  isLoading: boolean;
 }
 
-const TeamInviteDialog = ({
+const inviteSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }),
+});
+
+const InviteModal = ({
   open,
   onClose,
-  teamId,
-  workspaceId,
-}: TeamInviteDialogProps) => {
-  const { mutate: inviteUserToTeam, isPending: isInvitingUserToTeam } =
-    useInviteUserToTeam();
+  onSubmit,
+  title,
+  description,
+  isLoading,
+}: InviteModalProps) => {
   const {
     control,
     handleSubmit,
@@ -43,12 +48,8 @@ const TeamInviteDialog = ({
     resolver: zodResolver(inviteSchema),
   });
 
-  const onSubmit = async (data: InviteFormData) => {
-    inviteUserToTeam({
-      email: data.email,
-      teamId,
-      workspaceId,
-    });
+  const handleFormSubmit = async (data: InviteFormData) => {
+    onSubmit(data.email.trim());
     reset();
     onClose();
   };
@@ -63,14 +64,11 @@ const TeamInviteDialog = ({
     >
       <DialogContent className="rounded-lg">
         <DialogHeader>
-          <DialogTitle>Invite to Team</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="p-2">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-2">
           <div className="bg-ces-orange-100 rounded-md p-4 text-gray-700">
-            <span>
-              Send email invites to your team members so they can join and start
-              collaborating instantly.
-            </span>
+            <span>{description}</span>
           </div>
           <div className="flex items-end justify-between gap-2 pt-4">
             <div className="flex-1">
@@ -97,13 +95,8 @@ const TeamInviteDialog = ({
                 </p>
               )}
             </div>
-            <Button
-              type="submit"
-              disabled={isSubmitting || isInvitingUserToTeam}
-            >
-              {isSubmitting || isInvitingUserToTeam
-                ? 'Sending...'
-                : 'Send Invite'}
+            <Button type="submit" disabled={isSubmitting || isLoading}>
+              {isSubmitting || isLoading ? 'Sending...' : 'Send Invite'}
             </Button>
           </div>
         </form>
@@ -112,4 +105,4 @@ const TeamInviteDialog = ({
   );
 };
 
-export default TeamInviteDialog;
+export default InviteModal;

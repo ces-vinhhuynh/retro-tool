@@ -15,10 +15,7 @@ import {
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useHealthCheckMutations } from '@/features/health-check/hooks/use-health-check';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
-import {
-  AUTHENTICATION_REQUIRED,
-  AUTHENTICATION_REQUIRED_DESCRIPTION,
-} from '@/utils/messages';
+import { MESSAGE } from '@/utils/messages';
 
 import { useNewSessionModalStore } from '../../stores/new-session-modal-store';
 import {
@@ -79,8 +76,8 @@ const SessionTemplateDialog = ({
   // Accept form data from react-hook-form
   const handleCreate = async (formData: HealthCheckFormData) => {
     if (!selectedTemplate || !currentUser) {
-      toast.error(AUTHENTICATION_REQUIRED, {
-        description: AUTHENTICATION_REQUIRED_DESCRIPTION,
+      toast.error(MESSAGE.AUTHENTICATION_REQUIRED, {
+        description: MESSAGE.AUTHENTICATION_REQUIRED_DESCRIPTION,
       });
       return;
     }

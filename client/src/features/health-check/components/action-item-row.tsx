@@ -1,6 +1,7 @@
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
+import ConfirmModal from '@/components/modal/confirm-modal';
 import { Button } from '@/components/ui/button';
 import { DatePopover } from '@/features/health-check/components/date-popover';
 import { PriorityPopover } from '@/features/health-check/components/priority-popover';
@@ -11,6 +12,7 @@ import {
   ActionStatus,
   User,
 } from '@/features/health-check/types/health-check';
+import { MESSAGE } from '@/utils/messages';
 
 import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
 import { useCreateActionItemAssignee } from '../hooks/use-create-action-item-assignee';
@@ -44,20 +46,7 @@ export const ActionItemRow = ({
   const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
     useRemoveActionItemAssignee();
 
-  const { mutate: updateActionItem } = useUpdateActionItem();
-
-  const [openStatusPopovers, setOpenStatusPopovers] = useState<
-    Record<string, boolean>
-  >({});
-  const [openPriorityPopovers, setOpenPriorityPopovers] = useState<
-    Record<string, boolean>
-  >({});
-  const [openDatePopovers, setOpenDatePopovers] = useState<
-    Record<string, boolean>
-  >({});
-  const [openAssigneePopovers, setOpenAssigneePopovers] = useState<
-    Record<string, boolean>
-  >({});
+  const [isOpenModalConfirm, setIsOpenModalConfirm] = useState(false);
 
   const getStatusIcon = (status: ActionStatus) => {
     const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
@@ -193,13 +182,21 @@ export const ActionItemRow = ({
             variant="ghost"
             size="icon"
             className="h-8 w-8 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-600"
-            onClick={() => onDelete?.(item.id)}
+            onClick={() => setIsOpenModalConfirm(true)}
             disabled={isDeleting}
           >
             <Trash2 size={18} />
           </Button>
         )}
       </div>
+      <ConfirmModal
+        isDelete={true}
+        isOpen={isOpenModalConfirm}
+        title={MESSAGE.DELETE_ACTION_ITEM_TITLE}
+        description={MESSAGE.DELETE_ACTION_ITEM_DESCRIPTION}
+        onCancel={() => setIsOpenModalConfirm(false)}
+        onDelete={() => onDelete?.(item.id)}
+      />
     </div>
   );
 };

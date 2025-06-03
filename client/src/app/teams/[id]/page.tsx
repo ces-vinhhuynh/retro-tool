@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { Layout } from '@/components/layout/layout';
+import InviteModal from '@/components/modal/invite-modal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,14 +24,15 @@ import {
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
 import { DataTable } from '@/features/workspace/components/data-table';
-import TeamInviteDialog from '@/features/workspace/components/team-invite-dialog';
 import { columns } from '@/features/workspace/components/team-members-table/columns';
 import UserCard from '@/features/workspace/components/user-card';
 import { TeamRole } from '@/features/workspace/constants/user';
 import { useDeleteTeamMember } from '@/features/workspace/hooks/use-delete-team-member';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { useInviteUserToTeam } from '@/features/workspace/hooks/use-invite-user-to-team';
 import { useUpdateTeamUser } from '@/features/workspace/hooks/use-update-team-user';
+import { MESSAGE } from '@/utils/messages';
 
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
@@ -48,6 +50,8 @@ const TeamPage = () => {
 
   const { mutate: deleteTeamMember } = useDeleteTeamMember();
   const { mutate: updateTeamUser } = useUpdateTeamUser();
+  const { mutate: inviteUserToTeam, isPending: isInvitingUserToTeam } =
+    useInviteUserToTeam();
 
   const healthChecksGrouped = splitHealthChecksByTemplateId(
     templates as Template[],
@@ -57,6 +61,14 @@ const TeamPage = () => {
   const onAddNewSession = (templateId: string) => {
     setShowDialog(true);
     setTemplateId(templateId);
+  };
+
+  const handleInvite = (email: string) => {
+    inviteUserToTeam({
+      email,
+      teamId: team?.id ?? '',
+      workspaceId: team?.workspace_id ?? '',
+    });
   };
 
   return (
@@ -136,11 +148,13 @@ const TeamPage = () => {
                 >
                   Invite member
                 </Button>
-                <TeamInviteDialog
+                <InviteModal
                   open={showInviteDialog}
                   onClose={() => setShowInviteDialog(false)}
-                  teamId={teamId}
-                  workspaceId={String(team?.workspace_id)}
+                  onSubmit={handleInvite}
+                  isLoading={isInvitingUserToTeam}
+                  title={MESSAGE.INVITE_TO_TEAM_TITLE}
+                  description={MESSAGE.INVITE_TO_TEAM_DESCRIPTION}
                 />
               </div>
 

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { TeamUserUpdate } from '@/types/team';
-import { FAILED_TO_UPDATE_TEAM_USER_ROLE } from '@/utils/messages';
+import { MESSAGE } from '@/utils/messages';
 
 import { teamUsersService } from '../api/team-users';
 
@@ -18,7 +18,7 @@ export const useUpdateTeamUser = () => {
       });
     },
     onError: () => {
-      toast.error(FAILED_TO_UPDATE_TEAM_USER_ROLE);
+      toast.error(MESSAGE.FAILED_TO_UPDATE_TEAM_USER_ROLE);
     },
   });
 

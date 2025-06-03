@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { FAILED_TO_DELETE_TEAM } from '@/utils/messages';
+import { MESSAGE } from '@/utils/messages';
 
 import { teamService } from '../api/team';
 
@@ -15,7 +15,7 @@ export function useDeleteTeam() {
       queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
     onError: () => {
-      toast.error(FAILED_TO_DELETE_TEAM);
+      toast.error(MESSAGE.FAILED_TO_DELETE_TEAM);
     },
   });
 

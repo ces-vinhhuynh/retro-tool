@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { FAILED_TO_UPDATE_WORKSPACE_USER_ROLE } from '@/utils/messages';
+import { MESSAGE } from '@/utils/messages';
 
 import { workspaceUsersService } from '../api/workspace-users';
 import { WorkspaceUserUpdate } from '../types/workspace-users';
@@ -23,7 +23,7 @@ export const useUpdateWorkspaceUser = () => {
       });
     },
     onError: () => {
-      toast.error(FAILED_TO_UPDATE_WORKSPACE_USER_ROLE);
+      toast.error(MESSAGE.FAILED_TO_UPDATE_WORKSPACE_USER_ROLE);
     },
   });
 

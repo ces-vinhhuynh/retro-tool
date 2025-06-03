@@ -4,15 +4,16 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { Layout } from '@/components/layout/layout';
+import InviteModal from '@/components/modal/invite-modal';
+import { Button } from '@/components/ui/button';
 import { DataTable } from '@/features/workspace/components/data-table';
-import InviteDialog from '@/features/workspace/components/invite-dialog';
 import UserCard from '@/features/workspace/components/user-card';
 import { columns } from '@/features/workspace/components/user-table/columns';
 import { useDeleteWorkspaceUser } from '@/features/workspace/hooks/use-delete-workspace-user';
 import { useGetWorkspaceMembers } from '@/features/workspace/hooks/use-get-workspace-members';
 import { useInviteUserToWorkspace } from '@/features/workspace/hooks/use-invite-user-to-workspace';
 import { useUpdateWorkspaceUser } from '@/features/workspace/hooks/use-update-workspace-user';
-
+import { MESSAGE } from '@/utils/messages';
 export default function WorkspacePage() {
   const { id: workspaceId } = useParams<{ id: string }>();
   const { data: workspaceUsers = [] } = useGetWorkspaceMembers(workspaceId);
@@ -21,10 +22,10 @@ export default function WorkspacePage() {
   const { mutate: inviteUserToWorkspace, isPending } =
     useInviteUserToWorkspace();
 
-  const [open, setOpen] = useState(false);
+  const [isOpenModalInvite, setIsOpenModalInvite] = useState(false);
 
   const handleClose = () => {
-    setOpen(!open);
+    setIsOpenModalInvite(!isOpenModalInvite);
   };
 
   const handleInvite = async (email: string) => {
@@ -42,11 +43,20 @@ export default function WorkspacePage() {
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-xl font-bold md:text-2xl">User Management</h1>
           <div className="mb-1 sm:mb-0">
-            <InviteDialog
-              open={open}
+            <Button
+              variant="default"
+              className="primary h-8 rounded-md md:h-10 md:text-base"
+              onClick={() => setIsOpenModalInvite(true)}
+            >
+              Invite User
+            </Button>
+            <InviteModal
+              open={isOpenModalInvite}
               onClose={handleClose}
-              onInvite={handleInvite}
-              isPending={isPending}
+              onSubmit={handleInvite}
+              isLoading={isPending}
+              title={MESSAGE.INVITE_TO_WORKSPACE_TITLE}
+              description={MESSAGE.INVITE_TO_WORKSPACE_DESCRIPTION}
             />
           </div>
         </div>
