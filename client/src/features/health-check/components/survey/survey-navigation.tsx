@@ -27,29 +27,29 @@ export const SurveyNavigation = ({
 
   const getVisiblePages = () => {
     const pages: (number | 'ellipsis')[] = [];
-  
+
     const showRange = 1;
     const startPage = Math.max(1, index - showRange);
     const endPage = Math.min(length - 2, index + showRange);
-  
+
     pages.push(0);
-  
+
     if (startPage > 1) {
       pages.push('ellipsis');
     }
-  
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-  
+
     if (endPage < length - 2) {
       pages.push('ellipsis');
     }
-  
+
     if (length > 1) {
       pages.push(length - 1);
     }
-  
+
     return pages;
   };
 
@@ -65,7 +65,7 @@ export const SurveyNavigation = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-8 w-8 min-w-8 rounded-full"
+                  className="h-8 w-8 min-w-8 rounded-full bg-white text-sm font-semibold transition hover:cursor-pointer"
                   onClick={() => handleNavigation(Math.max(0, index - 1))}
                   disabled={index === 0}
                 >
@@ -76,7 +76,9 @@ export const SurveyNavigation = ({
               {visiblePages.map((page, idx) =>
                 page === 'ellipsis' ? (
                   <PaginationItem key={`ellipsis-${idx}`}>
-                    <span className="h-8 w-8 flex items-center justify-center text-gray-400">…</span>
+                    <span className="flex h-8 w-8 items-center justify-center">
+                      …
+                    </span>
                   </PaginationItem>
                 ) : (
                   <PaginationItem key={page}>
@@ -84,9 +86,9 @@ export const SurveyNavigation = ({
                       variant="outline"
                       size="icon"
                       className={cn(
-                        `h-8 w-8 min-w-8 rounded-full border-gray-400 bg-white font-bold text-gray-400 transition hover:cursor-pointer`,
+                        `h-8 w-8 min-w-8 rounded-full bg-white text-sm font-semibold transition hover:cursor-pointer`,
                         {
-                          'pointer-events-none border-black text-black':
+                          'border-ces-orange-500 text-ces-orange-500 pointer-events-none':
                             page === index,
                         },
                       )}
@@ -95,15 +97,17 @@ export const SurveyNavigation = ({
                       {page + 1}
                     </Button>
                   </PaginationItem>
-                )
+                ),
               )}
 
               <PaginationItem>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-8 w-8 min-w-8 rounded-full"
-                  onClick={() => handleNavigation(Math.min(length - 1, index + 1))}
+                  className="h-8 w-8 min-w-8 rounded-full bg-white text-sm font-semibold transition hover:cursor-pointer"
+                  onClick={() =>
+                    handleNavigation(Math.min(length - 1, index + 1))
+                  }
                   disabled={index === length - 1}
                 >
                   ›
