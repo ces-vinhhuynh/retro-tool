@@ -8,7 +8,7 @@ export const MESSAGE = {
   FAILED_TO_UPDATE_TEAM_USER_ROLE: 'Failed to update team user role',
   DELETE_ACTION_ITEM_TITLE: 'Delete Action Item',
   DELETE_ACTION_ITEM_DESCRIPTION:
-    'Are you sure you want to delete this action?',
+    'Are you sure you want to delete this action item?',
   INVITE_TO_WORKSPACE_TITLE: 'Invite to Workspace',
   INVITE_TO_WORKSPACE_DESCRIPTION:
     'Send email invites to your workspace so they can join and start collaborating instantly.',

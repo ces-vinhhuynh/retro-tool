@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,10 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-type InviteFormData = {
-  email: string;
-};
+import {
+  InviteViaEmailSchema,
+  inviteViaEmailSchema,
+} from '@/schema/invite-via-email.schema';
 
 interface InviteModalProps {
   open: boolean;
@@ -26,10 +25,6 @@ interface InviteModalProps {
   description: string;
   isLoading: boolean;
 }
-
-const inviteSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }),
-});
 
 const InviteModal = ({
   open,
@@ -44,11 +39,11 @@ const InviteModal = ({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<InviteFormData>({
-    resolver: zodResolver(inviteSchema),
+  } = useForm<InviteViaEmailSchema>({
+    resolver: zodResolver(inviteViaEmailSchema),
   });
 
-  const handleFormSubmit = async (data: InviteFormData) => {
+  const handleFormSubmit = async (data: InviteViaEmailSchema) => {
     onSubmit(data.email.trim());
     reset();
     onClose();

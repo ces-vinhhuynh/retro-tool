@@ -195,7 +195,7 @@ export const ActionItemRow = ({
         title={MESSAGE.DELETE_ACTION_ITEM_TITLE}
         description={MESSAGE.DELETE_ACTION_ITEM_DESCRIPTION}
         onCancel={() => setIsOpenModalConfirm(false)}
-        onDelete={() => onDelete?.(item.id)}
+        onConfirm={() => onDelete?.(item.id)}
       />
     </div>
   );

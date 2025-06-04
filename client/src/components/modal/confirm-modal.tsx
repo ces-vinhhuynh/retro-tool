@@ -16,7 +16,7 @@ interface ConfirmModalProps {
   title: string;
   description: string;
   onCancel: () => void;
-  onDelete: () => void;
+  onConfirm: () => void;
 }
 
 const ConfirmModal = ({
@@ -25,7 +25,7 @@ const ConfirmModal = ({
   title,
   description,
   onCancel,
-  onDelete,
+  onConfirm,
 }: ConfirmModalProps) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onCancel}>
@@ -37,7 +37,7 @@ const ConfirmModal = ({
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={onDelete}
+            onClick={onConfirm}
             className={cn(
               "bg-red-600 hover:bg-red-700",
               !isDelete && "bg-blue-600 hover:bg-blue-700"
