@@ -1,4 +1,5 @@
 import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { DatePopover } from '@/features/health-check/components/date-popover';
@@ -14,47 +15,26 @@ import {
 import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
 import { useCreateActionItemAssignee } from '../hooks/use-create-action-item-assignee';
 import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-assignee';
+import { useUpdateActionItem } from '../hooks/use-update-action-item';
 import { PRIORITY_CONFIG, STATUS_CONFIG } from '../utils/constants';
 
 import UserAssignmentPopover from './user-assignment-popover';
 
 interface ActionItemRowProps {
   item: ActionItemWithAssignees;
-  openStatusPopovers?: Record<string, boolean>;
-  setOpenStatusPopovers?: (value: Record<string, boolean>) => void;
-  openPriorityPopovers?: Record<string, boolean>;
-  setOpenPriorityPopovers?: (value: Record<string, boolean>) => void;
-  openDatePopovers?: Record<string, boolean>;
-  setOpenDatePopovers?: (value: Record<string, boolean>) => void;
-  setActionStatus?: (id: string, status: ActionStatus) => void;
-  setPriority?: (id: string, priority: ActionPriority) => void;
-  setDueDate?: (id: string, date?: Date) => void;
   isUpdating?: boolean;
   isDeleting?: boolean;
   onDelete?: (id: string) => void;
   isEditable?: boolean;
   teamMembers: User[];
-  openAssigneePopovers?: Record<string, boolean>;
-  setOpenAssigneePopovers?: (value: Record<string, boolean>) => void;
 }
 
 export const ActionItemRow = ({
   item,
-  openStatusPopovers,
-  setOpenStatusPopovers,
-  openPriorityPopovers,
-  setOpenPriorityPopovers,
-  openDatePopovers,
-  setOpenDatePopovers,
-  setActionStatus,
-  setPriority,
-  setDueDate,
   isUpdating,
   onDelete,
   isDeleting,
   teamMembers,
-  openAssigneePopovers,
-  setOpenAssigneePopovers,
   isEditable = true,
 }: ActionItemRowProps) => {
   useActionItemAssignSubscription(item.id);
@@ -63,6 +43,21 @@ export const ActionItemRow = ({
 
   const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
     useRemoveActionItemAssignee();
+
+  const { mutate: updateActionItem } = useUpdateActionItem();
+
+  const [openStatusPopovers, setOpenStatusPopovers] = useState<
+    Record<string, boolean>
+  >({});
+  const [openPriorityPopovers, setOpenPriorityPopovers] = useState<
+    Record<string, boolean>
+  >({});
+  const [openDatePopovers, setOpenDatePopovers] = useState<
+    Record<string, boolean>
+  >({});
+  const [openAssigneePopovers, setOpenAssigneePopovers] = useState<
+    Record<string, boolean>
+  >({});
 
   const getStatusIcon = (status: ActionStatus) => {
     const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
@@ -118,6 +113,23 @@ export const ActionItemRow = ({
     } else {
       createActionItemAssignee(payload);
     }
+  };
+
+  const setActionStatus = (id: string, status: ActionStatus) => {
+    setOpenStatusPopovers({ ...openStatusPopovers, [id]: false });
+    updateActionItem({ id, actionItem: { status } });
+  };
+
+  const setDueDate = (id: string, date?: Date) => {
+    if (!date) return;
+    const due_date = date.toLocaleDateString('en-CA');
+    setOpenDatePopovers({ ...openDatePopovers, [id]: false });
+    updateActionItem({ id, actionItem: { due_date } });
+  };
+
+  const setPriority = (id: string, priority: ActionPriority) => {
+    setOpenPriorityPopovers({ ...openPriorityPopovers, [id]: false });
+    updateActionItem({ id, actionItem: { priority } });
   };
 
   return (

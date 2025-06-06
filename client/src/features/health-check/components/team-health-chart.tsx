@@ -47,6 +47,9 @@ const TeamHealthChart = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const totalActionItems = actionItems.filter(
+    (item) => item.health_check_id === healthCheck.id,
+  );
   const scores = healthCheck?.average_score as AverageScores;
   const overallAvg = calcAverage(questions, scores);
   const deliveryAvg = calcSectionAverage(
@@ -154,7 +157,7 @@ const TeamHealthChart = ({
             <ScoreMetric
               label="Total actions"
               unit=""
-              value={actionItems.length}
+              value={totalActionItems.length}
             />
           )}
         </div>

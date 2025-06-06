@@ -8,6 +8,7 @@ import { useIssuesMutation } from '../hooks/issues/use-issues-mutation';
 import { Agreement } from '../types/agreements';
 import {
   ActionItemWithAssignees,
+  ActionStatus,
   HealthCheckWithTemplate,
   User,
 } from '../types/health-check';
@@ -74,7 +75,9 @@ const ReviewPhase = ({
   );
 
   const previousActionItems = actionItems?.filter(
-    (item) => item.health_check_id !== healthCheck.id,
+    (item) =>
+      item.health_check_id !== healthCheck.id &&
+      item.status !== ActionStatus.DONE,
   );
 
   const {
@@ -88,7 +91,6 @@ const ReviewPhase = ({
     deleteIssue,
     isLoading: isLoadingIssues,
   } = useIssuesMutation();
-
 
   const handleCreateAgreement = (title: string) => {
     createAgreements({
@@ -129,7 +131,9 @@ const ReviewPhase = ({
           <div
             className={cn(
               'h-2 w-2 rounded-full',
-              healthCheck.status === 'done' ? 'bg-green-500' : 'bg-blue-500',
+              healthCheck.status === ActionStatus.DONE
+                ? 'bg-green-500'
+                : 'bg-blue-500',
             )}
           />
           <div className="font-medium capitalize">{healthCheck.status}</div>
@@ -172,7 +176,7 @@ const ReviewPhase = ({
               <ActionItemRow
                 key={item.id}
                 item={item}
-                isEditable={false}
+                isEditable={true}
                 teamMembers={teamMembers}
               />
             ))}

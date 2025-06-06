@@ -80,7 +80,7 @@ const UserSidebar = ({
       )}
     >
       <div className="flex h-full flex-col rounded-2xl">
-        <div className="flex items-center justify-between border-b p-4">
+        <div className="flex items-center justify-between border-b p-3">
           <Button
             variant="ghost"
             onClick={() => setSelectedSubmenu('')}

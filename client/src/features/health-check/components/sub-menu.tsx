@@ -13,7 +13,7 @@ import { useAgreementMutation } from '../hooks/agreements/use-agreements-mutatio
 import { useIssuesMutation } from '../hooks/issues/use-issues-mutation';
 import { useHealthCheckMutations } from '../hooks/use-health-check';
 import { useSubMenuStore } from '../stores/sub-menu-store';
-import { HealthCheckSettings } from '../types/health-check';
+import { ActionStatus, HealthCheckSettings } from '../types/health-check';
 import { SUBMENU_ITEMS } from '../utils/constants';
 
 import DisplayModeDialog from './setting-dialog';
@@ -47,6 +47,10 @@ const SubMenu = () => {
   } = useIssuesMutation();
 
   const { updateHealthCheck } = useHealthCheckMutations();
+
+  const filteredActionItems = actionItems?.filter(
+    (item) => item.status !== ActionStatus.DONE,
+  );
 
   const handleCreateAgreement = (title: string) => {
     createAgreements({
@@ -93,7 +97,7 @@ const SubMenu = () => {
         )}
         {selectedSubmenu === SUBMENU_ITEMS.ACTIONS && (
           <TeamActions
-            actionItems={actionItems}
+            actionItems={filteredActionItems}
             teamId={healthCheck.team_id ?? ''}
             healthCheckId={healthCheck.id}
             teamMembers={teamMembers}
