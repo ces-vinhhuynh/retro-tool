@@ -5,7 +5,7 @@ create table health_checks (
     id uuid default gen_random_uuid() primary key,
     title text not null,
     description text,
-    facilitator_id uuid references public.users(id) on delete set null,
+    facilitator_ids uuid[] default '{}',
     team_id uuid references teams(id) on delete set null,
     current_step integer default 1,
     template_id uuid references health_check_templates(id) on delete set null,
@@ -58,9 +58,16 @@ using (
   )
 );
 
-create policy "Health checks can be updated by creator"
-on health_checks for update
-using (auth.uid() = facilitator_id);
+create policy "Facilitators can update health checks"
+on public.health_checks
+for update
+to authenticated
+using (
+  auth.uid() = ANY (facilitator_ids)
+)
+with check (
+  true
+);
 
 create policy "Team admin can delete health checks"
 on health_checks
