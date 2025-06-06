@@ -87,7 +87,7 @@ const SessionTemplateDialog = ({
       description: '',
       team_id,
       template_id: templateId || selectedTemplate.id,
-      facilitator_id: currentUser.id,
+      facilitator_ids: [currentUser.id],
       status: HealthCheckStatus.IN_PROGRESS,
       current_step: 1,
       settings: {

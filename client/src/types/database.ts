@@ -222,7 +222,7 @@ export type Database = {
           current_step: number | null;
           description: string | null;
           end_time: string | null;
-          facilitator_id: string | null;
+          facilitator_ids: string[] | null;
           id: string;
           participants: Json | null;
           settings: Json | null;
@@ -240,7 +240,7 @@ export type Database = {
           current_step?: number | null;
           description?: string | null;
           end_time?: string | null;
-          facilitator_id?: string | null;
+          facilitator_ids?: string[] | null;
           id?: string;
           participants?: Json | null;
           settings?: Json | null;
@@ -258,7 +258,7 @@ export type Database = {
           current_step?: number | null;
           description?: string | null;
           end_time?: string | null;
-          facilitator_id?: string | null;
+          facilitator_ids?: string[];
           id?: string;
           participants?: Json | null;
           settings?: Json | null;
@@ -269,13 +269,6 @@ export type Database = {
           updated_at?: string | null;
         };
         Relationships: [
-          {
-            foreignKeyName: 'health_checks_facilitator_id_fkey';
-            columns: ['facilitator_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
           {
             foreignKeyName: 'health_checks_team_id_fkey';
             columns: ['team_id'];
@@ -435,7 +428,7 @@ export type Database = {
           token: string | null;
           token_expires_at: string | null;
           updated_at: string | null;
-          user_id: string;
+          user_id: string | null;
         };
         Insert: {
           created_at?: string | null;
@@ -447,7 +440,7 @@ export type Database = {
           token?: string | null;
           token_expires_at?: string | null;
           updated_at?: string | null;
-          user_id: string;
+          user_id?: string | null;
         };
         Update: {
           created_at?: string | null;
@@ -459,7 +452,7 @@ export type Database = {
           token?: string | null;
           token_expires_at?: string | null;
           updated_at?: string | null;
-          user_id?: string;
+          user_id?: string | null;
         };
         Relationships: [
           {

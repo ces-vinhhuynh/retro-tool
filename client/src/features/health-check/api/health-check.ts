@@ -155,6 +155,21 @@ class HealthCheckService {
     if (error) throw error;
     return data || [];
   }
+
+  async updateFacilitators(
+    id: string,
+    facilitatorIds: string[],
+  ): Promise<HealthCheck> {
+    const { data, error } = await supabaseClient
+      .from('health_checks')
+      .update({ facilitator_ids: facilitatorIds })
+      .eq('id', id)
+      .select('*')
+      .single();
+    if (error) throw error;
+
+    return data;
+  }
 }
 
 export const healthCheckService = new HealthCheckService();

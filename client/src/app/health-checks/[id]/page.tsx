@@ -140,7 +140,9 @@ export default function HealthCheckPage() {
   const questions: Question[] = template?.questions || [];
   const grouped = _groupBy(questions, 'section');
   const sections = Object.keys(grouped);
-  const isFacilitator = currentUser?.id === healthCheck?.facilitator_id;
+  const isFacilitator =
+    !!currentUser?.id && healthCheck?.facilitator_ids?.includes(currentUser.id);
+
   const isCompleted = healthCheck?.status === HealthCheckStatus.DONE;
 
   useEffect(() => {
@@ -175,7 +177,7 @@ export default function HealthCheckPage() {
       !isLoadingHealthCheck &&
       currentUser &&
       healthCheck &&
-      currentUser.id === healthCheck.facilitator_id &&
+      healthCheck.facilitator_ids?.includes(String(currentUser.id)) &&
       (healthCheck.current_step === 1 || healthCheck.current_step === null)
     ) {
       if (!hasSeenModal(healthCheckId)) {
@@ -355,14 +357,14 @@ export default function HealthCheckPage() {
                 <div className="flex items-center justify-center pt-3">
                   <HealthCheckSteps
                     currentStep={healthCheck.current_step || FIRST_STEP.key}
-                    isFacilitator={isFacilitator}
+                    isFacilitator={!!isFacilitator}
                     handleChangeStep={handleChangeStep}
                   />
                 </div>
               </div>
               <Card className="mx-auto w-full flex-shrink-0 overflow-hidden px-2 sm:px-4 md:px-6">
                 <Timer
-                  isFacilitator={isFacilitator}
+                  isFacilitator={!!isFacilitator}
                   healthCheckId={healthCheckId}
                   endTime={healthCheck.end_time || ''}
                 />

@@ -33,7 +33,7 @@ export function useHealthCheckWithTemplate(id: string) {
   const { user } = useUserStore();
   const getHealthCheck = async () => {
     const response = await healthCheckService.getWithTemplateById(id);
-    setIsFacilitator(response.facilitator_id === user?.id);
+    setIsFacilitator(!!response.facilitator_ids?.includes(String(user?.id)));
     setHealthCheck(response);
     return response;
   };

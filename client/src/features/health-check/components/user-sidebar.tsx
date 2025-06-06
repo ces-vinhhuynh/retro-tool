@@ -1,4 +1,7 @@
+'use client';
+
 import { ArrowRight, ChevronLeft, Plus, Users } from 'lucide-react';
+import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -10,6 +13,8 @@ import { useGetParticipants } from '../hooks/use-get-participants';
 import { useSubMenuStore } from '../stores/sub-menu-store';
 import { HealthCheck, ParticipantWithUser } from '../types/health-check';
 
+import ParticipantRoleDialog from './participant-role-dialog';
+
 interface UserSidebarProps {
   isOpen: boolean;
   healthCheckId: string;
@@ -17,8 +22,18 @@ interface UserSidebarProps {
   healthCheck: HealthCheck;
 }
 
-const UserItem = ({ participant }: { participant: ParticipantWithUser }) => (
-  <div className="flex items-center space-x-3 rounded-md p-2 transition-colors hover:bg-gray-100">
+const UserItem = ({
+  participant,
+  onClick,
+}: {
+  participant: ParticipantWithUser;
+  onClick: () => void;
+}) => (
+  <Button
+    variant="ghost"
+    className="flex w-full cursor-pointer items-center space-x-3 rounded-md p-2 transition-colors hover:bg-gray-100"
+    onClick={onClick}
+  >
     <Avatar>
       <AvatarImage
         src={participant.user.avatar_url ?? ''}
@@ -42,7 +57,7 @@ const UserItem = ({ participant }: { participant: ParticipantWithUser }) => (
         <Progress value={participant.progress} className="h-1.5" />
       </div>
     </div>
-  </div>
+  </Button>
 );
 
 const UserSidebar = ({
@@ -51,7 +66,11 @@ const UserSidebar = ({
   className,
   healthCheck,
 }: UserSidebarProps) => {
-  const { facilitator_id } = healthCheck;
+  const { facilitator_ids } = healthCheck;
+  const [openParticipantRoleDialog, setOpenParticipantRoleDialog] =
+    useState(false);
+  const [selectedParticipant, setSelectedParticipant] =
+    useState<ParticipantWithUser | null>(null);
 
   const { open: openWelcomeModal } = useWelcomeModalStore();
   const { setSelectedSubmenu } = useSubMenuStore();
@@ -64,13 +83,18 @@ const UserSidebar = ({
     openWelcomeModal(healthCheckId);
   };
 
-  const facilitators = participants?.filter(
-    (participant) => participant.user_id === facilitator_id,
+  const facilitators = participants?.filter((participant) =>
+    facilitator_ids?.includes(String(participant.user_id)),
   );
 
   const participantsFiltered = participants?.filter(
-    (participant) => participant.user_id !== facilitator_id,
+    (participant) => !facilitators?.includes(participant),
   );
+
+  const handleParticipantClick = (participant: ParticipantWithUser) => {
+    setSelectedParticipant(participant);
+    setOpenParticipantRoleDialog(true);
+  };
 
   return (
     <div
@@ -144,6 +168,7 @@ const UserSidebar = ({
                       <UserItem
                         key={facilitator.user_id}
                         participant={facilitator}
+                        onClick={() => handleParticipantClick(facilitator)}
                       />
                     ))}
                   </div>
@@ -158,6 +183,7 @@ const UserSidebar = ({
                       <UserItem
                         key={participant.user_id}
                         participant={participant}
+                        onClick={() => handleParticipantClick(participant)}
                       />
                     ))}
                   </div>
@@ -167,6 +193,12 @@ const UserSidebar = ({
           </div>
         </div>
       </div>
+      <ParticipantRoleDialog
+        open={openParticipantRoleDialog}
+        onOpenChange={setOpenParticipantRoleDialog}
+        healthCheck={healthCheck}
+        participant={selectedParticipant as ParticipantWithUser}
+      />
     </div>
   );
 };

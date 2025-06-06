@@ -13,7 +13,9 @@ export function useCurrentUser() {
   const getCurrentUser = async () => {
     const response = await authService.getCurrentUser();
     setUser(response as unknown as User);
-    setIsFacilitator(healthCheck?.facilitator_id === response?.id);
+    setIsFacilitator(
+      !!healthCheck?.facilitator_ids?.includes(String(response?.id)),
+    );
     return response;
   };
 

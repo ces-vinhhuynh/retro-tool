@@ -35,7 +35,7 @@ const ToggleOption = ({
         {onChange !== undefined && (
           <ToggleSwitch
             id={id}
-            checked={isChecked || false}
+            checked={!!isChecked}
             onCheckedChange={onChange}
           />
         )}

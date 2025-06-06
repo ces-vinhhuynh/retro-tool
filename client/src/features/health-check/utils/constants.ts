@@ -149,3 +149,17 @@ export const TIMER_CONFIG = {
   INCREMENT: 30,
   WARNING_TIME: 60,
 } as const;
+
+export const HEALTH_CHECK_ROLE_OPTIONS = [
+  {
+    value: 'facilitator',
+    label: 'Facilitator',
+    description:
+      'Modify health check settings, move between phases and invite participants, as well as contributing survey responses.',
+  },
+  {
+    value: 'participant',
+    label: 'Participant',
+    description: 'Contribute survey responses only.',
+  },
+];

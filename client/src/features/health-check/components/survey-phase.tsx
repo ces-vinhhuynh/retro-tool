@@ -58,7 +58,8 @@ const SurveyPhase = ({
 }: SurveyPhaseProps) => {
   const { id: healthCheckId } = useParams<{ id: string }>();
   const { updateHealthCheck } = useHealthCheckMutations();
-  const isFacilitator = currentUser?.id === healthCheck?.facilitator_id;
+  const isFacilitator =
+    !!currentUser?.id && healthCheck?.facilitator_ids?.includes(currentUser.id);
 
   const [localGroupIndex, setLocalGroupIndex] = useState(
     healthCheck?.current_group_index ?? 0,
@@ -272,7 +273,7 @@ const SurveyPhase = ({
     handleItemChange,
     handleDeleteItem,
     allowParticipantNavigation: settings.allow_participant_navigation,
-    isFacilitator,
+    isFacilitator: !!isFacilitator,
     handleNavigation: handleNavigation,
     currentGroupIndex: settings.allow_participant_navigation
       ? localGroupIndex
