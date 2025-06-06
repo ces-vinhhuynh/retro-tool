@@ -15,5 +15,7 @@ export const MESSAGE = {
   INVITE_TO_TEAM_TITLE: 'Invite to Team',
   INVITE_TO_TEAM_DESCRIPTION:
     'Send email invites to your team so they can join and start collaborating instantly.',
+  CREATE_LONG_TERM_ISSUE_FROM_COMMENT_TITLE: 'Create Long Term Issue',
+  CREATE_LONG_TERM_ISSUE_FROM_COMMENT_DESCRIPTION:
+    'Are you sure you want to create a long term issue from this comment?',
 };
-

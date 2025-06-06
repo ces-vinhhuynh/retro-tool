@@ -35,10 +35,12 @@ const DetailCard = ({
   const roundedValue = Math.max(0, Math.min(10, Math.round(item.value)));
   const { bg, circle } = scoreColorMap[roundedValue] || scoreColorMap[0];
 
+  const comments = item.comments.map((comment) => comment.comment);
+
   return (
     <Card
       className={cn(
-        'absolute inset-0 inset-y-auto min-h-full border-0 bg-[#dfedcf] px-4 shadow-none',
+        'min-h-full rounded-lg border-0 px-4 shadow-none',
         item.value > 0 && bg,
       )}
     >
@@ -48,7 +50,7 @@ const DetailCard = ({
             <>
               <div
                 className={cn(
-                  'flex h-17 w-17 items-center justify-center self-center rounded-full px-3',
+                  'flex h-17 w-17 shrink-0 items-center justify-center self-center rounded-full px-3',
                   circle,
                 )}
               >
@@ -77,7 +79,11 @@ const DetailCard = ({
           teamId={String(healthCheck.team_id)}
           teamMembers={teamMembers}
         />
-        <SurveyResponses comments={item.comments} />
+        <SurveyResponses
+          comments={comments}
+          teamId={String(healthCheck.team_id)}
+          healthCheckId={healthCheck.id}
+        />
       </CardContent>
     </Card>
   );

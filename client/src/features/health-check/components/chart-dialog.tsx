@@ -69,16 +69,27 @@ const ChartDialog = ({
     };
   }, [carouselApi, setCurrentIndex]);
 
+  const roundedValue = Math.max(
+    0,
+    Math.min(10, Math.round(data[currentIndex].value)),
+  );
+  const { bg } = scoreColorMap[roundedValue] || scoreColorMap[0];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-auto max-h-none w-full overflow-hidden p-0 sm:max-w-[800px]">
+      <DialogContent
+        className={cn(
+          'h-auto max-h-none w-full overflow-hidden p-0 sm:max-w-[800px]',
+          bg,
+        )}
+      >
         <DialogTitle className="sr-only"></DialogTitle>
         <Carousel opts={{ startIndex: currentIndex }} setApi={setCarouselApi}>
           <CarouselContent>
             {data.map((item, index) => (
               <CarouselItem
                 key={item.id}
-                className="no-scrollbar relative flex min-h-[57vh] w-full overflow-auto"
+                className="no-scrollbar max-h-[50vh] min-h-[35vh] w-full overflow-auto"
               >
                 {index === currentIndex && (
                   <DetailCard
@@ -95,7 +106,7 @@ const ChartDialog = ({
           </CarouselContent>
         </Carousel>
 
-        <div className="absolute right-0 bottom-4 left-0 z-20 flex justify-center space-x-2">
+        <div className="flex items-center justify-center gap-2.5 bg-transparent pb-3">
           {data.map((item, index) => {
             const roundedValue = Math.max(
               0,
@@ -107,10 +118,10 @@ const ChartDialog = ({
                 key={index}
                 onClick={() => scrollToIndex(index)}
                 className={cn(
-                  'h-3 w-3 cursor-pointer rounded-full px-0 py-0',
+                  'size-4 cursor-pointer rounded-full px-0 py-0 transition-all duration-200 ease-in-out',
                   circle,
                   {
-                    'ring-2 ring-black': currentIndex === index,
+                    'size-[1.6rem]': currentIndex === index,
                   },
                 )}
               />

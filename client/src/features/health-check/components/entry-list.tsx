@@ -57,13 +57,13 @@ const EntryList = ({
           items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between border-b border-gray-100 py-4"
+              className="flex items-center justify-between gap-4 border-b border-gray-100 py-4"
             >
-              <div>{item.title}</div>
+              <span className="text-justify text-base">{item.title}</span>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-600"
+                className="h-8 w-8 shrink-0 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-600"
                 onClick={() => handleDeleteItem?.(item.id)}
                 disabled={isLoading}
               >

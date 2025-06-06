@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-import { Button } from "../ui/button";
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from '../ui/dialog';
+
 interface ConfirmModalProps {
-  variant?: "delete" | "confirm";
+  variant?: 'delete' | 'confirm';
   isOpen: boolean;
   title: string;
   description: string;
@@ -21,7 +22,7 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal = ({
-  variant = "confirm",
+  variant = 'confirm',
   isOpen,
   title,
   description,
@@ -38,19 +39,24 @@ const ConfirmModal = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel}>
+          <Button
+            variant="outline"
+            className="text-gray-800 hover:bg-gray-200/60 hover:text-gray-800"
+            onClick={onCancel}
+          >
             Cancel
           </Button>
           <Button
             onClick={onConfirm}
             className={cn(
-              "bg-red-600 hover:bg-red-700",
-              variant === "confirm" && "bg-blue-600 hover:bg-blue-700",
-              className
+              'bg-red-600 hover:bg-red-700',
+              variant === 'confirm' &&
+                'bg-ces-orange-500 hover:bg-ces-orange-600',
+              className,
             )}
             disabled={loading}
           >
-            {variant === "confirm" ? "Confirm" : "Delete"}
+            {variant === 'confirm' ? 'Confirm' : 'Delete'}
           </Button>
         </DialogFooter>
       </DialogContent>
