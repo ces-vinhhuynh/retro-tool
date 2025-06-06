@@ -74,7 +74,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
         </CardHeader>
         <CardContent className="space-y-8">
           <ActionItems
-            actionItems={actionItems || []}
+            actionItems={actionItems}
             teamId={teamId}
             teamMembers={teamMembers as unknown as User[]}
           />

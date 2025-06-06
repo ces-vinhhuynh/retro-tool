@@ -11,6 +11,7 @@ import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-
 import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
+import DataTrackTab from '@/features/workspace/components/team-tabs/data-track';
 import HealthChecksTab from '@/features/workspace/components/team-tabs/health-checks-tab';
 import HomeTab from '@/features/workspace/components/team-tabs/home-tab';
 import MembersTab from '@/features/workspace/components/team-tabs/members-tab';
@@ -31,15 +32,15 @@ const TABS_VALUES = {
 
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
+  const { data: actionItems = [] } = useGetActionItemsByTeamId(teamId);
+  const { data: agreements = [] } = useAgreementsQuery(teamId);
+
+  const { data: issues = [] } = useIssuesQuery(teamId);
+  const { data: scrumHealthChecks = [] } = useGetHealthChecksByTeam(teamId);
+  const { data: templates } = useTemplates();
 
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
-
-  const { data: actionItems } = useGetActionItemsByTeamId(teamId);
-  const { data: agreements = [] } = useAgreementsQuery(teamId);
-  const { data: issues = [] } = useIssuesQuery(teamId);
-  const { data: scrumHealthChecks } = useGetHealthChecksByTeam(teamId);
-  const { data: templates } = useTemplates();
 
   const { data: teamUser } = useGetTeamUser(teamId, currentUser?.id || '');
   const { data: workspaceUser } = useGetWorkspaceUser(
@@ -94,7 +95,14 @@ const TeamPage = () => {
       value: TABS_VALUES.DATA_TRACK,
       icon: ChartSpline,
       label: 'Data Track',
-      content: <></>,
+      content: (
+        <DataTrackTab
+          agreements={agreements}
+          issues={issues}
+          actionItems={actionItems}
+          scrumHealthChecks={scrumHealthChecks}
+        />
+      ),
     },
   ];
 
