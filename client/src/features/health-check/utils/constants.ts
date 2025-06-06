@@ -53,10 +53,14 @@ export const PRIORITY_CONFIG = {
 
 export const STEPS = {
   survey: { key: 1, value: 'Survey' },
-  discuss: { key: 2, value: 'Discuss' },
-  review: { key: 3, value: 'Review' },
-  close: { key: 4, value: 'Close' },
+  openActions: { key: 2, value: 'Open Actions' },
+  discuss: { key: 3, value: 'Discuss' },
+  review: { key: 4, value: 'Review' },
+  close: { key: 5, value: 'Close' },
 };
+
+export const FIRST_STEP = STEPS['survey'];
+export const LAST_STEP = STEPS['close'];
 
 export const HEALTH_CHECK_LIMIT = 4;
 

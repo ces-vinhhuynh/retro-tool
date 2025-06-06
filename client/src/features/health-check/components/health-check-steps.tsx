@@ -21,7 +21,7 @@ const HealthCheckSteps = ({
         {Object.values(STEPS).map(({ key, value }, index) => (
           <div
             key={key}
-            className="flex min-w-[70px] flex-1 flex-col items-center gap-1.5"
+            className="flex min-w-30 flex-1 flex-col items-center gap-1.5"
           >
             <button
               className={cn(
@@ -51,7 +51,7 @@ const HealthCheckSteps = ({
             </button>
             <p
               className={cn(
-                'max-w-[80px] truncate text-center text-xs sm:text-sm',
+                'max-w-28 truncate text-center text-xs sm:text-sm',
                 {
                   'text-gray-500': key > currentStep,
                 },

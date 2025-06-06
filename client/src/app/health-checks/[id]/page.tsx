@@ -11,15 +11,11 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import ClosePhase from '@/features/health-check/components/close-phase';
 import DiscussPhase from '@/features/health-check/components/discuss-phase';
 import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
+import OpenActionsPhase from '@/features/health-check/components/open-actions-phase';
 import ReviewPhase from '@/features/health-check/components/review-phase';
 import WelcomeModal from '@/features/health-check/components/sessions/welcome-modal';
 import SurveyTab from '@/features/health-check/components/survey-phase';
 import Timer from '@/features/health-check/components/timer';
-import {
-  FIRST_STEP,
-  LAST_STEP,
-  STEPS,
-} from '@/features/health-check/constants/health-check';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
@@ -43,7 +39,6 @@ import {
 } from '@/features/health-check/hooks/use-response';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
-import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckSettings,
@@ -53,9 +48,8 @@ import {
   ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
+import { FIRST_STEP, LAST_STEP, STEPS } from '@/features/health-check/utils/constants';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { cn } from '@/lib/utils';
 
 export type GroupedQuestions = {
   [section: string]: Question[];
@@ -72,9 +66,6 @@ export default function HealthCheckPage() {
     hasSeenModal,
     markAsSeen,
   } = useWelcomeModalStore();
-
-  const isMobile = useIsMobile();
-  const { selectedSubmenu } = useSubMenuStore();
 
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: healthCheck, isLoading: isLoadingHealthCheck } =
@@ -299,6 +290,8 @@ export default function HealthCheckPage() {
   const getNextPhaseButtonText = () => {
     if (healthCheck?.current_step === LAST_STEP.key) return;
     if (healthCheck?.current_step === STEPS['survey'].key)
+      return STEPS['openActions'].value;
+    if (healthCheck?.current_step === STEPS['openActions'].key)
       return STEPS['discuss'].value;
     if (healthCheck?.current_step === STEPS['discuss'].key)
       return STEPS['review'].value;
@@ -351,6 +344,7 @@ export default function HealthCheckPage() {
   if (!healthCheck) {
     return <div>Health check not found</div>;
   }
+
   return (
     <Layout>
       <div className="flex w-full justify-between px-3 lg:px-0">
@@ -383,6 +377,17 @@ export default function HealthCheckPage() {
                     response={response}
                     settings={healthCheck.settings as HealthCheckSettings}
                     isLoading={!response && !isSuccess}
+                  />
+                )}
+                {healthCheck.current_step === STEPS['openActions'].key && (
+                  <OpenActionsPhase
+                    agreements={agreements || []}
+                    issues={issues || []}
+                    healthCheck={healthCheck as HealthCheckWithTemplate}
+                    actionItems={actionItems || []}
+                    teamId={healthCheck?.team_id || ''}
+                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                    teamMembers={teamMembers as unknown as User[]}
                   />
                 )}
                 {healthCheck.current_step === STEPS['discuss'].key && (

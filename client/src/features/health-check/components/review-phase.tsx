@@ -1,6 +1,6 @@
 import { BadgeAlert, Handshake } from 'lucide-react';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
 
 import { useAgreementMutation } from '../hooks/agreements/use-agreements-mutation';
@@ -18,6 +18,7 @@ import { formatDateTime } from '../utils/time-format';
 import { ActionItemRow } from './action-item-row';
 import ActionItems from './action-items';
 import EntryList from './entry-list';
+import EntryWrapper from './entry-wrapper';
 
 interface ReviewPhaseProps {
   agreements: Agreement[];
@@ -41,26 +42,6 @@ const SummaryItem = ({ title, content }: SummaryItemProps) => (
   </div>
 );
 
-const EntryWrapper = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) => (
-  <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
-    <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
-    <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-4 md:p-6">
-      <div className="space-y-3 sm:space-y-4">
-        <h2 className="flex items-center gap-2 text-base font-bold text-gray-800 sm:text-base">
-          {title}
-        </h2>
-        {children}
-      </div>
-    </CardContent>
-  </Card>
-);
-
 const ReviewPhase = ({
   agreements,
   issues,
@@ -71,9 +52,10 @@ const ReviewPhase = ({
   teamMembers,
 }: ReviewPhaseProps) => {
   const currentActionItems = actionItems?.filter(
-    (item) => item.health_check_id === healthCheck.id,
+    (item) =>
+      item.health_check_id === healthCheck.id &&
+      item.status !== ActionStatus.DONE,
   );
-
   const previousActionItems = actionItems?.filter(
     (item) =>
       item.health_check_id !== healthCheck.id &&
@@ -169,19 +151,16 @@ const ReviewPhase = ({
             teamMembers={teamMembers}
           />
         </EntryWrapper>
-
-        {previousActionItems && (
-          <EntryWrapper title="Actions from the previous Health check">
-            {previousActionItems?.map((item) => (
-              <ActionItemRow
-                key={item.id}
-                item={item}
-                isEditable={true}
-                teamMembers={teamMembers}
-              />
-            ))}
-          </EntryWrapper>
-        )}
+        <EntryWrapper title="Actions from the previous Health check">
+          {previousActionItems?.map((item) => (
+            <ActionItemRow
+              key={item.id}
+              item={item}
+              isEditable={false}
+              teamMembers={teamMembers}
+            />
+          ))}
+        </EntryWrapper>
 
         <EntryWrapper title="Team agreement">
           <EntryList
