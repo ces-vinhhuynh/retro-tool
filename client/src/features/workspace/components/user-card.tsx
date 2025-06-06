@@ -34,7 +34,7 @@ interface UserCardProps {
   onUpdateRole: (role: WorkspaceRole | TeamRole) => void;
   isWorkspaceUserCard?: boolean;
   isOwnerOrAdmin: boolean;
-  currentUserRole: WORKSPACE_ROLES;
+  currentUserRole: WorkspaceRole;
 }
 
 const UserCard = ({

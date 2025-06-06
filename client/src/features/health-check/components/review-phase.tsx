@@ -151,18 +151,27 @@ const ReviewPhase = ({
             teamMembers={teamMembers}
           />
         </EntryWrapper>
-        <EntryWrapper title="Actions from the previous Health check">
-          {previousActionItems?.map((item) => (
-            <ActionItemRow
-              key={item.id}
-              item={item}
-              isEditable={false}
-              teamMembers={teamMembers}
-            />
-          ))}
-        </EntryWrapper>
 
-        <EntryWrapper title="Team agreement">
+        {previousActionItems && (
+          <EntryWrapper title="Actions from the previous health checks">
+            {previousActionItems.length > 0 ? (
+              previousActionItems?.map((item) => (
+                <ActionItemRow
+                  key={item.id}
+                  item={item}
+                  isEditable={true}
+                  teamMembers={teamMembers}
+                />
+              ))
+            ) : (
+              <div className="border py-4 text-center text-sm text-gray-400">
+                No actions yet
+              </div>
+            )}
+          </EntryWrapper>
+        )}
+
+        <EntryWrapper title="Team agreements">
           <EntryList
             items={agreements}
             emptyItemMessage="No agreements yet"
