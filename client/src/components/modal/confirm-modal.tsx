@@ -1,53 +1,60 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 interface ConfirmModalProps {
-  isDelete?: boolean;
+  variant?: "delete" | "confirm";
   isOpen: boolean;
   title: string;
   description: string;
   onCancel: () => void;
   onConfirm: () => void;
+  loading?: boolean;
+  className?: string;
 }
 
 const ConfirmModal = ({
-  isDelete = false,
+  variant = "confirm",
   isOpen,
   title,
   description,
   onCancel,
   onConfirm,
+  loading = false,
+  className,
 }: ConfirmModalProps) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={onCancel}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
+    <Dialog open={isOpen} onOpenChange={onCancel}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button
             onClick={onConfirm}
             className={cn(
               "bg-red-600 hover:bg-red-700",
-              !isDelete && "bg-blue-600 hover:bg-blue-700"
+              variant === "confirm" && "bg-blue-600 hover:bg-blue-700",
+              className
             )}
+            disabled={loading}
           >
-            {isDelete ? "Delete" : "Confirm"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            {variant === "confirm" ? "Confirm" : "Delete"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

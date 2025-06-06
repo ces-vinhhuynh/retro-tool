@@ -46,6 +46,20 @@ export const ActionItemRow = ({
   const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
     useRemoveActionItemAssignee();
 
+  const { mutate: updateActionItem } = useUpdateActionItem();
+
+  const [openStatusPopovers, setOpenStatusPopovers] = useState<
+    Record<string, boolean>
+  >({});
+  const [openPriorityPopovers, setOpenPriorityPopovers] = useState<
+    Record<string, boolean>
+  >({});
+  const [openDatePopovers, setOpenDatePopovers] = useState<
+    Record<string, boolean>
+  >({});
+  const [openAssigneePopovers, setOpenAssigneePopovers] = useState<
+    Record<string, boolean>
+  >({});
   const [isOpenModalConfirm, setIsOpenModalConfirm] = useState(false);
 
   const getStatusIcon = (status: ActionStatus) => {
@@ -190,12 +204,13 @@ export const ActionItemRow = ({
         )}
       </div>
       <ConfirmModal
-        isDelete={true}
+        variant="delete"
         isOpen={isOpenModalConfirm}
         title={MESSAGE.DELETE_ACTION_ITEM_TITLE}
         description={MESSAGE.DELETE_ACTION_ITEM_DESCRIPTION}
         onCancel={() => setIsOpenModalConfirm(false)}
         onConfirm={() => onDelete?.(item.id)}
+        loading={isDeleting}
       />
     </div>
   );
