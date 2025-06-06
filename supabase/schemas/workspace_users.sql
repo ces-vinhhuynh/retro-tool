@@ -70,6 +70,14 @@ using (
   workspace_users.role != 'owner'
 );
 
+create policy "Invited user can accept workspace invite"
+on workspace_users
+for update
+to authenticated
+using (
+  true
+);
+
 create policy "Owner/Admin can remove workspace users"
 on workspace_users for delete
 using (

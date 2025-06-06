@@ -46,6 +46,38 @@ with check (
   )
 );
 
+create policy "Workspace owner/admin can create health checks"
+on health_checks
+for insert
+to authenticated
+with check (
+  exists (
+    select 1
+    from teams
+    join workspace_users
+      on workspace_users.workspace_id = teams.workspace_id
+    where teams.id = health_checks.team_id
+      and workspace_users.user_id = auth.uid()
+      and workspace_users.role in ('owner', 'admin')
+  )
+);
+
+create policy "Workspace owner/admin can view health checks"
+on health_checks
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from teams
+    join workspace_users
+      on workspace_users.workspace_id = teams.workspace_id
+    where teams.id = health_checks.team_id
+      and workspace_users.user_id = auth.uid()
+      and workspace_users.role in ('owner', 'admin')
+  )
+);
+
 create policy "Team members can view health checks"
 on health_checks
 for select

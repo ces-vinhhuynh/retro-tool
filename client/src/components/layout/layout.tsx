@@ -8,9 +8,12 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import SubMenu from '@/features/health-check/components/sub-menu';
 import { useHealthCheck } from '@/features/health-check/hooks/use-health-check';
 import { HealthCheckWithTeam } from '@/features/health-check/types/health-check';
+import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
-import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-get-workspace-user';
+import { useGetUserWorkspaces } from '@/features/workspace/hooks/use-get-user-workspaces';
+import { useGetWorkspaceTeams } from '@/features/workspace/hooks/use-get-workspace-teams';
+import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace-store';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -37,7 +40,7 @@ export function Layout({ children }: LayoutProps) {
   const isWorkspaceRoute = pathname.startsWith('/workspaces/');
 
   const { data: workspaces, isLoading: isLoadingWorkspaces } =
-    useGetWorkspaceUser(currentUser?.id || '');
+    useGetUserWorkspaces(currentUser?.id || '');
   const { data: team, isLoading: isLoadingTeam } = useGetTeam(
     isTeamRoute ? params.id : '',
   );
@@ -56,9 +59,22 @@ export function Layout({ children }: LayoutProps) {
   })();
 
   // Fetch teams for current workspace
-  const { data: teams } = useGetTeamsByWorkspace(String(workspaceId), {
-    enabled: !!workspaceId,
-  });
+  const { data: teamsByMember = [] } = useGetWorkspaceTeams(
+    String(workspaceId),
+    currentUser?.id || '',
+  );
+  const { data: teamsByAdmin = [] } = useGetTeamsByWorkspace(
+    String(workspaceId),
+  );
+  const { data: workspaceUser } = useGetWorkspaceUser(
+    String(workspaceId),
+    currentUser?.id || '',
+  );
+
+  const isOwnerOrAdmin =
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
+  const teams = isOwnerOrAdmin ? teamsByAdmin : teamsByMember;
 
   // Update workspace/team context based on route
   useEffect(() => {

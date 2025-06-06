@@ -9,6 +9,7 @@ import InviteModal from '@/components/modal/invite-modal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import ActionItems from '@/features/health-check/components/action-items';
 import ScrumHealthCheck from '@/features/health-check/components/scrum-health-check';
 import SessionTemplateDialog from '@/features/health-check/components/sessions/session-template-dialog';
@@ -24,14 +25,20 @@ import {
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
 import { DataTable } from '@/features/workspace/components/data-table';
-import { columns } from '@/features/workspace/components/team-members-table/columns';
+import { useColumns } from '@/features/workspace/components/team-members-table/columns';
 import UserCard from '@/features/workspace/components/user-card';
-import { TeamRole } from '@/features/workspace/constants/user';
+import {
+  TEAM_ROLES,
+  TeamRole,
+  WORKSPACE_ROLES,
+} from '@/features/workspace/constants/user';
 import { useDeleteTeamMember } from '@/features/workspace/hooks/use-delete-team-member';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useInviteUserToTeam } from '@/features/workspace/hooks/use-invite-user-to-team';
 import { useUpdateTeamUser } from '@/features/workspace/hooks/use-update-team-user';
+import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 import { MESSAGE } from '@/utils/messages';
 
 const TeamPage = () => {
@@ -40,6 +47,7 @@ const TeamPage = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const { data: team } = useGetTeam(teamId);
+  const { data: currentUser } = useCurrentUser();
 
   const { setTemplateId } = useNewSessionModalStore();
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
@@ -47,6 +55,17 @@ const TeamPage = () => {
   const { data: scrumHealthChecks } = useGetHealthChecksByTeam(teamId);
   const { data: templates } = useTemplates();
   const { data: actionItems } = useGetActionItemsByTeamId(teamId);
+  const { data: teamUser } = useGetTeamUser(teamId, currentUser?.id || '');
+  const { data: workspaceUser } = useGetWorkspaceUser(
+    team?.workspace_id || '',
+    currentUser?.id || '',
+  );
+
+  const isAdmin =
+    teamUser?.role === TEAM_ROLES.admin ||
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
+  const columns = useColumns(isAdmin);
 
   const { mutate: deleteTeamMember } = useDeleteTeamMember();
   const { mutate: updateTeamUser } = useUpdateTeamUser();
@@ -94,15 +113,17 @@ const TeamPage = () => {
 
           <div className="pt-10">
             <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
-              <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
-                <Button
-                  variant={'default'}
-                  className="ml-auto"
-                  onClick={() => setShowDialog(true)}
-                >
-                  New Health Check
-                </Button>
-              </div>
+              {isAdmin && (
+                <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
+                  <Button
+                    variant={'default'}
+                    className="ml-auto"
+                    onClick={() => setShowDialog(true)}
+                  >
+                    New Health Check
+                  </Button>
+                </div>
+              )}
               <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
                 <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
                 <CardHeader className="pb-2">
@@ -130,7 +151,7 @@ const TeamPage = () => {
                     key={key}
                     onAddNewSession={() => onAddNewSession(key)}
                     scrumHealthChecks={value as HealthCheckWithTemplate[]}
-                    isShowAddNew={true}
+                    isShowAddNew={isAdmin}
                   />
                 );
               })}
@@ -140,23 +161,25 @@ const TeamPage = () => {
         <TabsContent value="members">
           <div className="pt-10">
             <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
-              <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
-                <Button
-                  variant="default"
-                  className="self-end"
-                  onClick={() => setShowInviteDialog(true)}
-                >
-                  Invite member
-                </Button>
-                <InviteModal
-                  open={showInviteDialog}
-                  onClose={() => setShowInviteDialog(false)}
-                  onSubmit={handleInvite}
-                  isLoading={isInvitingUserToTeam}
-                  title={MESSAGE.INVITE_TO_TEAM_TITLE}
-                  description={MESSAGE.INVITE_TO_TEAM_DESCRIPTION}
-                />
-              </div>
+              {isAdmin && (
+                <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
+                  <Button
+                    variant="default"
+                    className="self-end"
+                    onClick={() => setShowInviteDialog(true)}
+                  >
+                    Invite member
+                  </Button>
+                  <InviteModal
+                    open={showInviteDialog}
+                    onClose={() => setShowInviteDialog(false)}
+                    onSubmit={handleInvite}
+                    isLoading={isInvitingUserToTeam}
+                    title={MESSAGE.INVITE_TO_TEAM_TITLE}
+                    description={MESSAGE.INVITE_TO_TEAM_DESCRIPTION}
+                  />
+                </div>
+              )}
 
               {/* Mobile */}
               <div className="flex flex-col gap-3 sm:hidden">
@@ -174,6 +197,8 @@ const TeamPage = () => {
                       })
                     }
                     isWorkspaceUserCard={false}
+                    isOwnerOrAdmin={isAdmin}
+                    currentUserRole={teamUser?.role as WORKSPACE_ROLES}
                   />
                 ))}
               </div>

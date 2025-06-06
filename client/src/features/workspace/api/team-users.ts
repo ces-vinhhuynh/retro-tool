@@ -77,6 +77,19 @@ class TeamUsersService {
     if (error) throw error;
     return data;
   }
+
+  async getByTeamIdAndUserId(teamId: string, userId: string) {
+    const { data, error } = await supabaseClient
+      .from('team_users')
+      .select(`*`)
+      .eq('team_id', teamId)
+      .eq('user_id', userId)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  }
 }
 
 export const teamUsersService = new TeamUsersService();

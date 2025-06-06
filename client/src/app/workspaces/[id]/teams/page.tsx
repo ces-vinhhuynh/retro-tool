@@ -7,16 +7,35 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import CreateTeamDialog from '@/features/workspace/components/create-team-dialog';
 import { DataTable } from '@/features/workspace/components/data-table';
 import TeamCard from '@/features/workspace/components/team-card';
-import { columns } from '@/features/workspace/components/team-table/columns';
-import { TEAM_ROLES } from '@/features/workspace/constants/user';
+import { useColumns } from '@/features/workspace/components/team-table/columns';
+import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useDeleteTeam } from '@/features/workspace/hooks/use-delete-team';
+import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
 import { useGetWorkspaceTeams } from '@/features/workspace/hooks/use-get-workspace-teams';
+import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 
 export default function WorkspacePage() {
   const { id: workspaceId } = useParams<{ id: string }>();
-  const { data: teams = [] } = useGetWorkspaceTeams(workspaceId);
   const { data: currentUser } = useCurrentUser();
+  const { data: teamsByMember = [] } = useGetWorkspaceTeams(
+    workspaceId,
+    currentUser?.id || '',
+  );
+  const { data: teamsByAdmin = [] } = useGetTeamsByWorkspace(workspaceId);
+
   const { mutate: deleteTeam } = useDeleteTeam();
+  const { data: workspaceUser } = useGetWorkspaceUser(
+    workspaceId,
+    currentUser?.id || '',
+  );
+
+  const isOwnerOrAdmin =
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
+
+  const teams = isOwnerOrAdmin ? teamsByAdmin : teamsByMember;
+
+  const columns = useColumns(isOwnerOrAdmin);
 
   return (
     <Layout>
@@ -24,7 +43,7 @@ export default function WorkspacePage() {
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-xl font-bold md:text-2xl">Teams Management</h1>
           <div className="mb-1 sm:mb-0">
-            <CreateTeamDialog workspaceId={workspaceId} />
+            {isOwnerOrAdmin && <CreateTeamDialog workspaceId={workspaceId} />}
           </div>
         </div>
         <div className="flex flex-col gap-6 rounded-xl bg-white p-3 shadow-sm sm:p-5">
@@ -37,14 +56,15 @@ export default function WorkspacePage() {
           {/* Mobile */}
           <div className="flex flex-col gap-3 sm:hidden">
             {teams.map((team) => {
-              const currentUserRole =
-                team.users.find(({ id }) => currentUser?.id === id)?.role ||
-                TEAM_ROLES.member;
+              const currentUserRole = team.users.find(
+                ({ id }) => currentUser?.id === id,
+              )?.role;
               return (
                 <TeamCard
                   key={team.id}
                   team={team}
                   currentUserRole={currentUserRole}
+                  isOwnerOrAdmin={isOwnerOrAdmin}
                   onDelete={deleteTeam}
                 />
               );

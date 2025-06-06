@@ -83,9 +83,22 @@ class WorkspaceUsersService {
       avatar_url: users?.avatar_url,
       email: users?.email,
       teams: users?.team_users
-        .filter((tu) => tu.teams.workspace_id === workspaceId)
-        .map((tu) => tu.teams.name),
+        .filter((tu) => tu.teams?.workspace_id === workspaceId)
+        .map((tu) => tu.teams?.name),
     }));
+  }
+
+  async getByWorkspaceIdAndUserId(workspaceId: string, userId: string) {
+    const { data, error } = await supabaseClient
+      .from('workspace_users')
+      .select(`*`)
+      .eq('workspace_id', workspaceId)
+      .eq('user_id', userId)
+      .single();
+
+    if (error) throw error;
+
+    return data;
   }
 
   async delete(id: string): Promise<void> {

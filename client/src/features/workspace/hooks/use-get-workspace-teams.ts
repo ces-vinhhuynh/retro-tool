@@ -2,11 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 
 import { teamService } from '../api/team';
 
-export function useGetWorkspaceTeams(id: string) {
+export function useGetWorkspaceTeams(workspaceId: string, userId: string) {
   const { data, isLoading } = useQuery({
-    queryKey: ['workspace-teams', id],
-    queryFn: () => teamService.getByWorkspaceId(id),
+    queryKey: ['workspace-teams', workspaceId, userId],
+    queryFn: () => teamService.getByWorkspaceIdAndUserId(workspaceId, userId),
     placeholderData: [],
+    enabled: !!workspaceId && !!userId,
   });
 
   return { data, isLoading };

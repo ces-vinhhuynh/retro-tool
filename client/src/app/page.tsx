@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-get-workspace-user';
+import { useGetUserWorkspaces } from '@/features/workspace/hooks/use-get-user-workspaces';
 
 export default function Home() {
   const router = useRouter();
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: workspaces, isLoading: isLoadingWorkspaces } =
-    useGetWorkspaceUser(currentUser?.id || '');
+    useGetUserWorkspaces(currentUser?.id || '');
 
   useEffect(() => {
     if (!isLoadingUser && !isLoadingWorkspaces) {

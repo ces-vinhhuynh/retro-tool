@@ -1,7 +1,8 @@
 'use client';
 
-import { Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -22,11 +23,18 @@ interface TeamCardProps {
       role: TeamRole | null;
     }>;
   };
-  currentUserRole: TeamRole;
+  currentUserRole?: TeamRole;
+  isOwnerOrAdmin: boolean;
   onDelete: (teamId: string) => void;
 }
 
-const TeamCard = ({ team, currentUserRole, onDelete }: TeamCardProps) => {
+const TeamCard = ({
+  team,
+  currentUserRole,
+  isOwnerOrAdmin,
+  onDelete,
+}: TeamCardProps) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
   const limitedMembers = team.users.slice(0, MAX_MEMBERS_AMOUNT);
 
   return (
@@ -37,8 +45,24 @@ const TeamCard = ({ team, currentUserRole, onDelete }: TeamCardProps) => {
             {team.name}
           </span>
         </Link>
-        <div className="flex items-center gap-4">
-          <EditTeamDialog teamId={team.id} />
+        <div
+          className={cn('flex items-center gap-4', {
+            hidden: !isOwnerOrAdmin && currentUserRole === TEAM_ROLES.member,
+          })}
+        >
+          <EditTeamDialog
+            teamId={team.id}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+          >
+            <Button
+              variant="ghost"
+              onSelect={() => setDialogOpen(true)}
+              className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </EditTeamDialog>
           <Button
             variant="ghost"
             onClick={() => onDelete(team.id)}
@@ -76,17 +100,19 @@ const TeamCard = ({ team, currentUserRole, onDelete }: TeamCardProps) => {
       </div>
       <div className="flex items-center gap-4">
         <span className="text-sm font-medium text-gray-700">Your Role:</span>
-        <span
-          className={cn(
-            'inline-block w-fit rounded-full border border-gray-200 bg-gray-300/50 px-2.5 py-1 text-xs font-medium capitalize',
-            {
-              'bg-ces-orange-500 text-white':
-                currentUserRole === TEAM_ROLES.admin,
-            },
-          )}
-        >
-          {TEAM_ROLES[currentUserRole]}
-        </span>
+        {currentUserRole && (
+          <span
+            className={cn(
+              'inline-block w-fit rounded-full border border-gray-200 bg-gray-300/50 px-2.5 py-1 text-xs font-medium capitalize',
+              {
+                'bg-ces-orange-500 text-white':
+                  currentUserRole === TEAM_ROLES.admin,
+              },
+            )}
+          >
+            {TEAM_ROLES[currentUserRole]}
+          </span>
+        )}
       </div>
     </div>
   );

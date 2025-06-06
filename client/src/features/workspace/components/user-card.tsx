@@ -33,6 +33,8 @@ interface UserCardProps {
   onDelete: (userId: string) => void;
   onUpdateRole: (role: WorkspaceRole | TeamRole) => void;
   isWorkspaceUserCard?: boolean;
+  isOwnerOrAdmin: boolean;
+  currentUserRole: WORKSPACE_ROLES;
 }
 
 const UserCard = ({
@@ -40,9 +42,11 @@ const UserCard = ({
   onDelete,
   onUpdateRole,
   isWorkspaceUserCard = true,
+  isOwnerOrAdmin,
+  currentUserRole,
 }: UserCardProps) => {
   const roles = isWorkspaceUserCard
-    ? Object.values(WORKSPACE_ROLES)
+    ? Object.values([WORKSPACE_ROLES.admin, WORKSPACE_ROLES.member])
     : Object.values(TEAM_ROLES);
 
   return (
@@ -69,33 +73,49 @@ const UserCard = ({
 
         <div className="flex flex-wrap items-center gap-2">
           <span className="w-12 text-sm font-medium text-gray-700">Role:</span>
-          {user.role && (
-            <Select value={user.role} onValueChange={onUpdateRole}>
-              <SelectTrigger
-                className={cn(
-                  'bg-ces-orange-500 h-8 w-fit min-w-24 cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
-                  {
-                    'bg-gray-100 text-gray-900': isWorkspaceUserCard
-                      ? user.role === WORKSPACE_ROLES.member
-                      : user.role === TEAM_ROLES.member,
-                  },
-                )}
-              >
-                <SelectValue placeholder={WORKSPACE_ROLES[user.role]} />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(roles).map((role) => (
-                  <SelectItem
-                    key={role}
-                    value={role}
-                    className="text-gray-900 capitalize"
-                  >
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {(currentUserRole === WORKSPACE_ROLES.owner || !isOwnerOrAdmin) && (
+            <div
+              className={cn(
+                'bg-ces-orange-500 flex h-8 w-fit min-w-24 cursor-pointer items-center justify-center rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                {
+                  'bg-gray-100 text-gray-900': isWorkspaceUserCard
+                    ? user.role === WORKSPACE_ROLES.member
+                    : user.role === TEAM_ROLES.member,
+                },
+              )}
+            >
+              {WORKSPACE_ROLES[user.role || 'member']}
+            </div>
           )}
+          {currentUserRole !== WORKSPACE_ROLES.owner &&
+            isOwnerOrAdmin &&
+            user.role && (
+              <Select value={user.role} onValueChange={onUpdateRole}>
+                <SelectTrigger
+                  className={cn(
+                    'bg-ces-orange-500 h-8 w-fit min-w-24 cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                    {
+                      'bg-gray-100 text-gray-900': isWorkspaceUserCard
+                        ? user.role === WORKSPACE_ROLES.member
+                        : user.role === TEAM_ROLES.member,
+                    },
+                  )}
+                >
+                  <SelectValue placeholder={WORKSPACE_ROLES[user.role]} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(roles).map((role) => (
+                    <SelectItem
+                      key={role}
+                      value={role}
+                      className="text-gray-900 capitalize"
+                    >
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
         </div>
 
         {isWorkspaceUserCard && (
@@ -116,13 +136,15 @@ const UserCard = ({
           </div>
         )}
       </div>
-      <Button
-        variant="ghost"
-        onClick={() => onDelete(user.id)}
-        className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {isOwnerOrAdmin && (
+        <Button
+          variant="ghost"
+          onClick={() => onDelete(user.id)}
+          className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 };

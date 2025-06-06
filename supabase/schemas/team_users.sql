@@ -51,12 +51,7 @@ on team_users
 for select
 to authenticated
 using (
-  exists (
-    select 1 from teams t
-    join workspace_users wu on wu.workspace_id = t.workspace_id
-    where t.id = team_users.team_id
-      and wu.user_id = auth.uid()
-  )
+  true
 );
 
 create policy "Team admin can update team users"
@@ -97,6 +92,14 @@ using (
       and tu2.user_id = auth.uid()
       and tu2.role = 'admin'
   )
+);
+
+create policy "Invited user can accept team invite"
+on team_users
+for update
+to authenticated
+using (
+  true
 );
 
 create policy "Workspace owner/admin can delete team users"
