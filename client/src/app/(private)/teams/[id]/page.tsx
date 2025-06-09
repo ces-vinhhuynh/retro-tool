@@ -1,6 +1,12 @@
 'use client';
 
-import { ChartSpline, House, Menu, User as UserIcon } from 'lucide-react';
+import {
+  ChartSpline,
+  House,
+  Menu,
+  Settings,
+  User as UserIcon,
+} from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,11 +32,14 @@ import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 
+import { SettingsTab } from '@/features/workspace/components/team-tabs/settings-tab';
+
 const TABS_VALUES = {
   HOME: 'home',
   HEALTH_CHECKS: 'health-checks',
   MEMBERS: 'members',
   DATA_TRACK: 'data-track',
+  SETTINGS: 'settings',
 };
 
 const TeamPage = () => {
@@ -118,11 +127,17 @@ const TeamPage = () => {
         />
       ),
     },
+    {
+      value: TABS_VALUES.SETTINGS,
+      icon: Settings,
+      label: 'Settings',
+      content: <SettingsTab teamId={teamId} />,
+    },
   ];
 
   return (
     <Tabs defaultValue={TABS_VALUES.HOME} className="w-full p-4 md:p-6 lg:p-8">
-      <TabsList className="grid w-full grid-cols-4">
+      <TabsList className="grid w-full grid-cols-5">
         {TABS.map((tab) => (
           <TabsTrigger
             key={tab.value}

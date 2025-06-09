@@ -70,6 +70,40 @@ class TemplateService {
       max_value: template.max_value,
     };
   }
+  async getByTeamId(teamId: string): Promise<Template[]> {
+    const { data, error } = await supabaseClient
+      .from('health_check_templates')
+      .select('*')
+      .eq('team_id', teamId);
+
+    if (error) throw error;
+
+    const templates = data as Template[];
+
+    return templates.map((template) => {
+      const questions =
+        typeof template.questions === 'string'
+          ? JSON.parse(template.questions)
+          : template.questions;
+
+      return {
+        ...template,
+        id: template.id,
+        name: template.name,
+        description: template.description ?? '',
+        questions: (questions as Question[]).map((q) => ({
+          id: q.id,
+          title: q.title,
+          section: q.section,
+          description: q.description,
+          type: q.type,
+          options: q.options,
+        })),
+        min_value: template.min_value,
+        max_value: template.max_value,
+      };
+    });
+  }
 }
 
 export const templateService = new TemplateService();
