@@ -36,7 +36,7 @@ const STEPS: Record<Step, { title: string; description: string }> = {
   },
 };
 
-export default function CreateWorkspacePage() {
+const CreateWorkspacePage = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>('workspace');
   const { mutate: createWorkspaceTeam, isPending: isCreating } =
@@ -134,4 +134,6 @@ export default function CreateWorkspacePage() {
       </Card>
     </div>
   );
-}
+};
+
+export default CreateWorkspacePage;

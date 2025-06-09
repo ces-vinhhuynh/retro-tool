@@ -3,6 +3,8 @@
 import { useParams, usePathname } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 
+import { AppSidebar } from '@/components/layout/app-sidebar';
+import { Header } from '@/components/layout/header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import SubMenu from '@/features/health-check/components/sub-menu';
@@ -19,14 +21,11 @@ import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Team } from '@/types/team';
 
-import { AppSidebar } from './app-sidebar';
-import { Header } from './header';
-
-interface LayoutProps {
+interface PrivateLayoutProps {
   children: ReactNode;
 }
 
-export function Layout({ children }: LayoutProps) {
+const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   const pathname = usePathname();
   const params = useParams<{ id: string }>();
   const { currentWorkspace, setCurrentWorkspace, currentTeam, setCurrentTeam } =
@@ -38,6 +37,7 @@ export function Layout({ children }: LayoutProps) {
   const isTeamRoute = pathname.startsWith('/teams/');
   const isHealthCheckRoute = pathname.startsWith('/health-checks/');
   const isWorkspaceRoute = pathname.startsWith('/workspaces/');
+  const isCreateWorkspaceRoute = pathname.startsWith('/workspaces/create');
 
   const { data: workspaces, isLoading: isLoadingWorkspaces } =
     useGetUserWorkspaces(currentUser?.id || '');
@@ -135,19 +135,25 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <SidebarProvider>
-      <AppSidebar
-        workspaces={workspaces as WorkspaceUserWithWorkspace[]}
-        currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
-        teams={teams as Team[]}
-      />
-      <SidebarInset>
-        <Header
+      {isCreateWorkspaceRoute || (
+        <AppSidebar
+          workspaces={workspaces as WorkspaceUserWithWorkspace[]}
           currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
-          currentTeam={currentTeam as Team}
+          teams={teams as Team[]}
         />
+      )}
+      <SidebarInset>
+        {isCreateWorkspaceRoute || (
+          <Header
+            currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
+            currentTeam={currentTeam as Team}
+          />
+        )}
         <main className="w-full">{children}</main>
       </SidebarInset>
       {!isMobile && isHealthCheckRoute && <SubMenu />}
     </SidebarProvider>
   );
-}
+};
+
+export default PrivateLayout;

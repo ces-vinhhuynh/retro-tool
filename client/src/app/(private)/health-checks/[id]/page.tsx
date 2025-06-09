@@ -4,7 +4,6 @@ import _groupBy from 'lodash.groupby';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import { Layout } from '@/components/layout/layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
@@ -48,8 +47,13 @@ import {
   ResponseWithUser,
   User,
 } from '@/features/health-check/types/health-check';
-import { FIRST_STEP, LAST_STEP, STEPS } from '@/features/health-check/utils/constants';
+import {
+  FIRST_STEP,
+  LAST_STEP,
+  STEPS,
+} from '@/features/health-check/utils/constants';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { cn } from '@/utils/cn';
 
 export type GroupedQuestions = {
   [section: string]: Question[];
@@ -348,113 +352,114 @@ export default function HealthCheckPage() {
   }
 
   return (
-    <Layout>
-      <div className="flex w-full justify-between px-3 lg:px-0">
-        <div className="flex w-full flex-col">
-          <div className="flex w-full">
-            <div className="mx-auto w-full p-2 md:p-4 lg:p-8">
-              <div className="pb-6">
-                <div className="flex items-center justify-center pt-3">
-                  <HealthCheckSteps
-                    currentStep={healthCheck.current_step || FIRST_STEP.key}
-                    isFacilitator={!!isFacilitator}
-                    handleChangeStep={handleChangeStep}
-                  />
-                </div>
-              </div>
-              <Card className="mx-auto w-full flex-shrink-0 overflow-hidden px-2 sm:px-4 md:px-6">
-                <Timer
+    <div className="flex w-full justify-between px-3 lg:px-0">
+      <div className="flex w-full flex-col">
+        <div className="flex w-full">
+          <div className="mx-auto w-full p-2 md:p-4 lg:p-8">
+            <div className="pb-6">
+              <div className="flex items-center justify-center pt-3">
+                <HealthCheckSteps
+                  currentStep={healthCheck.current_step || FIRST_STEP.key}
                   isFacilitator={!!isFacilitator}
-                  healthCheckId={healthCheckId}
-                  endTime={healthCheck.end_time || ''}
+                  handleChangeStep={handleChangeStep}
                 />
-                {healthCheck.current_step === STEPS['survey'].key && (
-                  <SurveyTab
-                    healthCheck={healthCheck as HealthCheckWithTemplate}
-                    sections={sections}
-                    currentUser={currentUser as unknown as User}
-                    groupedQuestions={grouped}
-                    minScore={template?.min_value}
-                    maxScore={template?.max_value}
-                    response={response}
-                    settings={healthCheck.settings as HealthCheckSettings}
-                    isLoading={!response && !isSuccess}
-                  />
-                )}
-                {healthCheck.current_step === STEPS['openActions'].key && (
-                  <OpenActionsPhase
-                    agreements={agreements || []}
-                    issues={issues || []}
-                    healthCheck={healthCheck as HealthCheckWithTemplate}
-                    actionItems={actionItems || []}
-                    teamId={healthCheck?.team_id || ''}
-                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                    teamMembers={teamMembers as unknown as User[]}
-                  />
-                )}
-                {healthCheck.current_step === STEPS['discuss'].key && (
-                  <DiscussPhase
-                    healthCheck={healthCheck as HealthCheckWithTemplate}
-                    questions={questions}
-                    responses={responses ?? []}
-                    actionItems={actionItems ?? []}
-                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                    teamMembers={teamMembers as unknown as User[]}
-                  />
-                )}
-                {healthCheck.current_step === STEPS['review'].key && (
-                  <ReviewPhase
-                    agreements={agreements || []}
-                    issues={issues || []}
-                    healthCheck={healthCheck as HealthCheckWithTemplate}
-                    actionItems={actionItems || []}
-                    teamId={healthCheck?.team_id || ''}
-                    teamSize={participants?.length || 0}
-                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                    teamMembers={teamMembers as unknown as User[]}
-                  />
-                )}
-                {healthCheck.current_step === STEPS['close'].key && (
-                  <ClosePhase
-                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                    teamMembers={teamMembers as unknown as User[]}
-                    healthCheck={healthCheck as HealthCheckWithTemplate}
-                    questions={questions}
-                    responses={responses as ResponseWithUser[]}
-                    actionItems={actionItems || []}
-                    scrumHealthChecks={
-                      scrumHealthChecks as HealthCheckWithTemplate[]
-                    }
-                    teamSize={participants?.length || 0}
-                    //TODO: remove cast type as unknown as User[] when we have exact the type for currentUser
-                    currentUser={currentUser as unknown as User}
-                  />
-                )}
-              </Card>
+              </div>
             </div>
-            {healthCheck && (
-              <WelcomeModal
-                isOpen={isWelcomeModalOpen}
-                onClose={closeWelcomeModal}
-                healthCheck={healthCheck}
-                template={template}
+            <Card className="mx-auto w-full flex-shrink-0 overflow-hidden px-2 sm:px-4 md:px-6">
+              <Timer
+                isFacilitator={!!isFacilitator}
+                healthCheckId={healthCheckId}
+                endTime={healthCheck.end_time || ''}
               />
-            )}
+              {healthCheck.current_step === STEPS['survey'].key && (
+                <SurveyTab
+                  healthCheck={healthCheck as HealthCheckWithTemplate}
+                  sections={sections}
+                  currentUser={currentUser as unknown as User}
+                  groupedQuestions={grouped}
+                  minScore={template?.min_value}
+                  maxScore={template?.max_value}
+                  response={response}
+                  settings={healthCheck.settings as HealthCheckSettings}
+                  isLoading={!response && !isSuccess}
+                />
+              )}
+              {healthCheck.current_step === STEPS['openActions'].key && (
+                <OpenActionsPhase
+                  agreements={agreements || []}
+                  issues={issues || []}
+                  healthCheck={healthCheck as HealthCheckWithTemplate}
+                  actionItems={actionItems || []}
+                  teamId={healthCheck?.team_id || ''}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                  teamMembers={teamMembers as unknown as User[]}
+                />
+              )}
+              {healthCheck.current_step === STEPS['discuss'].key && (
+                <DiscussPhase
+                  healthCheck={healthCheck as HealthCheckWithTemplate}
+                  questions={questions}
+                  responses={responses ?? []}
+                  actionItems={actionItems ?? []}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                  teamMembers={teamMembers as unknown as User[]}
+                />
+              )}
+              {healthCheck.current_step === STEPS['review'].key && (
+                <ReviewPhase
+                  agreements={agreements || []}
+                  issues={issues || []}
+                  healthCheck={healthCheck as HealthCheckWithTemplate}
+                  actionItems={actionItems || []}
+                  teamId={healthCheck?.team_id || ''}
+                  teamSize={participants?.length || 0}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                  teamMembers={teamMembers as unknown as User[]}
+                />
+              )}
+              {healthCheck.current_step === STEPS['close'].key && (
+                <ClosePhase
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                  teamMembers={teamMembers as unknown as User[]}
+                  healthCheck={healthCheck as HealthCheckWithTemplate}
+                  questions={questions}
+                  responses={responses as ResponseWithUser[]}
+                  actionItems={actionItems || []}
+                  scrumHealthChecks={
+                    scrumHealthChecks as HealthCheckWithTemplate[]
+                  }
+                  teamSize={participants?.length || 0}
+                  //TODO: remove cast type as unknown as User[] when we have exact the type for currentUser
+                  currentUser={currentUser as unknown as User}
+                />
+              )}
+            </Card>
           </div>
-          {isFacilitator && (
-            <div className="mx-auto flex py-5">
-              <Button
-                className={`ml-auto w-full text-white sm:w-auto ${healthCheck?.current_step !== LAST_STEP.key ? 'bg-ces-orange-500 hover:bg-ces-orange-600' : ''}`}
-                onClick={handleChangePhase}
-              >
-                {healthCheck?.current_step !== LAST_STEP.key
-                  ? getNextPhaseButtonText()
-                  : 'Exit Health Check'}
-              </Button>
-            </div>
+          {healthCheck && (
+            <WelcomeModal
+              isOpen={isWelcomeModalOpen}
+              onClose={closeWelcomeModal}
+              healthCheck={healthCheck}
+              template={template}
+            />
           )}
         </div>
+        {isFacilitator && (
+          <div className="mx-auto flex py-5">
+            <Button
+              className={cn('ml-auto w-full text-white sm:w-auto', {
+                'bg-ces-orange-500 hover:bg-ces-orange-600':
+                  healthCheck?.current_step !== LAST_STEP.key,
+              })}
+              onClick={handleChangePhase}
+            >
+              {healthCheck?.current_step !== LAST_STEP.key
+                ? getNextPhaseButtonText()
+                : 'Exit Health Check'}
+            </Button>
+          </div>
+        )}
       </div>
-    </Layout>
+    </div>
   );
 }

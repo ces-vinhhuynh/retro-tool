@@ -3,7 +3,6 @@
 import { ChartSpline, House, Menu, User as UserIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
-import { Layout } from '@/components/layout/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
@@ -107,31 +106,26 @@ const TeamPage = () => {
   ];
 
   return (
-    <Layout>
-      <Tabs
-        defaultValue={TABS_VALUES.HOME}
-        className="w-full p-4 md:p-6 lg:p-8"
-      >
-        <TabsList className="grid w-full grid-cols-4">
-          {TABS.map((tab) => (
-            <TabsTrigger
-              key={tab.value}
-              value={tab.value}
-              className="cursor-pointer"
-            >
-              <tab.icon className="size-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
+    <Tabs defaultValue={TABS_VALUES.HOME} className="w-full p-4 md:p-6 lg:p-8">
+      <TabsList className="grid w-full grid-cols-4">
         {TABS.map((tab) => (
-          <TabsContent key={tab.value} value={tab.value}>
-            <div className="pt-10">{tab.content}</div>
-          </TabsContent>
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            className="cursor-pointer"
+          >
+            <tab.icon className="size-4" />
+            <span className="hidden sm:inline">{tab.label}</span>
+          </TabsTrigger>
         ))}
-      </Tabs>
-    </Layout>
+      </TabsList>
+
+      {TABS.map((tab) => (
+        <TabsContent key={tab.value} value={tab.value}>
+          <div className="pt-10">{tab.content}</div>
+        </TabsContent>
+      ))}
+    </Tabs>
   );
 };
 
