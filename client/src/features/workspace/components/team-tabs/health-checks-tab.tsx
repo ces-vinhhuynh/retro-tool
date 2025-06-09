@@ -9,26 +9,19 @@ import {
   HealthCheck,
   HealthCheckWithTemplate,
 } from '@/features/health-check/types/health-check';
-import { Template } from '@/features/health-check/types/templates';
-import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
+
+interface HealthChecksTabProps {
+  healthChecksGrouped: Record<string, HealthCheck[]>;
+  isAdmin: boolean;
+}
 
 const HealthChecksTab = ({
-  scrumHealthChecks,
-  templates,
+  healthChecksGrouped,
   isAdmin,
-}: {
-  scrumHealthChecks: HealthCheck[];
-  templates: Template[];
-  isAdmin: boolean;
-}) => {
+}: HealthChecksTabProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   const { setTemplateId } = useNewSessionModalStore();
-
-  const healthChecksGrouped = splitHealthChecksByTemplateId(
-    templates as Template[],
-    scrumHealthChecks as HealthCheck[],
-  );
 
   const onAddNewSession = (templateId: string) => {
     setShowDialog(true);

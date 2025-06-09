@@ -1,21 +1,35 @@
 'use client';
 
 import { BadgeAlert, Calendar, Handshake, SquareCheckBig } from 'lucide-react';
+import { useState } from 'react';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Agreement } from '@/features/health-check/types/agreements';
 import {
   ActionItem,
   HealthCheck,
 } from '@/features/health-check/types/health-check';
 import { Issue } from '@/features/health-check/types/issues';
+import { Template } from '@/features/health-check/types/templates';
 
 import TeamStatCard from '../team-stat-card';
+
+import CategoryHealth from './category-health';
+import TeamHealthTrend from './team-health-trend';
 
 interface DataTrackTabProps {
   agreements: Agreement[];
   issues: Issue[];
   actionItems: ActionItem[];
   scrumHealthChecks: HealthCheck[];
+  templates: Template[];
+  healthChecksGrouped: Record<string, HealthCheck[]>;
 }
 
 const DataTrackTab = ({
@@ -23,7 +37,15 @@ const DataTrackTab = ({
   issues,
   actionItems,
   scrumHealthChecks,
+  templates,
+  healthChecksGrouped,
 }: DataTrackTabProps) => {
+  const [selectedTemplate, setSelectedTemplate] = useState<string>(
+    templates[0]?.id || '',
+  );
+
+  const healthChecks = healthChecksGrouped[selectedTemplate];
+
   const stats = [
     {
       title: 'Total Team Agreements',
@@ -68,6 +90,22 @@ const DataTrackTab = ({
           />
         ))}
       </div>
+      <div className="w-64">
+        <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+          <SelectTrigger className="w-full bg-white">
+            <SelectValue placeholder="Select template" />
+          </SelectTrigger>
+          <SelectContent>
+            {templates.map((template) => (
+              <SelectItem key={template.id} value={template.id}>
+                {template.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <TeamHealthTrend healthChecks={healthChecks} />
+      <CategoryHealth healthChecks={healthChecks} />
     </div>
   );
 };

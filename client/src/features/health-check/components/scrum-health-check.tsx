@@ -18,12 +18,14 @@ interface ScrumHealthCheckProps {
   scrumHealthChecks: HealthCheckWithTemplate[];
   isShowAddNew?: boolean;
   onAddNewSession?: () => void;
+  isShowTitle?: boolean;
 }
 
 const ScrumHealthCheck = ({
   scrumHealthChecks = [],
   isShowAddNew = false,
   onAddNewSession,
+  isShowTitle = true,
 }: ScrumHealthCheckProps) => {
   const { data: scrumResponses } = useResponseByHealthChecks(
     scrumHealthChecks?.map((check) => check.id) || [],
@@ -38,7 +40,7 @@ const ScrumHealthCheck = ({
       createdAt: healthCheck.created_at,
       status: healthCheck.status,
       questions: healthCheck?.template?.questions
-        .filter((question) => question.section !== Section.AdditionalQuestions)
+        .filter((question) => question?.section !== Section.AdditionalQuestions)
         .map((question) => ({
           id: question.id,
           title: question.title,
@@ -66,7 +68,9 @@ const ScrumHealthCheck = ({
 
   return (
     <div className="rounded-lg bg-white">
-      <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
+      {isShowTitle && (
+        <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
+      )}
       <div className="flex w-full flex-row gap-0 border-gray-200 md:flex-nowrap">
         <div className={cn('w-32 md:w-56 lg:w-68', { 'w-20': isShowAddNew })}>
           <div className="h-24 border-r border-b border-gray-200" />

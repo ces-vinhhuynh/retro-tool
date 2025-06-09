@@ -10,6 +10,10 @@ import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-
 import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
+import { HealthCheck } from '@/features/health-check/types/health-check';
+import { Template } from '@/features/health-check/types/templates';
+import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
+import { sortTemplatesByLatestHealthCheck } from '@/features/health-check/utils/template';
 import DataTrackTab from '@/features/workspace/components/team-tabs/data-track';
 import HealthChecksTab from '@/features/workspace/components/team-tabs/health-checks-tab';
 import HomeTab from '@/features/workspace/components/team-tabs/home-tab';
@@ -36,7 +40,17 @@ const TeamPage = () => {
 
   const { data: issues = [] } = useIssuesQuery(teamId);
   const { data: scrumHealthChecks = [] } = useGetHealthChecksByTeam(teamId);
-  const { data: templates } = useTemplates();
+  const { data: templates = [] } = useTemplates();
+
+  const healthChecksGrouped = splitHealthChecksByTemplateId(
+    templates as Template[],
+    scrumHealthChecks as HealthCheck[],
+  );
+
+  const sortedTemplates = sortTemplatesByLatestHealthCheck(
+    templates as Template[],
+    scrumHealthChecks as HealthCheck[],
+  );
 
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
@@ -60,9 +74,9 @@ const TeamPage = () => {
       content: (
         <HomeTab
           teamId={teamId}
-          actionItems={actionItems ?? []}
-          agreements={agreements ?? []}
-          issues={issues ?? []}
+          actionItems={actionItems}
+          agreements={agreements}
+          issues={issues}
         />
       ),
     },
@@ -72,8 +86,7 @@ const TeamPage = () => {
       label: 'Health Checks',
       content: (
         <HealthChecksTab
-          scrumHealthChecks={scrumHealthChecks ?? []}
-          templates={templates ?? []}
+          healthChecksGrouped={healthChecksGrouped}
           isAdmin={isAdmin}
         />
       ),
@@ -100,6 +113,8 @@ const TeamPage = () => {
           issues={issues}
           actionItems={actionItems}
           scrumHealthChecks={scrumHealthChecks}
+          templates={sortedTemplates}
+          healthChecksGrouped={healthChecksGrouped}
         />
       ),
     },
