@@ -179,6 +179,20 @@ class ResponseService {
     if (error) throw error;
     return data;
   }
+
+  async updateResponseAnswers(
+    responseId: string,
+    answers: Answers,
+  ): Promise<void> {
+    const { error } = await supabaseClient
+      .from('responses')
+      .update({ answers })
+      .eq('id', responseId)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+  }
 }
 
 export const responseService = new ResponseService();

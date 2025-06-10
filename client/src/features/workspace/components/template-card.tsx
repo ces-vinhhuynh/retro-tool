@@ -12,11 +12,15 @@ import { Template } from '@/features/health-check/types/templates';
 interface TemplateCardProps {
   template: Template;
   handleClickPreview: () => void;
+  setOpen: (open: boolean) => void;
+  setTemplate: (template: Template) => void;
 }
 
 export const TemplateCard = ({
   template,
   handleClickPreview,
+  setOpen,
+  setTemplate,
 }: TemplateCardProps) => {
   return (
     <div className="hover:bg-ces-orange-50/30 relative h-full max-h-60 min-h-40 rounded-sm border border-gray-400 p-5 transition-transform duration-200 ease-in-out">
@@ -39,7 +43,13 @@ export const TemplateCard = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" portalled={false}>
-          <DropdownMenuItem className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5">
+          <DropdownMenuItem
+            className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+            onClick={() => {
+              setOpen(true);
+              setTemplate(template);
+            }}
+          >
             <Pencil className="h-4 w-4" />
             <span>Edit</span>
           </DropdownMenuItem>

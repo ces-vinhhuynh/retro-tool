@@ -1,5 +1,6 @@
 import supabaseClient from '@/lib/supabase/client';
 
+import { Answers } from '../types/health-check';
 import {
   Question,
   Template,
@@ -7,6 +8,8 @@ import {
   TemplateUpdate,
 } from '../types/templates';
 
+import { healthCheckService } from './health-check';
+import { responseService } from './response';
 class TemplateService {
   async getAll(): Promise<Template[]> {
     const { data, error } = await supabaseClient
@@ -45,7 +48,7 @@ class TemplateService {
   async getById(id: string): Promise<Template | null> {
     const { data, error } = await supabaseClient
       .from('health_check_templates')
-      .select('*')
+      .select('*, health_checks(*)')
       .eq('id', id)
       .single();
 
@@ -124,16 +127,95 @@ class TemplateService {
     return data;
   }
 
-  async update(id: string, template: TemplateUpdate): Promise<Template> {
-    const { data, error } = await supabaseClient
+  async updateCustomTemplate(
+    id: string,
+    templateUpdate: TemplateUpdate,
+  ): Promise<Template> {
+    const existingTemplate = await this.getById(id);
+    if (!existingTemplate) throw new Error('Template not found');
+
+    if (!existingTemplate?.is_custom) {
+      throw new Error('Cannot update standard template');
+    }
+
+    const { data: updatedTemplate, error } = await supabaseClient
       .from('health_check_templates')
-      .update(template)
+      .update(templateUpdate)
       .eq('id', id)
       .select('*')
       .single();
 
     if (error) throw error;
-    return data;
+
+    // Get all health checks using this template
+    const healthChecks = existingTemplate.health_checks;
+
+    if (!healthChecks || healthChecks.length === 0) {
+      return updatedTemplate;
+    }
+
+    // Update the average scores for the health checks that use this template
+    for (const healthCheck of healthChecks) {
+      await healthCheckService.updateAverageScores(healthCheck.id);
+    }
+
+    // Get the existing question IDs before update
+    const existingQuestions =
+      typeof existingTemplate.questions === 'string'
+        ? JSON.parse(existingTemplate.questions)
+        : existingTemplate.questions;
+
+    const existingQuestionIds =
+      (existingQuestions as Question[])?.map((q) => q.id) || [];
+
+    // Get the new question IDs from the update
+    const updatedQuestions =
+      typeof templateUpdate.questions === 'string'
+        ? JSON.parse(templateUpdate.questions)
+        : templateUpdate.questions;
+
+    const updatedQuestionIds =
+      (updatedQuestions as Question[])?.map((q) => q.id) || [];
+
+    // Find question IDs that were removed
+    const removedQuestionIds = existingQuestionIds.filter(
+      (id) => !updatedQuestionIds.includes(id),
+    );
+
+    if (removedQuestionIds.length === 0) {
+      return updatedTemplate;
+    }
+
+    // Set question_id to null for action items referencing removed questions
+    const { error: updateActionItemsError } = await supabaseClient
+      .from('action_items')
+      .update({ question_id: null })
+      .in('question_id', removedQuestionIds);
+
+    if (updateActionItemsError) {
+      throw updateActionItemsError;
+    }
+
+    const healthCheckIds = healthChecks.map((hc) => hc.id);
+
+    // Get all responses for these health checks
+    const responses =
+      await responseService.getAllByHealthChecks(healthCheckIds);
+
+    // Update each response to remove answers for deleted questions
+    for (const response of responses || []) {
+      const updatedAnswers = {
+        ...(response.answers as Answers),
+      };
+
+      removedQuestionIds.forEach((questionId) => {
+        delete updatedAnswers[questionId];
+      });
+
+      await responseService.updateResponseAnswers(response.id, updatedAnswers);
+    }
+
+    return updatedTemplate;
   }
 }
 

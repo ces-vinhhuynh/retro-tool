@@ -1,10 +1,10 @@
 'use client';
 
 import {
-  UseFormRegister,
   FieldErrors,
   FieldValues,
   Path,
+  UseFormRegister,
 } from 'react-hook-form';
 
 import { Input } from '@/components/ui/input';

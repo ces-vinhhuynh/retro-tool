@@ -54,3 +54,36 @@ export interface TeamEmailTemplate extends EmailTemplate {
   teamName: string;
   isWorkspaceMember: boolean;
 }
+
+// Update average scores
+export type UpdateAverageScorePayload = {
+  healthCheckId: string;
+};
+
+export type QuestionAnswer = {
+  rating: number | null;
+  comment: string[];
+  vote: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Answers = {
+  [questionId: string]: QuestionAnswer;
+};
+
+export type ResponseType = {
+  answers: Answers;
+  created_at: string;
+  health_check_id: string;
+  id: string;
+  meeting_rating: number | null;
+  updated_at: string | null;
+  user_id: string;
+};
+
+export type AverageScore = {
+  [questionId: string]: {
+    average_score: number;
+  };
+};

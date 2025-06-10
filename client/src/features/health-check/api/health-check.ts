@@ -170,6 +170,12 @@ class HealthCheckService {
 
     return data;
   }
+
+  async updateAverageScores(healthCheckId: string) {
+    return await supabaseClient.functions.invoke('update-average-scores', {
+      body: { healthCheckId },
+    });
+  }
 }
 
 export const healthCheckService = new HealthCheckService();

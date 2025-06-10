@@ -28,7 +28,7 @@ import {
   useHealthCheckWithTemplate,
 } from '@/features/health-check/hooks/use-health-check';
 import { useHealthCheckSubscription } from '@/features/health-check/hooks/use-health-check-subscription';
-import { useTemplateById } from '@/features/health-check/hooks/use-health-check-templates';
+import { useGetTemplateById } from '@/features/health-check/hooks/use-health-check-templates';
 import { useHealthChecksSubscription } from '@/features/health-check/hooks/use-health-checks-subscription';
 import { useParticipantsSubscription } from '@/features/health-check/hooks/use-participants-subscription';
 import {
@@ -38,6 +38,7 @@ import {
 } from '@/features/health-check/hooks/use-response';
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
+import { useUpdateAverageScores } from '@/features/health-check/hooks/use-update-average-scores';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckSettings,
@@ -74,7 +75,7 @@ export default function HealthCheckPage() {
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: healthCheck, isLoading: isLoadingHealthCheck } =
     useHealthCheckWithTemplate(healthCheckId);
-  const { data: template } = useTemplateById(healthCheck?.template_id || '');
+  const { data: template } = useGetTemplateById(healthCheck?.template_id || '');
   const { data: response, isLoading: isLoadingResponse } = useResponse(
     healthCheck?.id || '',
     currentUser?.id || '',
@@ -140,6 +141,7 @@ export default function HealthCheckPage() {
 
   const { updateHealthCheck } = useHealthCheckMutations();
   const { mutate: createResponse, isSuccess } = useCreateResponse();
+  const { mutate: updateAverageScores } = useUpdateAverageScores();
 
   const questions: Question[] = template?.questions || [];
   const grouped = _groupBy(questions, 'section');
@@ -225,72 +227,13 @@ export default function HealthCheckPage() {
       return;
     }
 
-    const averageScores = calculateAverageScores();
-    if (averageScores && Object.keys(averageScores).length > 0) {
-      updateHealthCheck({
-        id: healthCheck.id,
-        healthCheck: {
-          current_step: STEPS[newStep].key,
-          average_score: averageScores,
-        },
-      });
-    } else {
-      updateHealthCheck({
-        id: healthCheck.id,
-        healthCheck: {
-          current_step: STEPS[newStep].key,
-        },
-      });
-    }
-  };
-
-  const calculateAverageScores = () => {
-    if (!responses || responses?.length === 0) return null;
-
-    const questionScores: Record<string, number[]> = {};
-
-    responses.forEach((response) => {
-      if (!response.answers) return;
-
-      // Cast to the expected structure with proper type safety
-      const answersObj = response.answers as unknown as Record<
-        string,
-        {
-          rating: number | null;
-          comment: string[];
-          vote?: number;
-          created_at: string;
-          updated_at: string;
-        }
-      >;
-
-      Object.entries(answersObj).forEach(([questionId, answer]) => {
-        if (
-          answer &&
-          typeof answer === 'object' &&
-          answer.rating !== null &&
-          answer.rating !== undefined
-        ) {
-          if (!questionScores[questionId]) {
-            questionScores[questionId] = [];
-          }
-          questionScores[questionId].push(answer.rating);
-        }
-      });
+    updateAverageScores({ healthCheckId: healthCheck.id });
+    updateHealthCheck({
+      id: healthCheck.id,
+      healthCheck: {
+        current_step: STEPS[newStep].key,
+      },
     });
-
-    // Calculate average for each question
-    const averageScores: Record<string, { average_score: number }> = {};
-
-    Object.entries(questionScores).forEach(([questionId, scores]) => {
-      if (scores.length > 0) {
-        const sum = scores.reduce((acc, score) => acc + score, 0);
-        const average = sum / scores.length;
-        averageScores[questionId] = { average_score: average };
-      }
-    });
-
-    return averageScores;
   };
 
   const getNextPhaseButtonText = () => {
@@ -307,17 +250,13 @@ export default function HealthCheckPage() {
 
   const handleChangePhase = () => {
     if (healthCheck?.current_step === FIRST_STEP.key) {
-      const averageScores = calculateAverageScores();
-
-      if (averageScores && Object.keys(averageScores).length > 0) {
-        updateHealthCheck({
-          id: healthCheck.id,
-          healthCheck: {
-            current_step: (healthCheck?.current_step || 1) + 1,
-            average_score: averageScores,
-          },
-        });
-      }
+      updateAverageScores({ healthCheckId: healthCheck.id });
+      updateHealthCheck({
+        id: healthCheck.id,
+        healthCheck: {
+          current_step: (healthCheck?.current_step || 1) + 1,
+        },
+      });
     }
     if (healthCheck?.current_step !== LAST_STEP.key) {
       return updateHealthCheck({

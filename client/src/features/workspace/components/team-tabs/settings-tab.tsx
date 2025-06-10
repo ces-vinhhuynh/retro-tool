@@ -8,7 +8,7 @@ import TemplatePreviewDialog from '@/features/health-check/components/sessions/t
 import { useTeamTemplates } from '@/features/health-check/hooks/use-team-templates';
 import { Template } from '@/features/health-check/types/templates';
 
-import CreateCustomTemplateModal from '../create-custom-template-modal';
+import ManageCustomTemplateModal from '../manage-custom-template-modal';
 import { TemplateCard } from '../template-card';
 
 interface SettingsTab {
@@ -23,6 +23,7 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
   const [isOpenPreview, setIsOpenPreview] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
+  const [template, setTemplate] = useState<Template | null>(null);
 
   if (isLoading) return <></>;
 
@@ -36,18 +37,19 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
               Manage custom templates and settings in your workspace
             </p>
           </div>
-          <Button onClick={() => setOpen(true)}>Create custom template</Button>
+          <Button
+            onClick={() => {
+              setTemplate(null);
+              setOpen(true);
+            }}
+          >
+            Create custom template
+          </Button>
         </div>
-
-        <CreateCustomTemplateModal
-          open={open}
-          setOpen={setOpen}
-          teamId={teamId}
-        />
       </div>
 
       {templates?.length && (
-        <ul className="grid grid-cols-4 grid-rows-5 gap-5">
+        <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
           {templates.map((template, index) => (
             <li key={`${template.id}_${index}`}>
               <TemplateCard
@@ -56,6 +58,8 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
                   setSelectedTemplate(template);
                   setIsOpenPreview(true);
                 }}
+                setOpen={setOpen}
+                setTemplate={setTemplate}
               />
             </li>
           ))}
@@ -66,6 +70,13 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
         open={isOpenPreview}
         onOpenChange={(open) => setIsOpenPreview(open)}
         template={selectedTemplate}
+      />
+      <ManageCustomTemplateModal
+        open={open}
+        setOpen={setOpen}
+        teamId={teamId}
+        template={template}
+        setTemplate={setTemplate}
       />
     </Card>
   );

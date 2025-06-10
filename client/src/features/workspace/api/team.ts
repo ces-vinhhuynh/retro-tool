@@ -40,9 +40,9 @@ class TeamService {
       id,
       name,
       users: team_users.map((user) => ({
-        id: user.users.id,
-        full_name: user.users.full_name,
-        avatar_url: user.users.avatar_url,
+        id: user.users?.id,
+        full_name: user.users?.full_name,
+        avatar_url: user.users?.avatar_url,
         role: user.role,
       })),
     }));

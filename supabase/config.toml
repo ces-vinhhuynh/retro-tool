@@ -50,16 +50,16 @@ max_client_conn = 100
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
 schema_paths = [
     "./schemas/users.sql",
-    "./schemas/workspaces.sql",        
-    "./schemas/workspace_users.sql",   
-    "./schemas/workspace_policies.sql", 
-    "./schemas/teams.sql",          
-    "./schemas/team_users.sql",     
+    "./schemas/workspaces.sql",
+    "./schemas/workspace_users.sql",
+    "./schemas/workspace_policies.sql",
+    "./schemas/teams.sql",
+    "./schemas/team_users.sql",
     "./schemas/health_check_templates.sql",
     "./schemas/health_checks.sql",
     "./schemas/action_items.sql",
     "./schemas/responses.sql",
-    "./schemas/*.sql"
+    "./schemas/*.sql",
 ]
 
 [db.seed]
@@ -344,3 +344,14 @@ entrypoint = "./functions/invite-user-to-team/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/invite-user-to-team/*.html" ]
+
+[functions.update-average-scores]
+enabled = true
+verify_jwt = true
+import_map = "./functions/update-average-scores/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/update-average-scores/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/update-average-scores/*.html" ]
