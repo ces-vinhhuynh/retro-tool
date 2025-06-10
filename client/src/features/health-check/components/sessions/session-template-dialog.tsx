@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Card } from '@/components/ui/card';
@@ -20,8 +20,8 @@ import { MESSAGE } from '@/utils/messages';
 import { useNewSessionModalStore } from '../../stores/new-session-modal-store';
 import {
   DisplayMode,
-  HealthCheckStatus,
   HealthCheckFormData,
+  HealthCheckStatus,
 } from '../../types/health-check';
 import { Template } from '../../types/templates';
 
@@ -38,7 +38,7 @@ const SessionTemplateDialog = ({
   open,
   onOpenChange,
 }: SessionTemplateDialogProps) => {
-  const { id: team_id } = useParams<{ id: string }>();
+  const { id: teamId } = useParams<{ id: string }>();
   const { templateId, setTemplateId } = useNewSessionModalStore();
   const [step, setStep] = useState<'choose' | 'form'>('choose');
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
@@ -69,7 +69,9 @@ const SessionTemplateDialog = ({
       setSelectedTemplate(template);
       setStep('form');
     } else if (templates?.length) {
-      setSelectedTemplate(templates[0]);
+      setSelectedTemplate(
+        templates.filter((template) => !template.is_custom)[0] || templates[0],
+      );
     }
   }, [templates, templateId]);
 
@@ -85,7 +87,7 @@ const SessionTemplateDialog = ({
     await createHealthCheck({
       title: formData.title,
       description: '',
-      team_id,
+      team_id: teamId,
       template_id: templateId || selectedTemplate.id,
       facilitator_ids: [currentUser.id],
       status: HealthCheckStatus.IN_PROGRESS,
@@ -132,6 +134,7 @@ const SessionTemplateDialog = ({
                   setPreviewState({ open: true, template })
                 }
                 onContinue={() => setStep('form')}
+                teamId={teamId}
               />
             ))}
 

@@ -10,6 +10,7 @@ import {
 
 import { healthCheckService } from './health-check';
 import { responseService } from './response';
+
 class TemplateService {
   async getAll(): Promise<Template[]> {
     const { data, error } = await supabaseClient
