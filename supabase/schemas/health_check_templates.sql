@@ -10,7 +10,8 @@ create table health_check_templates (
     is_custom boolean default false,
     original_id uuid,
     created_at timestamp with time zone default now(),
-    updated_at timestamp with time zone default now()
+    updated_at timestamp with time zone default now(),
+    deleted_at timestamp with time zone
 );
 
 -- Enable RLS
