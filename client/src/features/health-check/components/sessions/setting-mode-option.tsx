@@ -17,7 +17,6 @@ const SettingModeOption = ({
   isSelected,
   onChange,
 }: SettingModeOptionProps) => {
-  console.log('🚀 ~ isSelected:', isSelected);
   return (
     <div className="flex cursor-pointer items-center justify-between rounded-md border bg-white p-2.5 transition-all hover:border-gray-300">
       <Label htmlFor={id} className="cursor-pointer text-gray-700">

@@ -1,6 +1,11 @@
 import supabaseClient from '@/lib/supabase/client';
 
-import { Question, Template } from '../types/templates';
+import {
+  Question,
+  Template,
+  TemplateInsert,
+  TemplateUpdate,
+} from '../types/templates';
 
 class TemplateService {
   async getAll(): Promise<Template[]> {
@@ -11,7 +16,7 @@ class TemplateService {
 
     if (error) throw error;
 
-    return (data as unknown as Template[]).map((template) => {
+    return (data as Template[]).map((template) => {
       // Parse the questions JSON if it's a string
       const questions =
         typeof template.questions === 'string'
@@ -19,6 +24,7 @@ class TemplateService {
           : template.questions;
 
       return {
+        ...template,
         id: template.id,
         name: template.name,
         description: template.description ?? '',
@@ -46,7 +52,7 @@ class TemplateService {
     if (error) return null;
     if (!data) return null;
 
-    const template = data as unknown as Template;
+    const template = data as Template;
 
     // Parse the questions JSON if it's a string
     const questions =
@@ -55,6 +61,7 @@ class TemplateService {
         : template.questions;
 
     return {
+      ...template,
       id: template.id,
       name: template.name,
       description: template.description ?? '',
@@ -70,6 +77,7 @@ class TemplateService {
       max_value: template.max_value,
     };
   }
+
   async getByTeamId(teamId: string): Promise<Template[]> {
     const { data, error } = await supabaseClient
       .from('health_check_templates')
@@ -103,6 +111,29 @@ class TemplateService {
         max_value: template.max_value,
       };
     });
+  }
+
+  async create(template: TemplateInsert): Promise<Template> {
+    const { data, error } = await supabaseClient
+      .from('health_check_templates')
+      .insert(template)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async update(id: string, template: TemplateUpdate): Promise<Template> {
+    const { data, error } = await supabaseClient
+      .from('health_check_templates')
+      .update(template)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 }
 

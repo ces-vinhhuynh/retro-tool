@@ -24,6 +24,7 @@ import DataTrackTab from '@/features/workspace/components/team-tabs/data-track';
 import HealthChecksTab from '@/features/workspace/components/team-tabs/health-checks-tab';
 import HomeTab from '@/features/workspace/components/team-tabs/home-tab';
 import MembersTab from '@/features/workspace/components/team-tabs/members-tab';
+import { SettingsTab } from '@/features/workspace/components/team-tabs/settings-tab';
 import {
   TEAM_ROLES,
   WORKSPACE_ROLES,
@@ -31,8 +32,6 @@ import {
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
-
-import { SettingsTab } from '@/features/workspace/components/team-tabs/settings-tab';
 
 const TABS_VALUES = {
   HOME: 'home',
