@@ -50,18 +50,18 @@ const DEFAULT_MIN_VALUE = {
 
 interface ManageCustomTemplateModalProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
   teamId: string;
   template?: Template | null;
-  setTemplate: (template: Template | null) => void;
+  setSelectedTemplate: (template: Template | null) => void;
+  onClose: () => void;
 }
 
 const ManageCustomTemplateModal = ({
   open,
-  setOpen,
   teamId,
   template,
-  setTemplate,
+  setSelectedTemplate,
+  onClose,
 }: ManageCustomTemplateModalProps) => {
   const isEdit = !!template;
 
@@ -130,8 +130,8 @@ const ManageCustomTemplateModal = ({
         },
         {
           onSuccess: () => {
-            setOpen(false);
-            setTemplate(null);
+            onClose();
+            setSelectedTemplate(null);
           },
         },
       );
@@ -149,7 +149,7 @@ const ManageCustomTemplateModal = ({
       },
       {
         onSuccess: () => {
-          setOpen(false);
+          onClose();
         },
       },
     );
@@ -158,9 +158,9 @@ const ManageCustomTemplateModal = ({
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => {
+      onOpenChange={() => {
         reset();
-        setOpen(open);
+        onClose();
       }}
     >
       <DialogContent className="min-w-0 rounded-lg bg-white sm:min-w-md lg:min-w-3xl">

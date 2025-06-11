@@ -2,28 +2,35 @@
 
 import { useState } from 'react';
 
+import ConfirmModal from '@/components/modal/confirm-modal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import TemplatePreviewDialog from '@/features/health-check/components/sessions/template-preview-dialog';
+import { useDeleteTemplate } from '@/features/health-check/hooks/use-health-check-templates';
 import { useTeamTemplates } from '@/features/health-check/hooks/use-team-templates';
 import { Template } from '@/features/health-check/types/templates';
+import { MESSAGE } from '@/utils/messages';
 
 import ManageCustomTemplateModal from '../manage-custom-template-modal';
-import { TemplateCard } from '../template-card';
+import { CustomTemplateModalType, TemplateCard } from '../template-card';
 
 interface SettingsTab {
   teamId: string;
+  isAdmin: boolean;
 }
 
-export const SettingsTab = ({ teamId }: SettingsTab) => {
+export const SettingsTab = ({ teamId, isAdmin }: SettingsTab) => {
   const { data: templates, isLoading } = useTeamTemplates(teamId);
+  const { deleteTemplate, isDeleting } = useDeleteTemplate();
+
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
     null,
   );
   const [isOpenPreview, setIsOpenPreview] = useState<boolean>(false);
 
-  const [open, setOpen] = useState(false);
-  const [template, setTemplate] = useState<Template | null>(null);
+  const [openModal, setOpenModal] = useState<CustomTemplateModalType | null>(
+    null,
+  );
 
   if (isLoading) return <></>;
 
@@ -37,14 +44,16 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
               Manage custom templates and settings in your workspace
             </p>
           </div>
-          <Button
-            onClick={() => {
-              setTemplate(null);
-              setOpen(true);
-            }}
-          >
-            Create custom template
-          </Button>
+          {isAdmin && (
+            <Button
+              onClick={() => {
+                setSelectedTemplate(null);
+                setOpenModal(CustomTemplateModalType.MANAGE);
+              }}
+            >
+              Create custom template
+            </Button>
+          )}
         </div>
       </div>
 
@@ -58,8 +67,9 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
                   setSelectedTemplate(template);
                   setIsOpenPreview(true);
                 }}
-                setOpen={setOpen}
-                setTemplate={setTemplate}
+                setOpenModal={setOpenModal}
+                setSelectedTemplate={setSelectedTemplate}
+                isAdmin={isAdmin}
               />
             </li>
           ))}
@@ -72,11 +82,27 @@ export const SettingsTab = ({ teamId }: SettingsTab) => {
         template={selectedTemplate}
       />
       <ManageCustomTemplateModal
-        open={open}
-        setOpen={setOpen}
+        open={openModal === CustomTemplateModalType.MANAGE}
+        onClose={() => setOpenModal(null)}
         teamId={teamId}
-        template={template}
-        setTemplate={setTemplate}
+        template={selectedTemplate}
+        setSelectedTemplate={setSelectedTemplate}
+      />
+      <ConfirmModal
+        variant="delete"
+        isOpen={openModal === CustomTemplateModalType.DELETE}
+        title={MESSAGE.DELETE_TEMPLATE_TITLE}
+        description={MESSAGE.DELETE_TEMPLATE_DESCRIPTION}
+        onCancel={() => setOpenModal(null)}
+        onConfirm={() => {
+          deleteTemplate(selectedTemplate?.id || '', {
+            onSuccess: () => {
+              setOpenModal(null);
+              setSelectedTemplate(null);
+            },
+          });
+        }}
+        loading={isDeleting}
       />
     </Card>
   );

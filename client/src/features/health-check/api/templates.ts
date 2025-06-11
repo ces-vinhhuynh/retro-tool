@@ -86,7 +86,8 @@ class TemplateService {
     const { data, error } = await supabaseClient
       .from('health_check_templates')
       .select('*')
-      .eq('team_id', teamId);
+      .eq('team_id', teamId)
+      .is('deleted_at', null);
 
     if (error) throw error;
 
@@ -217,6 +218,25 @@ class TemplateService {
     }
 
     return updatedTemplate;
+  }
+
+  async deleteCustomTemplate(id: string): Promise<Template> {
+    const existingTemplate = await this.getById(id);
+    if (!existingTemplate) throw new Error('Template not found');
+
+    if (!existingTemplate?.is_custom) {
+      throw new Error('Cannot delete standard template');
+    }
+
+    const { data, error } = await supabaseClient
+      .from('health_check_templates')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 }
 

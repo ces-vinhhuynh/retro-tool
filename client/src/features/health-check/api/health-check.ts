@@ -18,7 +18,8 @@ class HealthCheckService {
           id,
           name,
           description,
-          questions
+          questions,
+          deleted_at
         )
       `,
       )
@@ -85,7 +86,8 @@ class HealthCheckService {
         id,
         name,
         description,
-        questions
+        questions,
+        deleted_at
       ),
       team:teams (
         id,
@@ -122,7 +124,8 @@ class HealthCheckService {
           id,
           name,
           description,
-          questions
+          questions,
+          deleted_at
         )
       `,
       )
@@ -145,7 +148,8 @@ class HealthCheckService {
           id,
           name,
           description,
-          questions
+          questions,
+          deleted_at
         )
       `,
       )

@@ -9,18 +9,25 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Template } from '@/features/health-check/types/templates';
 
+export enum CustomTemplateModalType {
+  MANAGE = 'manage',
+  DELETE = 'delete',
+}
+
 interface TemplateCardProps {
   template: Template;
   handleClickPreview: () => void;
-  setOpen: (open: boolean) => void;
-  setTemplate: (template: Template) => void;
+  setOpenModal: (openModal: CustomTemplateModalType | null) => void;
+  setSelectedTemplate: (template: Template) => void;
+  isAdmin: boolean;
 }
 
 export const TemplateCard = ({
   template,
   handleClickPreview,
-  setOpen,
-  setTemplate,
+  setOpenModal,
+  setSelectedTemplate,
+  isAdmin,
 }: TemplateCardProps) => {
   return (
     <div className="hover:bg-ces-orange-50/30 relative h-full max-h-60 min-h-40 rounded-sm border border-gray-400 p-5 transition-transform duration-200 ease-in-out">
@@ -33,35 +40,43 @@ export const TemplateCard = ({
           {template?.min_value?.value} - {template?.max_value?.value}
         </div>
       </div>
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="absolute top-3 right-3 h-8 w-8 p-0"
-          >
-            <MoreVertical className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" portalled={false}>
-          <DropdownMenuItem
-            className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
-            onClick={() => {
-              setOpen(true);
-              setTemplate(template);
-            }}
-          >
-            <Pencil className="h-4 w-4" />
-            <span>Edit</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0">
-            <Trash2 className="h-4 w-4" />
-            <span>Delete</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {isAdmin && (
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="absolute top-3 right-3 h-8 w-8 p-0"
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" portalled={false}>
+            <DropdownMenuItem
+              className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+              onClick={() => {
+                setOpenModal(CustomTemplateModalType.MANAGE);
+                setSelectedTemplate(template);
+              }}
+            >
+              <Pencil className="h-4 w-4" />
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+              onClick={() => {
+                setOpenModal(CustomTemplateModalType.DELETE);
+                setSelectedTemplate(template);
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
       <Button
         variant="ghost"
-        className="hover:bg-accent hover:text-accent-foreground focus:ring-primary rounded-ful absolute right-3 bottom-3 z-10 w-9 p-1 focus:ring-2 focus:outline-none"
+        className="hover:bg-accent hover:text-accent-foreground focus:ring-primary rounded-ful absolute right-3 bottom-3 z-10 w-9 p-1 focus:ring-0 focus:outline-none"
         aria-label={`Preview template ${template.name}`}
         onClick={handleClickPreview}
       >

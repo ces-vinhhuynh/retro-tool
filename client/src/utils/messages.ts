@@ -18,4 +18,10 @@ export const MESSAGE = {
   CREATE_LONG_TERM_ISSUE_FROM_COMMENT_TITLE: 'Create Long Term Issue',
   CREATE_LONG_TERM_ISSUE_FROM_COMMENT_DESCRIPTION:
     'Are you sure you want to create a long term issue from this comment?',
+  DELETE_TEMPLATE_TITLE: 'Delete template',
+  DELETE_TEMPLATE_DESCRIPTION: 'Are you sure you want to delete this template?',
+  UPDATE_TEMPLATE_SUCCESS: 'Template updated successfully',
+  FAILED_TO_UPDATE_TEMPLATE: 'Failed to update template',
+  DELETE_TEMPLATE_SUCCESS: 'Template deleted successfully',
+  FAILED_TO_DELETE_TEMPLATE: 'Failed to delete template',
 };

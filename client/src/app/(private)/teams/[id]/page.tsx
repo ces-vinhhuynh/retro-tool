@@ -130,7 +130,7 @@ const TeamPage = () => {
       value: TABS_VALUES.SETTINGS,
       icon: Settings,
       label: 'Settings',
-      content: <SettingsTab teamId={teamId} />,
+      content: <SettingsTab teamId={teamId} isAdmin={isAdmin} />,
     },
   ];
 

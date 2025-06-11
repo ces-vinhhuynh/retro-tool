@@ -171,6 +171,7 @@ export type Database = {
       health_check_templates: {
         Row: {
           created_at: string | null;
+          deleted_at: string | null;
           description: string | null;
           id: string;
           is_custom: boolean | null;
@@ -185,6 +186,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string | null;
+          deleted_at?: string | null;
           description?: string | null;
           id?: string;
           is_custom?: boolean | null;
@@ -199,6 +201,7 @@ export type Database = {
         };
         Update: {
           created_at?: string | null;
+          deleted_at?: string | null;
           description?: string | null;
           id?: string;
           is_custom?: boolean | null;
@@ -258,7 +261,7 @@ export type Database = {
           current_step?: number | null;
           description?: string | null;
           end_time?: string | null;
-          facilitator_ids?: string[];
+          facilitator_ids?: string[] | null;
           id?: string;
           participants?: Json | null;
           settings?: Json | null;

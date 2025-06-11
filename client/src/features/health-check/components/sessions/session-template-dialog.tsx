@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -54,6 +54,10 @@ const SessionTemplateDialog = ({
   const { createHealthCheck, isLoading: isCreatingHealthCheck } =
     useHealthCheckMutations();
 
+  const validTemplates = useMemo(() => {
+    return templates?.filter((template) => !template.deleted_at) || [];
+  }, [templates]);
+
   const methods = useForm<HealthCheckFormData>({
     defaultValues: {
       title: '',
@@ -65,15 +69,17 @@ const SessionTemplateDialog = ({
 
   useEffect(() => {
     if (templateId) {
-      const template = templates?.find((tpl) => tpl.id === templateId) || null;
+      const template =
+        validTemplates?.find((tpl) => tpl.id === templateId) || null;
       setSelectedTemplate(template);
       setStep('form');
-    } else if (templates?.length) {
+    } else if (validTemplates?.length) {
       setSelectedTemplate(
-        templates.filter((template) => !template.is_custom)[0] || templates[0],
+        validTemplates.filter((template) => !template.is_custom)[0] ||
+          validTemplates[0],
       );
     }
-  }, [templates, templateId]);
+  }, [validTemplates, templateId]);
 
   // Accept form data from react-hook-form
   const handleCreate = async (formData: HealthCheckFormData) => {
@@ -127,7 +133,7 @@ const SessionTemplateDialog = ({
               </Card>
             ) : (
               <TemplateSelectionStep
-                templates={templates}
+                templates={validTemplates}
                 selectedTemplate={selectedTemplate}
                 onTemplateSelect={setSelectedTemplate}
                 onPreview={(template) =>

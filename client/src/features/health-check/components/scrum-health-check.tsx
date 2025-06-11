@@ -31,7 +31,9 @@ const ScrumHealthCheck = ({
     scrumHealthChecks?.map((check) => check.id) || [],
   );
 
-  const title = scrumHealthChecks[0]?.template?.name;
+  const { deleted_at, name: title } = scrumHealthChecks[0].template;
+
+  const canStartNewHealthCheck = isShowAddNew && deleted_at === null;
 
   const formattedData: FormattedHealthCheck[] = scrumHealthChecks?.map(
     (healthCheck) => ({
@@ -72,14 +74,18 @@ const ScrumHealthCheck = ({
         <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
       )}
       <div className="flex w-full flex-row gap-0 border-gray-200 md:flex-nowrap">
-        <div className={cn('w-32 md:w-56 lg:w-68', { 'w-20': isShowAddNew })}>
+        <div
+          className={cn('w-32 md:w-56 lg:w-68', {
+            'w-20': canStartNewHealthCheck,
+          })}
+        >
           <div className="h-24 border-r border-b border-gray-200" />
           {formattedData[0].questions?.map((item) => (
             <QuestionRow
               key={item.id}
               title={item.title}
               description={item.description}
-              isShowAddNew={isShowAddNew}
+              isShowAddNew={canStartNewHealthCheck}
             />
           ))}
         </div>
@@ -91,12 +97,12 @@ const ScrumHealthCheck = ({
               getHealthCheckRatings={getHealthCheckRatings}
             />
           ))}
-          {isShowAddNew && (
+          {canStartNewHealthCheck && (
             <HealthCheckColumn
               onAddNewSession={onAddNewSession}
               healthCheck={formattedData[0]}
               getHealthCheckRatings={getHealthCheckRatings}
-              isShowAddNew={isShowAddNew}
+              isShowAddNew={canStartNewHealthCheck}
             />
           )}
         </div>
