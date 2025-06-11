@@ -1,0 +1,28 @@
+name: Sync main to target repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repod
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push current branch to target repo as main
+        env:
+          PAT: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+        run: |
+          git remote add target https://x-access-token:${PAT}@github.com/ces-vinhhuynh/retro-tool.git
+          git push target main --force
