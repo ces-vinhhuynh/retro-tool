@@ -21,7 +21,11 @@ const TeamIssues = ({
   isLoadingIssues,
 }: TeamIssuesProps) => {
   return (
-    <SubMenuWrapper Icon={BadgeAlert} title="Team Issues" className={className}>
+    <SubMenuWrapper
+      Icon={BadgeAlert}
+      title="Long Term Issues"
+      className={className}
+    >
       <EntryList
         items={issues}
         emptyItemMessage="No issues yet"

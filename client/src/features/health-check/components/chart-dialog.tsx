@@ -79,7 +79,7 @@ const ChartDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          'h-auto max-h-none w-full overflow-hidden p-0 sm:max-w-[800px]',
+          'h-auto max-h-none max-w-sm overflow-hidden rounded-lg p-0 sm:max-w-xl md:max-w-3xl',
           bg,
         )}
       >

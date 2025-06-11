@@ -55,7 +55,7 @@ const SurveyResponses = ({
         <div className="flex flex-col gap-2 pt-4">
           <h3 className="text-sm font-medium uppercase">Survey Responses</h3>
           {comments.map((comment, index) => {
-            const isExpanded = expanded[index];
+            const isExpanded = expanded[comment];
             const shouldClamp = isLongComment(comment);
 
             return (
