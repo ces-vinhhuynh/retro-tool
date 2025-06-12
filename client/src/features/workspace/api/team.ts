@@ -21,6 +21,7 @@ class TeamService {
         `
       id,
       name,
+      logo_url,
       team_users (
         role,
         users (
@@ -36,13 +37,14 @@ class TeamService {
 
     if (error) throw error;
 
-    return data.map(({ id, name, team_users }) => ({
+    return data.map(({ id, name, logo_url, team_users }) => ({
       id,
       name,
+      logo_url,
       users: team_users.map((user) => ({
-        id: user.users?.id,
-        full_name: user.users?.full_name,
-        avatar_url: user.users?.avatar_url,
+        id: user.users?.id || '',
+        full_name: user.users?.full_name || '',
+        avatar_url: user.users?.avatar_url || '',
         role: user.role,
       })),
     }));
@@ -55,6 +57,7 @@ class TeamService {
         `
           id,
           name,
+          logo_url,
           team_users (
             role,
             users (
@@ -70,13 +73,14 @@ class TeamService {
 
     if (error) throw error;
 
-    return data.map(({ id, name, team_users }) => ({
+    return data.map(({ id, name, logo_url, team_users }) => ({
       id,
       name,
+      logo_url,
       users: team_users.map((user) => ({
-        id: user.users.id,
-        full_name: user.users.full_name,
-        avatar_url: user.users.avatar_url,
+        id: user.users?.id || '',
+        full_name: user.users?.full_name || '',
+        avatar_url: user.users?.avatar_url || '',
         role: user.role,
       })),
     }));
@@ -98,6 +102,7 @@ class TeamService {
         `
       id,
       name,
+      logo_url,
       team_users (
         role,
         users (
@@ -114,13 +119,14 @@ class TeamService {
 
     if (error) throw error;
 
-    return data.map(({ id, name, team_users }) => ({
+    return data.map(({ id, name, logo_url, team_users }) => ({
       id,
       name,
+      logo_url,
       users: team_users.map((user) => ({
-        id: user.users.id,
-        full_name: user.users.full_name,
-        avatar_url: user.users.avatar_url,
+        id: user.users?.id || '',
+        full_name: user.users?.full_name || '',
+        avatar_url: user.users?.avatar_url || '',
         role: user.role,
       })),
     }));

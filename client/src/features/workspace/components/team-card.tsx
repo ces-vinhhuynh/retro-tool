@@ -16,6 +16,7 @@ interface TeamCardProps {
   team: {
     id: string;
     name: string;
+    logo_url: string | null;
     users: Array<{
       id: string;
       avatar_url: string | null;

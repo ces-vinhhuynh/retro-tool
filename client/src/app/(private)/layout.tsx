@@ -13,8 +13,8 @@ import { HealthCheckWithTeam } from '@/features/health-check/types/health-check'
 import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
+import { useGetTeamsByWorkspaceAndUser } from '@/features/workspace/hooks/use-get-teams-by-workspace-and-user';
 import { useGetUserWorkspaces } from '@/features/workspace/hooks/use-get-user-workspaces';
-import { useGetWorkspaceTeams } from '@/features/workspace/hooks/use-get-workspace-teams';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace-store';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
@@ -59,7 +59,7 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   })();
 
   // Fetch teams for current workspace
-  const { data: teamsByMember = [] } = useGetWorkspaceTeams(
+  const { data: teamsByMember = [] } = useGetTeamsByWorkspaceAndUser(
     String(workspaceId),
     currentUser?.id || '',
   );

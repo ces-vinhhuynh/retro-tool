@@ -7,16 +7,19 @@ import CreateTeamDialog from '@/features/workspace/components/create-team-dialog
 import { DataTable } from '@/features/workspace/components/data-table';
 import TeamCard from '@/features/workspace/components/team-card';
 import { useColumns } from '@/features/workspace/components/team-table/columns';
-import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
+import {
+  TEAM_ROLES,
+  WORKSPACE_ROLES,
+} from '@/features/workspace/constants/user';
 import { useDeleteTeam } from '@/features/workspace/hooks/use-delete-team';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
-import { useGetWorkspaceTeams } from '@/features/workspace/hooks/use-get-workspace-teams';
+import { useGetTeamsByWorkspaceAndUser } from '@/features/workspace/hooks/use-get-teams-by-workspace-and-user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 
 export default function WorkspacePage() {
   const { id: workspaceId } = useParams<{ id: string }>();
   const { data: currentUser } = useCurrentUser();
-  const { data: teamsByMember = [] } = useGetWorkspaceTeams(
+  const { data: teamsByMember = [] } = useGetTeamsByWorkspaceAndUser(
     workspaceId,
     currentUser?.id || '',
   );
@@ -61,7 +64,7 @@ export default function WorkspacePage() {
               <TeamCard
                 key={team.id}
                 team={team}
-                currentUserRole={currentUserRole}
+                currentUserRole={currentUserRole as TEAM_ROLES}
                 isOwnerOrAdmin={isOwnerOrAdmin}
                 onDelete={deleteTeam}
               />
