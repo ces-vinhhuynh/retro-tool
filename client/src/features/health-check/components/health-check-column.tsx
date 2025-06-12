@@ -1,24 +1,20 @@
+'use client';
+
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 
+import { HealthCheckRatingFunction } from '../types/chart';
 import { FormattedHealthCheck } from '../types/health-check';
+import { formatDateTime } from '../utils/time-format';
 
 import RatingDisplay from './rating-display';
 
-type Rating = {
-  score: number;
-  count: number;
-};
-
 interface HealthCheckColumnProps {
   healthCheck: FormattedHealthCheck;
-  getHealthCheckRatings: (
-    healthCheckId: string,
-    questionId: string,
-  ) => Rating[];
+  getHealthCheckRatings: HealthCheckRatingFunction;
   isShowAddNew?: boolean;
   onAddNewSession?: () => void;
 }
@@ -59,13 +55,13 @@ const HealthCheckColumn = ({
         ) : (
           <Link
             href={`/health-checks/${healthCheck.id}`}
-            className="flex w-full flex-col items-center gap-2"
+            className="flex w-full flex-col items-center gap-1"
           >
             <h2 className="max-w-full truncate text-lg font-bold">
               {healthCheck.title}
             </h2>
             <p className="text-sm text-gray-500">
-              {new Date(String(healthCheck.createdAt)).toLocaleDateString()}
+              {formatDateTime(new Date(String(healthCheck.createdAt)))}
             </p>
             <div className="rounded bg-gray-200 px-2 text-xs capitalize">
               {healthCheck?.status}

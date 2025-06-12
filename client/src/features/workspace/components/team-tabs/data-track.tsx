@@ -78,7 +78,7 @@ const DataTrackTab = ({
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         {stats.map((stat, index) => (
           <TeamStatCard

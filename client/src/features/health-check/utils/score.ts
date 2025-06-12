@@ -1,5 +1,10 @@
 import { Question, Section } from '../types/health-check';
 
+interface ChartDataItem {
+  totalVotes: number;
+  [scoreKey: `score${number}`]: number;
+}
+
 export function calcAverage(
   questions: Question[],
   scores: Record<string, { average_score: number }>,
@@ -35,4 +40,16 @@ export function calcSectionAverage(
   return validQuestions.length
     ? (sum / validQuestions.length).toFixed(1)
     : '0.0';
+}
+
+export function getScorePercentage(
+  chartData: ChartDataItem,
+  score: number,
+): number {
+  const scoreKey = `score${score}` as const;
+  const scoreCount = (chartData[scoreKey] as number) || 0;
+
+  return chartData.totalVotes > 0
+    ? (scoreCount / chartData.totalVotes) * 100
+    : 0;
 }

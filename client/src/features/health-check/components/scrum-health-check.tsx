@@ -1,18 +1,16 @@
 'use client';
 
-import { cn } from '@/utils/cn';
+import { useState } from 'react';
 
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+
+import { useHealthCheckTransform } from '../hooks/use-health-check-transform';
 import { useResponseByHealthChecks } from '../hooks/use-response-by-health-checks';
-import {
-  AverageScores,
-  FormattedHealthCheck,
-  HealthCheckWithTemplate,
-  Section,
-} from '../types/health-check';
-import { getRatings } from '../utils/rating';
+import { HealthCheckWithTemplate } from '../types/health-check';
 
-import HealthCheckColumn from './health-check-column';
-import QuestionRow from './question-row';
+import HealthCheckBreakdownView from './health-check-breakdown-view';
+import HealthCheckTableView from './health-check-table-view';
 
 interface ScrumHealthCheckProps {
   scrumHealthChecks: HealthCheckWithTemplate[];
@@ -27,7 +25,9 @@ const ScrumHealthCheck = ({
   onAddNewSession,
   isShowTitle = true,
 }: ScrumHealthCheckProps) => {
-  const { data: scrumResponses } = useResponseByHealthChecks(
+  const [showBreakdown, setShowBreakdown] = useState(false);
+
+  const { data: scrumResponses = [] } = useResponseByHealthChecks(
     scrumHealthChecks?.map((check) => check.id) || [],
   );
 
@@ -35,78 +35,48 @@ const ScrumHealthCheck = ({
 
   const canStartNewHealthCheck = isShowAddNew && deleted_at === null;
 
-  const formattedData: FormattedHealthCheck[] = scrumHealthChecks?.map(
-    (healthCheck) => ({
-      id: healthCheck.id,
-      title: healthCheck.title,
-      createdAt: healthCheck.created_at,
-      status: healthCheck.status,
-      questions: healthCheck?.template?.questions
-        .filter((question) => question?.section !== Section.AdditionalQuestions)
-        .map((question) => ({
-          id: question.id,
-          title: question.title,
-          description: question.description,
-          averageScore:
-            (healthCheck?.average_score as AverageScores)?.[question.id]
-              ?.average_score || 0,
-        })),
-    }),
-  );
+  const { healthChecks, questionData, scoreRange, getRatings } =
+    useHealthCheckTransform(scrumHealthChecks, scrumResponses);
 
-  if (!formattedData?.length) {
+  if (!healthChecks?.length) {
     return null;
   }
 
-  const getHealthCheckRatings = (healthCheckId: string, questionId: string) => {
-    if (!scrumResponses) return [];
-    return getRatings(
-      scrumResponses.filter(
-        (response) => response.health_check_id === healthCheckId,
-      ),
-      questionId,
-    );
-  };
-
   return (
     <div className="rounded-lg bg-white">
-      {isShowTitle && (
-        <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
-      )}
-      <div className="flex w-full flex-row gap-0 border-gray-200 md:flex-nowrap">
-        <div
-          className={cn('w-32 md:w-56 lg:w-68', {
-            'w-20': canStartNewHealthCheck,
-          })}
-        >
-          <div className="h-24 border-r border-b border-gray-200" />
-          {formattedData[0].questions?.map((item) => (
-            <QuestionRow
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              isShowAddNew={canStartNewHealthCheck}
-            />
-          ))}
-        </div>
-        <div className="flex flex-1 flex-row overflow-x-auto">
-          {formattedData?.map((healthCheck) => (
-            <HealthCheckColumn
-              key={healthCheck.id}
-              healthCheck={healthCheck}
-              getHealthCheckRatings={getHealthCheckRatings}
-            />
-          ))}
-          {canStartNewHealthCheck && (
-            <HealthCheckColumn
-              onAddNewSession={onAddNewSession}
-              healthCheck={formattedData[0]}
-              getHealthCheckRatings={getHealthCheckRatings}
-              isShowAddNew={canStartNewHealthCheck}
-            />
-          )}
+      <div className="flex items-center justify-between gap-x-3">
+        {isShowTitle && title && (
+          <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
+        )}
+        <div className="flex items-center gap-3">
+          <Label className="text-sm font-medium text-gray-700 uppercase">
+            Show Breakdown
+          </Label>
+          <Switch
+            checked={showBreakdown}
+            onCheckedChange={setShowBreakdown}
+            className="data-[state=checked]:bg-ces-orange-500"
+          />
         </div>
       </div>
+
+      {!showBreakdown ? (
+        <HealthCheckTableView
+          healthChecks={healthChecks}
+          getHealthCheckRatings={getRatings}
+          isShowAddNew={canStartNewHealthCheck}
+          onAddNewSession={onAddNewSession}
+        />
+      ) : (
+        <HealthCheckBreakdownView
+          healthChecks={healthChecks}
+          questionData={questionData}
+          scoreRange={scoreRange}
+          isShowAddNew={canStartNewHealthCheck}
+          onAddNewSession={onAddNewSession}
+          getRatings={getRatings}
+        />
+      )}
     </div>
   );
 };
