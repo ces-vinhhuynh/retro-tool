@@ -3,30 +3,21 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import { cn } from '@/utils/cn';
 import { getAvatarCharacters } from '@/utils/user';
 
 import { Score } from '../types/health-check';
-import { getScoreColors } from '../utils/color';
 
-// Updated color mapping to handle different scales
-const SCORE_COLORS = {
-  1: 'bg-red-600',
-  2: 'bg-red-500',
-  3: 'bg-orange-500',
-  4: 'bg-orange-400',
-  5: 'bg-yellow-400',
-  6: 'bg-yellow-500',
-  7: 'bg-lime-400',
-  8: 'bg-green-400',
-  9: 'bg-green-500',
-  10: 'bg-green-600',
-} as const;
+import ScoreButton from './score-button';
 
 const SAVE_DELAY = 2000;
 
@@ -48,23 +39,6 @@ export interface SurveyQuestionRowProps {
   maxScore: Score;
 }
 
-function getScoreColor(
-  value: number | undefined,
-  score: number,
-  maxValue: number,
-): string {
-  if (!value) {
-    // Scale the color based on the score's position in the range
-    const colorIndex = Math.round((score / maxValue) * 10);
-    return SCORE_COLORS[colorIndex as keyof typeof SCORE_COLORS] || 'bg-muted';
-  }
-  return value === score
-    ? SCORE_COLORS[
-        Math.round((score / maxValue) * 10) as keyof typeof SCORE_COLORS
-      ]
-    : 'bg-muted';
-}
-
 const SurveyQuestionRow = ({
   question,
   value,
@@ -80,6 +54,13 @@ const SurveyQuestionRow = ({
 
   const [showSaved, setShowSaved] = useState(false);
   const [localComment, setLocalComment] = useState(comment);
+  const scores = Array.from(
+    { length: maxScore.value - minScore.value + 1 },
+    (_, i) => i + minScore.value,
+  );
+  const mid = Math.floor((minScore.value + maxScore.value) / 2);
+  const firstHalf = scores.slice(0, mid - minScore.value + 1);
+  const secondHalf = scores.slice(mid - minScore.value + 1);
 
   useEffect(() => {
     setLocalComment(comment);
@@ -130,60 +111,43 @@ const SurveyQuestionRow = ({
 
       <div className="flex min-w-0 flex-col gap-1 sm:gap-4 md:flex-row md:items-center md:gap-6 lg:gap-8">
         <div className="mb-2 hidden justify-center gap-2 sm:flex">
-          {Array.from(
-            { length: maxScore.value - minScore.value + 1 },
-            (_, i) => i + minScore.value,
-          ).map((score) => {
-            const buttonColor = getScoreColor(value, score, maxScore.value);
-
-            return (
-              <Button
-                key={score}
-                variant="default"
-                size="icon"
-                className={cn(
-                  `h-8 w-8 rounded-full font-bold text-white transition hover:cursor-pointer`,
-                  value === score && 'scale-110',
-                  buttonColor,
-                )}
-                disabled={disabled}
-                onClick={() => onValueChange(score)}
-              >
-                {score}
-              </Button>
-            );
-          })}
+          {scores.map((score) => (
+            <ScoreButton
+              key={score}
+              score={score}
+              value={value ?? 0}
+              maxScore={maxScore.value}
+              disabled={!!disabled}
+              onValueChange={onValueChange}
+            />
+          ))}
         </div>
 
         <div className="mb-2 flex w-full flex-col gap-2 sm:hidden">
-          <Slider
-            min={minScore.value}
-            max={maxScore.value}
-            step={1}
-            value={[value ?? minScore.value]}
-            onValueChange={([val]: [number]) => onValueChange(val)}
-            disabled={disabled}
-            className="w-full"
-            thumbClassName={getScoreColors(Number(value))?.circle}
-          />
-          <div className="flex justify-between text-xs text-gray-500">
-            {Array.from(
-              { length: maxScore.value - minScore.value + 1 },
-              (_, i) => i + minScore.value,
-            ).map((num) => (
-              <span
-                key={num}
-                className={cn(
-                  'font-bold',
-                  value === num
-                    ? getScoreColors(Number(value))?.text
-                    : 'text-gray-500',
-                )}
-              >
-                {num}
-              </span>
-            ))}
-          </div>
+          <Carousel className="mx-auto w-full max-w-xs px-1">
+            <CarouselContent>
+              {[firstHalf, secondHalf].map((scoreGroup, index) => (
+                <CarouselItem key={index}>
+                  <div className="p-1">
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {scoreGroup.map((score) => (
+                        <ScoreButton
+                          key={score}
+                          score={score}
+                          value={value ?? 0}
+                          maxScore={maxScore.value}
+                          disabled={!!disabled}
+                          onValueChange={onValueChange}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious variant="ghost" className="-left-3 h-6 w-6" />
+            <CarouselNext variant="ghost" className="-right-3 h-6 w-6" />
+          </Carousel>
         </div>
 
         <div className="text-muted-foreground flex min-w-0 flex-col text-[10px] sm:text-xs">
