@@ -7,7 +7,8 @@ import {
   Settings,
   User as UserIcon,
 } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
@@ -43,6 +44,7 @@ const TABS_VALUES = {
 
 const TeamPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
+  const router = useRouter();
   const { data: actionItems = [] } = useGetActionItemsByTeamId(teamId);
   const { data: agreements = [] } = useAgreementsQuery(teamId);
 
@@ -63,7 +65,10 @@ const TeamPage = () => {
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
 
-  const { data: teamUser } = useGetTeamUser(teamId, currentUser?.id || '');
+  const { data: teamUser, error } = useGetTeamUser(
+    teamId,
+    currentUser?.id || '',
+  );
   const { data: workspaceUser } = useGetWorkspaceUser(
     team?.workspace_id || '',
     currentUser?.id || '',
@@ -73,6 +78,16 @@ const TeamPage = () => {
     teamUser?.role === TEAM_ROLES.admin ||
     workspaceUser?.role === WORKSPACE_ROLES.owner ||
     workspaceUser?.role === WORKSPACE_ROLES.admin;
+
+  useEffect(() => {
+    if (
+      error &&
+      workspaceUser?.role !== WORKSPACE_ROLES.owner &&
+      workspaceUser?.role !== WORKSPACE_ROLES.admin
+    ) {
+      router.push(`/workspaces/${workspaceUser?.workspace_id}`);
+    }
+  }, [error, workspaceUser, router]);
 
   const TABS = [
     {
