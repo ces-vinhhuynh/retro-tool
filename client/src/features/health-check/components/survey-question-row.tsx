@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -28,6 +29,8 @@ const SCORE_COLORS = {
 } as const;
 
 const SAVE_DELAY = 2000;
+
+const DEBOUNCE_TIME = 1000;
 
 export interface SurveyQuestionRowProps {
   question: {
@@ -78,6 +81,10 @@ const SurveyQuestionRow = ({
   const [showSaved, setShowSaved] = useState(false);
   const [localComment, setLocalComment] = useState(comment);
 
+  useEffect(() => {
+    setLocalComment(comment);
+  }, [comment]);
+
   // Handle save indicator
   useEffect(() => {
     if (showSaved) {
@@ -86,16 +93,19 @@ const SurveyQuestionRow = ({
     }
   }, [showSaved]);
 
+  const debouncedCommentChange = useMemo(() => {
+    return debounce(async (comments: string[]) => {
+      await onCommentChange(comments);
+    }, DEBOUNCE_TIME);
+  }, [onCommentChange]);
+
   const handleCommentChange = async (newComment: string) => {
     try {
       setLocalComment(newComment);
       // Split by newlines and filter empty lines
-      const comments = newComment
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
+      const comments = newComment.split('\n').filter(Boolean);
 
-      await onCommentChange(comments);
+      await debouncedCommentChange(comments);
       setShowSaved(true);
     } catch {
       toast.error('Failed to save comment');

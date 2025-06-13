@@ -13,7 +13,7 @@ import HealthCheckSteps from '@/features/health-check/components/health-check-st
 import OpenActionsPhase from '@/features/health-check/components/open-actions-phase';
 import ReviewPhase from '@/features/health-check/components/review-phase';
 import WelcomeModal from '@/features/health-check/components/sessions/welcome-modal';
-import SurveyTab from '@/features/health-check/components/survey-phase';
+import SurveyPhase from '@/features/health-check/components/survey-phase';
 import Timer from '@/features/health-check/components/timer';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
@@ -311,7 +311,7 @@ export default function HealthCheckPage() {
                 endTime={healthCheck.end_time || ''}
               />
               {healthCheck.current_step === STEPS['survey'].key && (
-                <SurveyTab
+                <SurveyPhase
                   healthCheck={healthCheck as HealthCheckWithTemplate}
                   sections={sections}
                   currentUser={currentUser as unknown as User}
