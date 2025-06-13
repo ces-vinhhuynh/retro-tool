@@ -6,6 +6,8 @@ import {
   WorkspaceUserUpdate,
 } from '../types/workspace-users';
 
+import { teamService } from './team';
+
 class WorkspaceUsersService {
   async getWorkspaces(userId: string) {
     const { data, error } = await supabaseClient
@@ -102,10 +104,27 @@ class WorkspaceUsersService {
   }
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabaseClient
+    const { data: deletedUser, error } = await supabaseClient
       .from('workspace_users')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .select('user_id, workspace_id')
+      .single();
+
+    const teams = await teamService.getByWorkspaceIdAndUserId(
+      deletedUser?.workspace_id || '',
+      deletedUser?.user_id || '',
+    );
+
+    for (const team of teams) {
+      const { error: errorTeamUsers } = await supabaseClient
+        .from('team_users')
+        .delete()
+        .eq('team_id', team.id)
+        .eq('user_id', deletedUser?.user_id || '');
+
+      if (errorTeamUsers) throw errorTeamUsers;
+    }
 
     if (error) throw error;
   }
