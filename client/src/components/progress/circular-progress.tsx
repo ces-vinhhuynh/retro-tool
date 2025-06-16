@@ -18,7 +18,6 @@ interface CircularProgressProps {
   labelClassName?: string;
   showLabel?: boolean;
 }
-
 const CircularProgress = ({
   value,
   renderLabel,

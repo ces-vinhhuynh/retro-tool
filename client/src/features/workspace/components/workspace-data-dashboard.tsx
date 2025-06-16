@@ -3,13 +3,16 @@
 import { useGetActionItemsByWorkspace } from '@/features/health-check/hooks/use-get-action-items-by-workspace';
 import { useGetHealthChecksByWorkspace } from '@/features/health-check/hooks/use-get-health-checks-by-workspace';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
+import { Template } from '@/features/health-check/types/templates';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
+import { Team } from '@/types/team';
 
 import {
   calcWorkspaceTeamHealthMetrics,
   calcWorkspaceActionItemsMetrics,
 } from '../utils/workspace-metrics';
 
+import WorkspaceHealthTrend from './workspace-health-trend';
 import WorkspaceStatCard from './workspace-stat-card';
 
 interface WorkspaceDataDashboardProps {
@@ -49,6 +52,11 @@ const WorkspaceDataDashboard = ({
         actionItemsInProgress={actionItemsInProgress}
         actionItemsCompleted={actionItemsCompleted}
         actionItemsTotal={actionItemsTotal}
+      />
+      <WorkspaceHealthTrend
+        healthChecks={allHealthChecks}
+        templates={templates as Template[]}
+        teams={teams as unknown as Team[]}
       />
     </div>
   );
