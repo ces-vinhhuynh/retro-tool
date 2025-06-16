@@ -20,6 +20,11 @@ class HealthCheckService {
           description,
           questions,
           deleted_at
+        ),
+        team:teams (
+          id,
+          name,
+          workspace_id
         )
       `,
       )
