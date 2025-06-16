@@ -24,7 +24,7 @@ const SubMenuWrapper = ({
     <div className="border border-gray-200">
       <div
         className={cn(
-          'w-100 overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out',
+          'h-full w-100 overflow-hidden overflow-y-auto rounded-2xl bg-white transition-all duration-500 ease-in-out',
           className,
         )}
       >
