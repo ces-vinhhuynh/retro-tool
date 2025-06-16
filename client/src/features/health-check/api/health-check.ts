@@ -165,6 +165,33 @@ class HealthCheckService {
     return data || [];
   }
 
+  async getByWorkspaceId(workspaceId: string): Promise<HealthCheck[]> {
+    const { data, error } = await supabaseClient
+      .from('health_checks')
+      .select(
+        `
+        *,
+        template:health_check_templates (
+          id,
+          name,
+          description,
+          questions,
+          deleted_at
+        ),
+        team:teams!inner (
+          id,
+          name,
+          workspace_id
+        )
+      `,
+      )
+      .eq('team.workspace_id', workspaceId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  }
+
   async updateFacilitators(
     id: string,
     facilitatorIds: string[],

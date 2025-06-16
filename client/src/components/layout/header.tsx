@@ -53,6 +53,7 @@ export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
     { href: `${base}/teams`, label: 'Teams' },
     { href: `${base}/users`, label: 'Users' },
     { href: `${base}/settings`, label: 'Settings' }, // fix duplicate href with Home
+    { href: `${base}/data`, label: 'Data' },
   ];
 
   const isTeamRoute =

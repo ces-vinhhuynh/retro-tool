@@ -63,7 +63,7 @@ export const SettingsTab = ({ teamId, isAdmin }: SettingsTab) => {
         </div>
       </div>
 
-      {templates?.length && (
+      {templates && templates?.length > 0 && (
         <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
           {templates.map((template, index) => (
             <li key={`${template.id}_${index}`}>
