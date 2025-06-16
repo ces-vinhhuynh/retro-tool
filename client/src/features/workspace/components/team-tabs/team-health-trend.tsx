@@ -98,8 +98,30 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                   tickMargin={8}
                   angle={-45}
                   textAnchor="end"
-                  tick={{ fontSize: 12 }}
                   padding={{ left: 30, right: 30 }}
+                  tick={(props) => {
+                    const { x, y, payload } = props;
+                    const name = payload.value;
+                    const displayName =
+                      name.length > 12 ? `${name.substring(0, 12)}...` : name;
+
+                    return (
+                      <g transform={`translate(${x},${y})`}>
+                        <title>{name}</title>
+                        <text
+                          x={0}
+                          y={0}
+                          dy={16}
+                          textAnchor="end"
+                          fill="#666"
+                          transform="rotate(-45)"
+                          fontSize={12}
+                        >
+                          {displayName}
+                        </text>
+                      </g>
+                    );
+                  }}
                 />
                 <YAxis domain={[0, 10]} />
                 <Tooltip />

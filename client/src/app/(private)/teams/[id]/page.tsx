@@ -138,6 +138,7 @@ const TeamPage = () => {
           scrumHealthChecks={scrumHealthChecks}
           templates={sortedTemplates}
           healthChecksGrouped={healthChecksGrouped}
+          teamId={teamId}
         />
       ),
     },

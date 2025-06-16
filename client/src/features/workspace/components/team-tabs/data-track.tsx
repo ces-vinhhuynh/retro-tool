@@ -30,6 +30,7 @@ interface DataTrackTabProps {
   scrumHealthChecks: HealthCheck[];
   templates: Template[];
   healthChecksGrouped: Record<string, HealthCheck[]>;
+  teamId: string;
 }
 
 const DataTrackTab = ({
@@ -39,11 +40,15 @@ const DataTrackTab = ({
   scrumHealthChecks,
   templates,
   healthChecksGrouped,
+  teamId,
 }: DataTrackTabProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>(
     templates[0]?.id || '',
   );
 
+  const filteredTemplates = templates.filter(
+    (template) => template.team_id === teamId || template.team_id === null,
+  );
   const healthChecks = healthChecksGrouped[selectedTemplate];
 
   const stats = [
@@ -96,7 +101,7 @@ const DataTrackTab = ({
             <SelectValue placeholder="Select template" />
           </SelectTrigger>
           <SelectContent>
-            {templates.map((template) => (
+            {filteredTemplates.map((template) => (
               <SelectItem key={template.id} value={template.id}>
                 {template.name}
               </SelectItem>

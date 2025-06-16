@@ -44,12 +44,14 @@ const ScrumHealthCheck = ({
 
   return (
     <div className="rounded-lg bg-white">
-      <div className="flex items-center justify-between gap-x-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-2">
         {isShowTitle && title && (
-          <h2 className="py-3 text-2xl font-bold text-gray-900">{title}</h2>
+          <h2 className="py-3 text-lg font-bold text-gray-900 sm:text-sm md:text-2xl">
+            {title}
+          </h2>
         )}
-        <div className="flex items-center gap-3">
-          <Label className="text-sm font-medium text-gray-700 uppercase">
+        <div className="flex items-center gap-2 py-1">
+          <Label className="text-xs font-medium text-gray-700 uppercase sm:text-sm">
             Show Breakdown
           </Label>
           <Switch
