@@ -2,7 +2,7 @@
 
 import { Loader2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -16,6 +16,7 @@ import {
   GroupedQuestions,
   HealthCheckSettings,
   HealthCheckWithTemplate,
+  Question,
   Response,
   Score,
   User,
@@ -43,6 +44,7 @@ type SurveyPhaseProps = {
   settings: HealthCheckSettings;
   healthCheck: HealthCheckWithTemplate;
   isLoading: boolean;
+  questions: Question[];
 };
 
 const SurveyPhase = ({
@@ -55,6 +57,7 @@ const SurveyPhase = ({
   settings,
   healthCheck,
   isLoading,
+  questions,
 }: SurveyPhaseProps) => {
   const { id: healthCheckId } = useParams<{ id: string }>();
   const { updateHealthCheck } = useHealthCheckMutations();
@@ -80,8 +83,6 @@ const SurveyPhase = ({
     settings.allow_participant_navigation,
   ]);
 
-  const [additionalItems, setAdditionalItems] = useState<string[]>([]);
-  const [newItem, setNewItem] = useState('');
   const [answers, setAnswers] = useState<AnswerSurvey>({
     responses: (response?.answers as Record<string, number>) || {},
     comments: {},
@@ -90,15 +91,11 @@ const SurveyPhase = ({
   const { mutate: updateQuestionAnswer } = useUpdateResponse();
   const { mutate: updateParticipant } = useUpdateParticipant();
 
-  const additionalQuestions = useMemo(
-    () => groupedQuestions['Additional Questions'] || [],
-    [groupedQuestions],
-  );
-
-  const saveAdditionalItemsImmediate = async (items: string[]) => {
-    if (response && additionalQuestions.length > 0) {
-      const questionId = additionalQuestions[0].id;
-
+  const saveAdditionalItemsImmediate = async (
+    questionId: string,
+    items: string[],
+  ) => {
+    if (response) {
       updateQuestionAnswer({
         id: response.id,
         questionId,
@@ -166,15 +163,7 @@ const SurveyPhase = ({
     });
 
     setAnswers({ responses, comments });
-
-    if (additionalQuestions.length > 0) {
-      const questionId = additionalQuestions[0].id;
-      const additionalAnswer = answersObj[questionId];
-      if (Array.isArray(additionalAnswer?.comment)) {
-        setAdditionalItems([...additionalAnswer.comment]);
-      }
-    }
-  }, [response, additionalQuestions]);
+  }, [response]);
 
   const totalQuestions = Object.values(groupedQuestions)
     .filter((questions) => questions[0]?.section !== 'Additional Questions')
@@ -194,29 +183,39 @@ const SurveyPhase = ({
     }
   }, [progress, currentUser?.id, healthCheckId, updateParticipant]);
 
-  const additionalTitle = additionalQuestions[0]?.title ?? 'Title';
-  const additionalDescription = additionalQuestions[0]?.description ?? '';
+  const handleAddAdditionalComment = (
+    questionId: string,
+    newComment: string,
+  ) => {
+    if (!newComment) return;
 
-  const handleAdditionalItem = async () => {
-    if (!newItem.trim()) return;
-    const updated = [...additionalItems, newItem.trim()];
-    setNewItem('');
-    setAdditionalItems(updated);
-    await saveAdditionalItemsImmediate(updated);
+    const oldComments = response?.answers?.[questionId]?.comment || [];
+    const updatedComments = [...oldComments, newComment];
+
+    saveAdditionalItemsImmediate(questionId, updatedComments);
   };
 
-  const handleItemChange = async (index: number, value: string) => {
-    const updatedItems = additionalItems.map((item, i) =>
+  const handleChangeAdditionalComment = (
+    questionId: string,
+    index: number,
+    value: string,
+  ) => {
+    const comments = response?.answers?.[questionId]?.comment || [];
+    const updatedComments = comments.map((item, i) =>
       i === index ? value : item,
     );
-    setAdditionalItems(updatedItems);
-    await saveAdditionalItemsImmediate(updatedItems);
+
+    saveAdditionalItemsImmediate(questionId, updatedComments);
   };
 
-  const handleDeleteItem = async (index: number) => {
-    const updatedItems = additionalItems.filter((_, i) => i !== index);
-    setAdditionalItems(updatedItems);
-    await saveAdditionalItemsImmediate(updatedItems);
+  const handleDeleteAdditionalComment = async (
+    questionId: string,
+    index: number,
+  ) => {
+    const comments = response?.answers?.[questionId]?.comment || [];
+    const updatedComments = comments.filter((_, i) => i !== index);
+
+    saveAdditionalItemsImmediate(questionId, updatedComments);
   };
 
   const updateGroupIndex = (newIndex: number) => {
@@ -264,14 +263,9 @@ const SurveyPhase = ({
     answers,
     onResponseChange,
     onCommentChange,
-    additionalTitle,
-    additionalDescription,
-    additionalItems,
-    newItem,
-    handleAdditionalItem,
-    setNewItem,
-    handleItemChange,
-    handleDeleteItem,
+    handleAddAdditionalComment,
+    handleChangeAdditionalComment,
+    handleDeleteAdditionalComment,
     allowParticipantNavigation: settings.allow_participant_navigation,
     isFacilitator: !!isFacilitator,
     handleNavigation: handleNavigation,
@@ -299,7 +293,7 @@ const SurveyPhase = ({
           </div>
 
           {settings.display_mode === DisplayMode.SINGLE && (
-            <OneQuestionMode {...sharedProps} />
+            <OneQuestionMode {...sharedProps} questions={questions} />
           )}
           {settings.display_mode === DisplayMode.ALL && (
             <AllQuestionMode {...sharedProps} />

@@ -109,51 +109,55 @@ export default function TopChallenges({
 
   return (
     <div>
-      <div className="flex items-center justify-between py-6">
-        <h3 className="text-2xl font-bold text-gray-900">Top Challenges</h3>
-      </div>
+      {Object.keys(challenges).map((question) => (
+        <div key={question}>
+          <div className="flex items-center justify-between py-6">
+            <h3 className="text-2xl font-bold text-gray-900">{question}</h3>
+          </div>
 
-      {challenges.length > 0 ? (
-        <ul className="animate-fade-in space-y-2">
-          {challenges.map((challenge, index) => {
-            const challengeKey = uuidv4();
-            return (
-              <li
-                key={challengeKey}
-                className="flex items-center justify-between rounded bg-orange-50 px-3 py-2 text-gray-700"
-              >
-                <Button
-                  variant="ghost"
-                  className="flex-1 justify-start hover:bg-transparent"
-                  onClick={() => handleChallengeClick(challenge)}
-                >
-                  <span title={challenge.text}>{challenge.text}</span>
-                </Button>
-                <span className="ml-4">
-                  <TagDropdown
-                    tags={tags}
-                    onTagChange={(_, questionId) =>
-                      handleTagChange(
-                        challenge,
-                        questionId,
-                        index,
-                        challengeKey,
-                      )
-                    }
-                    selectedTag={
-                      tags.find(
-                        (tag) => tag.id === selectedTags[challengeKey],
-                      ) || tags[0]
-                    }
-                  />
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p className="text-gray-500">No challenges reported yet.</p>
-      )}
+          {challenges[question].length > 0 ? (
+            <ul className="animate-fade-in space-y-2">
+              {challenges[question].map((challenge, index) => {
+                const challengeKey = uuidv4();
+                return (
+                  <li
+                    key={challengeKey}
+                    className="flex items-center justify-between rounded bg-orange-50 px-3 py-2 text-gray-700"
+                  >
+                    <Button
+                      variant="ghost"
+                      className="flex-1 justify-start hover:bg-transparent"
+                      onClick={() => handleChallengeClick(challenge)}
+                    >
+                      <span title={challenge.text}>{challenge.text}</span>
+                    </Button>
+                    <span className="ml-4">
+                      <TagDropdown
+                        tags={tags}
+                        onTagChange={(_, questionId) =>
+                          handleTagChange(
+                            challenge,
+                            questionId,
+                            index,
+                            challengeKey,
+                          )
+                        }
+                        selectedTag={
+                          tags.find(
+                            (tag) => tag.id === selectedTags[challengeKey],
+                          ) || tags[0]
+                        }
+                      />
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-gray-500">No challenges reported yet.</p>
+          )}
+        </div>
+      ))}
       {selectedChallenge && (
         <ChartDialog
           open={dialogOpen}

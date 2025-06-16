@@ -15,7 +15,14 @@ export type HealthCheckWithTeam = HealthCheck & {
   team: Team;
 };
 
-export type Response = Tables<'responses'>;
+export type Response = Tables<'responses'> & {
+  answers: {
+    [questionId: string]: {
+      rating: number;
+      comment: string[];
+    };
+  };
+};
 export type ResponseInsert = TablesInsert<'responses'>;
 export type ResponseUpdate = TablesUpdate<'responses'>;
 export type User = Tables<'users'>;

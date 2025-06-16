@@ -321,6 +321,7 @@ export default function HealthCheckPage() {
                   response={response}
                   settings={healthCheck.settings as HealthCheckSettings}
                   isLoading={!response && !isSuccess}
+                  questions={questions}
                 />
               )}
               {healthCheck.current_step === STEPS['openActions'].key && (

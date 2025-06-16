@@ -35,19 +35,20 @@ export function calcTotalComments(
 }
 
 export function getTopChallenges(responses: Response[], questions: Question[]) {
-  const additionalQuestionIds = questions
-    .filter(({ section }) => section === Section.AdditionalQuestions)
-    .map(({ id }) => id);
+  const additionalQuestions = questions.filter(
+    ({ section }) => section === Section.AdditionalQuestions,
+  );
 
-  const challenges: Challenge[] = [];
+  const challengeObject: Record<string, Challenge[]> = {};
   responses.forEach((response) => {
-    additionalQuestionIds.forEach((qid) => {
-      const answer = (response.answers as Answers)[qid];
+    additionalQuestions.forEach(({ id, title }) => {
+      const answer = (response.answers as Answers)[id];
       const comments = answer?.comment;
       if (comments) {
+        if (!challengeObject[title]) challengeObject[title] = [];
         comments.forEach((comment) => {
-          challenges.push({
-            additionalQuestionId: qid,
+          challengeObject[title].push({
+            additionalQuestionId: id,
             text: comment,
             response: response,
           });
@@ -55,7 +56,7 @@ export function getTopChallenges(responses: Response[], questions: Question[]) {
       }
     });
   });
-  return challenges;
+  return challengeObject;
 }
 
 export function getCommentsByQuestionId(
@@ -79,4 +80,11 @@ export function getCommentsByQuestionId(
     },
     [],
   );
+}
+
+export function splitAndCleanLines(input: string): string[] {
+  return input
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
 }

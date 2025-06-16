@@ -16,6 +16,7 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { getAvatarCharacters } from '@/utils/user';
 
 import { Score } from '../types/health-check';
+import { splitAndCleanLines } from '../utils/comment';
 
 import ScoreButton from './score-button';
 
@@ -66,6 +67,10 @@ const SurveyQuestionRow = ({
     setLocalComment(comment);
   }, [comment]);
 
+  useEffect(() => {
+    setLocalComment(comment ?? '');
+  }, [comment]);
+
   // Handle save indicator
   useEffect(() => {
     if (showSaved) {
@@ -84,7 +89,7 @@ const SurveyQuestionRow = ({
     try {
       setLocalComment(newComment);
       // Split by newlines and filter empty lines
-      const comments = newComment.split('\n').filter(Boolean);
+      const comments = splitAndCleanLines(newComment);
 
       await debouncedCommentChange(comments);
       setShowSaved(true);

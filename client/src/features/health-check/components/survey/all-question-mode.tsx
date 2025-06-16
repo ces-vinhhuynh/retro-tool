@@ -6,9 +6,11 @@ import {
   GroupedQuestions,
   Question,
   Score,
+  Section,
 } from '@/features/health-check/types/health-check';
 
 import AdditionalQuestion from '../additional-question';
+import { SectionWrapper } from '../section-wrapper';
 
 interface AllQuestionModeProps {
   sections: string[];
@@ -18,14 +20,13 @@ interface AllQuestionModeProps {
   answers: AnswerSurvey;
   onResponseChange: (questionId: string, value: number) => void;
   onCommentChange: (questionId: string, value: string[]) => void;
-  additionalTitle: string;
-  additionalDescription: string;
-  additionalItems: string[];
-  newItem: string;
-  handleAdditionalItem: () => void;
-  setNewItem: (item: string) => void;
-  handleItemChange: (index: number, value: string) => void;
-  handleDeleteItem: (index: number) => void;
+  handleAddAdditionalComment: (questionId: string, newComment: string) => void;
+  handleChangeAdditionalComment: (
+    questionId: string,
+    index: number,
+    value: string,
+  ) => void;
+  handleDeleteAdditionalComment: (questionId: string, index: number) => void;
 }
 
 export default function AllQuestionMode({
@@ -36,32 +37,27 @@ export default function AllQuestionMode({
   answers,
   onResponseChange,
   onCommentChange,
-  additionalTitle,
-  additionalDescription,
-  additionalItems,
-  newItem,
-  handleAdditionalItem,
-  setNewItem,
-  handleItemChange,
-  handleDeleteItem,
+  handleAddAdditionalComment,
+  handleChangeAdditionalComment,
+  handleDeleteAdditionalComment,
 }: AllQuestionModeProps) {
-  const regularSections = sections.filter(
-    (section) => section !== 'Additional Questions',
-  );
-  const hasAdditionalQuestions = sections.includes('Additional Questions');
-
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      {regularSections.map((section) => (
-        <div
-          key={section}
-          className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6"
-        >
-          <h2 className="text-xl font-bold text-[#222] sm:text-[1.35rem]">
-            {section}
-          </h2>
-          <div className="flex flex-col">
-            {(groupedQuestions[section] || []).map((question: Question) => (
+      {sections.map((section) => (
+        <SectionWrapper key={section} title={section}>
+          {(groupedQuestions[section] || []).map((question: Question) =>
+            section === Section.AdditionalQuestions ? (
+              <AdditionalQuestion
+                key={question.id}
+                id={question.id}
+                title={question.title}
+                description={question.description}
+                answers={answers.comments[question.id] || ''}
+                handleAddAnswer={handleAddAdditionalComment}
+                handleChangeAnswer={handleChangeAdditionalComment}
+                handleDeleteAnswer={handleDeleteAdditionalComment}
+              />
+            ) : (
               <SurveyQuestionRow
                 key={question.id}
                 question={{
@@ -77,24 +73,10 @@ export default function AllQuestionMode({
                 minScore={minScore}
                 maxScore={maxScore}
               />
-            ))}
-          </div>
-        </div>
+            ),
+          )}
+        </SectionWrapper>
       ))}
-
-      {/* Additional Questions */}
-      {hasAdditionalQuestions && (
-        <AdditionalQuestion
-          title={additionalTitle}
-          description={additionalDescription}
-          answers={additionalItems}
-          newAnswer={newItem}
-          handleAddAnswer={handleAdditionalItem}
-          setNewAnswer={setNewItem}
-          handleAnswerChange={handleItemChange}
-          handleDeleteAnswer={handleDeleteItem}
-        />
-      )}
     </div>
   );
 }

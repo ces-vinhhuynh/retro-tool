@@ -1,5 +1,6 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 import ConfirmModal from '@/components/modal/confirm-modal';
@@ -32,7 +33,12 @@ export const SettingsTab = ({ teamId, isAdmin }: SettingsTab) => {
     null,
   );
 
-  if (isLoading) return <></>;
+  if (isLoading)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Loader2 className="size-8 animate-spin" />
+      </div>
+    );
 
   return (
     <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
