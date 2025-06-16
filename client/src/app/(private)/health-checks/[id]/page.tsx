@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import ClosePhase from '@/features/health-check/components/close-phase';
 import DiscussPhase from '@/features/health-check/components/discuss-phase';
@@ -41,6 +42,7 @@ import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/u
 import { useUpdateAverageScores } from '@/features/health-check/hooks/use-update-average-scores';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
+  Score,
   HealthCheckSettings,
   HealthCheckStatus,
   HealthCheckWithTemplate,
@@ -75,7 +77,9 @@ export default function HealthCheckPage() {
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   const { data: healthCheck, isLoading: isLoadingHealthCheck } =
     useHealthCheckWithTemplate(healthCheckId);
-  const { data: template } = useGetTemplateById(healthCheck?.template_id || '');
+  const { data: template, isLoading: isLoadingTemplate } = useGetTemplateById(
+    healthCheck?.template_id || '',
+  );
   const { data: response, isLoading: isLoadingResponse } = useResponse(
     healthCheck?.id || '',
     currentUser?.id || '',
@@ -140,7 +144,7 @@ export default function HealthCheckPage() {
   useHealthChecksSubscription();
 
   const { updateHealthCheck } = useHealthCheckMutations();
-  const { mutate: createResponse, isSuccess } = useCreateResponse();
+  const { mutate: createResponse, isPending } = useCreateResponse();
   const { mutate: updateAverageScores } = useUpdateAverageScores();
 
   const questions: Question[] = template?.questions || [];
@@ -274,14 +278,18 @@ export default function HealthCheckPage() {
     isLoadingUser ||
     isLoadingHealthCheck ||
     isLoadingResponses ||
+    isLoadingResponse ||
     isLoadingActionItems ||
     isLoadingAgreements ||
-    isLoadingIssues;
+    isLoadingIssues ||
+    isLoadingTemplate ||
+    isPending;
 
-  if (isLoading || !template) {
+  if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-lg">Loading...</div>
+      <div className="flex w-full flex-col gap-10 p-10 items-center">
+        <Skeleton className="h-12 w-[40vw]" />
+        <Skeleton className="h-[80vh] w-full" />
       </div>
     );
   }
@@ -316,11 +324,10 @@ export default function HealthCheckPage() {
                   sections={sections}
                   currentUser={currentUser as unknown as User}
                   groupedQuestions={grouped}
-                  minScore={template?.min_value}
-                  maxScore={template?.max_value}
+                  minScore={template?.min_value as Score}
+                  maxScore={template?.max_value as Score}
                   response={response}
                   settings={healthCheck.settings as HealthCheckSettings}
-                  isLoading={!response && !isSuccess}
                   questions={questions}
                 />
               )}
