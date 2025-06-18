@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 
 import ConfirmModal from '@/components/modal/confirm-modal';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,8 @@ import {
 } from '@/features/health-check/types/health-check';
 import { MESSAGE } from '@/utils/messages';
 
+import { useHandleCalendar } from '../hooks/calendar/use-handle-calendar';
+import { useRemoveCalendar } from '../hooks/calendar/use-remove-calendar';
 import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
 import { useCreateActionItemAssignee } from '../hooks/use-create-action-item-assignee';
 import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-assignee';
@@ -31,6 +33,38 @@ interface ActionItemRowProps {
   teamMembers: User[];
 }
 
+interface PopoverState {
+  openStatusPopovers: Record<string, boolean>;
+  openPriorityPopovers: Record<string, boolean>;
+  openDatePopovers: Record<string, boolean>;
+  openAssigneePopovers: Record<string, boolean>;
+}
+
+const initialState: PopoverState = {
+  openStatusPopovers: {},
+  openPriorityPopovers: {},
+  openDatePopovers: {},
+  openAssigneePopovers: {},
+};
+
+function reducer(
+  state: PopoverState,
+  action: { type: string; payload: Record<string, boolean> },
+) {
+  switch (action.type) {
+    case 'SET_OPEN_STATUS_POPOVERS':
+      return { ...state, openStatusPopovers: action.payload };
+    case 'SET_OPEN_PRIORITY_POPOVERS':
+      return { ...state, openPriorityPopovers: action.payload };
+    case 'SET_OPEN_DATE_POPOVERS':
+      return { ...state, openDatePopovers: action.payload };
+    case 'SET_OPEN_ASSIGNEE_POPOVERS':
+      return { ...state, openAssigneePopovers: action.payload };
+    default:
+      return state;
+  }
+}
+
 export const ActionItemRow = ({
   item,
   isUpdating,
@@ -42,25 +76,33 @@ export const ActionItemRow = ({
   useActionItemAssignSubscription(item.id);
   const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } =
     useCreateActionItemAssignee();
-
   const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
     useRemoveActionItemAssignee();
+  const { mutateAsync: removeCalendarEvent } = useRemoveCalendar();
+  const { mutateAsync: handleCalendar } = useHandleCalendar();
+  const { mutateAsync: updateActionItem } = useUpdateActionItem();
 
-  const { mutate: updateActionItem } = useUpdateActionItem();
-
-  const [openStatusPopovers, setOpenStatusPopovers] = useState<
-    Record<string, boolean>
-  >({});
-  const [openPriorityPopovers, setOpenPriorityPopovers] = useState<
-    Record<string, boolean>
-  >({});
-  const [openDatePopovers, setOpenDatePopovers] = useState<
-    Record<string, boolean>
-  >({});
-  const [openAssigneePopovers, setOpenAssigneePopovers] = useState<
-    Record<string, boolean>
-  >({});
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenModalConfirm, setIsOpenModalConfirm] = useState(false);
+
+  const allEmails = teamMembers.flatMap((member) =>
+    member.email ? [member.email] : [],
+  );
+
+  const assignedEmails = item.action_item_assignees.flatMap((assignee) =>
+    assignee.team_users?.users?.email ? [assignee.team_users.users.email] : [],
+  );
+
+  const updateCalendar = (emails: string[]) => {
+    if (!item.event_id) return;
+    handleCalendar({
+      title: item.title,
+      eventId: item.event_id,
+      emails,
+      description: item.description ?? '',
+      dueDate: item.due_date ?? '',
+    });
+  };
 
   const getStatusIcon = (status: ActionStatus) => {
     const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
@@ -90,49 +132,135 @@ export const ActionItemRow = ({
     );
     const newAssignees = teamMembers
       .map((m) => m.id)
-      .filter((id) => !currentAssignees.has(id));
+      .filter((memberId) => !currentAssignees.has(memberId));
 
-    if (newAssignees.length) {
+    if (newAssignees.length > 0) {
       createActionItemAssignee({ actionItemId: id, teamUserIds: newAssignees });
     }
+
+    updateCalendar(allEmails);
   };
 
   const assignToNone = (id: string) => {
     removeActionItemAssignee({
       actionItemId: id,
-      teamUserIds: teamMembers.map((member) => member.id),
+      teamUserIds: teamMembers.map((m) => m.id),
     });
+
+    updateCalendar([]);
   };
 
-  const toggleAssignee = (id: string, memberId: string) => {
+  const toggleAssignee = ({
+    id,
+    memberId,
+    email,
+  }: {
+    id: string;
+    memberId: string;
+    email: string;
+  }) => {
     const isAssigned = item.action_item_assignees.some(
       (a) => a.team_user_id === memberId,
     );
-
     const payload = { actionItemId: id, teamUserIds: [memberId] };
 
     if (isAssigned) {
       removeActionItemAssignee(payload);
+      if (item.event_id) {
+        handleCalendar({
+          title: item.title,
+          eventId: item.event_id,
+          emails: assignedEmails.filter((e) => e !== email),
+          dueDate: item.due_date ?? '',
+        });
+      }
     } else {
       createActionItemAssignee(payload);
+      if (item.event_id) {
+        handleCalendar({
+          title: item.title,
+          eventId: item.event_id,
+          emails: [...assignedEmails, email],
+          dueDate: item.due_date ?? '',
+        });
+      }
     }
   };
 
-  const setActionStatus = (id: string, status: ActionStatus) => {
-    setOpenStatusPopovers({ ...openStatusPopovers, [id]: false });
-    updateActionItem({ id, actionItem: { status } });
+  const setActionStatus = async (id: string, status: ActionStatus) => {
+    dispatch({
+      type: 'SET_OPEN_STATUS_POPOVERS',
+      payload: { ...state.openStatusPopovers, [id]: false },
+    });
+    updateActionItem({
+      id,
+      actionItem: {
+        status,
+        ...(status === ActionStatus.DONE && { event_id: null }),
+      },
+    });
+
+    if (item.event_id && status === ActionStatus.DONE) {
+      await removeCalendarEvent(item.event_id);
+    }
+
+    if (
+      item.event_id === null &&
+      status !== ActionStatus.DONE &&
+      item.due_date !== null
+    ) {
+      const eventId = await handleCalendar({
+        title: item.title,
+        eventId: item.event_id,
+        emails: assignedEmails,
+        dueDate: item.due_date ?? '',
+      });
+      updateActionItem({
+        id,
+        actionItem: {
+          event_id: eventId,
+        },
+      });
+    }
   };
 
-  const setDueDate = (id: string, date?: Date) => {
+  const setDueDate = async (date?: Date) => {
     if (!date) return;
+
     const due_date = date.toLocaleDateString('en-CA');
-    setOpenDatePopovers({ ...openDatePopovers, [id]: false });
-    updateActionItem({ id, actionItem: { due_date } });
+
+    const eventId = await handleCalendar({
+      title: item.title,
+      eventId: item.event_id,
+      emails: assignedEmails,
+      description: item.description ?? '',
+      dueDate: due_date,
+    });
+
+    await updateActionItem({
+      id: item.id,
+      actionItem: { due_date, event_id: String(eventId) },
+    });
+
+    dispatch({
+      type: 'SET_OPEN_DATE_POPOVERS',
+      payload: { ...state.openDatePopovers, [item.id]: false },
+    });
   };
 
   const setPriority = (id: string, priority: ActionPriority) => {
-    setOpenPriorityPopovers({ ...openPriorityPopovers, [id]: false });
+    dispatch({
+      type: 'SET_OPEN_PRIORITY_POPOVERS',
+      payload: { ...state.openPriorityPopovers, [id]: false },
+    });
     updateActionItem({ id, actionItem: { priority } });
+  };
+
+  const handleDeleteActionItem = async (id: string) => {
+    onDelete?.(id);
+    if (item.event_id) {
+      await removeCalendarEvent(item.event_id);
+    }
   };
 
   return (
@@ -140,8 +268,10 @@ export const ActionItemRow = ({
       <div className="flex items-center">
         <StatusPopover
           item={item}
-          openStatusPopovers={openStatusPopovers}
-          setOpenStatusPopovers={setOpenStatusPopovers}
+          openStatusPopovers={state.openStatusPopovers}
+          setOpenStatusPopovers={(payload) =>
+            dispatch({ type: 'SET_OPEN_STATUS_POPOVERS', payload })
+          }
           getStatusIcon={getStatusIcon}
           setActionStatus={setActionStatus}
           isUpdating={isUpdating}
@@ -161,8 +291,10 @@ export const ActionItemRow = ({
         <PriorityPopover
           item={item}
           isEditable={isEditable}
-          openPriorityPopovers={openPriorityPopovers}
-          setOpenPriorityPopovers={setOpenPriorityPopovers}
+          openPriorityPopovers={state.openPriorityPopovers}
+          setOpenPriorityPopovers={(payload) =>
+            dispatch({ type: 'SET_OPEN_PRIORITY_POPOVERS', payload })
+          }
           getPriorityIcon={getPriorityIcon}
           setPriority={setPriority}
           isUpdating={isUpdating}
@@ -171,8 +303,10 @@ export const ActionItemRow = ({
         <DatePopover
           item={item}
           isEditable={isEditable}
-          openDatePopovers={openDatePopovers}
-          setOpenDatePopovers={setOpenDatePopovers}
+          openDatePopovers={state.openDatePopovers}
+          setOpenDatePopovers={(payload) =>
+            dispatch({ type: 'SET_OPEN_DATE_POPOVERS', payload })
+          }
           setDueDate={setDueDate}
           isUpdating={isUpdating}
         />
@@ -182,8 +316,10 @@ export const ActionItemRow = ({
           teamMembers={teamMembers}
           isEditable={isEditable}
           assignees={getAssignees(item)}
-          openPopovers={openAssigneePopovers}
-          setOpenPopovers={setOpenAssigneePopovers}
+          openPopovers={state.openAssigneePopovers}
+          setOpenPopovers={(payload) =>
+            dispatch({ type: 'SET_OPEN_ASSIGNEE_POPOVERS', payload })
+          }
           assignToNone={assignToNone}
           assignToAll={assignToAll}
           toggleAssignee={toggleAssignee}
@@ -209,7 +345,7 @@ export const ActionItemRow = ({
         title={MESSAGE.DELETE_ACTION_ITEM_TITLE}
         description={MESSAGE.DELETE_ACTION_ITEM_DESCRIPTION}
         onCancel={() => setIsOpenModalConfirm(false)}
-        onConfirm={() => onDelete?.(item.id)}
+        onConfirm={() => handleDeleteActionItem(item.id)}
         loading={isDeleting}
       />
     </div>

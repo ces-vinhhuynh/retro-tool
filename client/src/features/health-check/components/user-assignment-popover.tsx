@@ -17,7 +17,7 @@ interface UserAssignmentPopoverProps {
   setOpenPopovers?: (value: Record<string, boolean>) => void;
   assignToNone?: (actionId: string) => void;
   assignToAll?: (actionId: string) => void;
-  toggleAssignee?: (actionId: string, memberId: string) => void;
+  toggleAssignee?: ({id, memberId, email}: {id: string, memberId: string, email:string}) => void;
   isCreatingAssignee?: boolean;
   isRemovingAssignee?: boolean;
 }
@@ -121,7 +121,7 @@ const UserAssignmentPopover = ({
             className="flex w-full items-center justify-start rounded-none py-2"
             onClick={(e) => {
               e.stopPropagation();
-              toggleAssignee?.(item.id, member.id);
+              toggleAssignee?.({id: item.id, memberId: member.id, email: member.email ?? ''} );
             }}
             disabled={isCreatingAssignee}
           >

@@ -1,6 +1,7 @@
 import { User } from '@supabase/supabase-js';
 
 import supabaseClient from '@/lib/supabase/client';
+import { GOOGLE_CALENDAR_SCOPES } from '@/utils/constant';
 
 export type AuthResponse = {
   url: string;
@@ -16,6 +17,11 @@ export const authService = {
       provider: 'google',
       options: {
         redirectTo,
+        scopes: GOOGLE_CALENDAR_SCOPES,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     });
 

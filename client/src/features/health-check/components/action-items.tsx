@@ -1,7 +1,6 @@
 'use client';
 
 import { CheckCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { ActionItemRow } from '@/features/health-check/components/action-item-row';
@@ -15,8 +14,6 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
-import { useActionItemsByTeamsSubscription } from '../hooks/use-action-items-by-teams-subscriptions';
 
 import EntryForm from './entry-form';
 
@@ -29,7 +26,7 @@ interface ActionItemsProps {
 }
 
 const ActionItems = ({
-  actionItems: initialItems,
+  actionItems,
   healthCheckId,
   teamId,
   questionId,
@@ -41,11 +38,6 @@ const ActionItems = ({
   const { mutate: deleteActionItem, isPending: isDeleting } =
     useDeleteActionItem();
 
-  const [items, setItems] = useState<ActionItemWithAssignees[]>([]);
-
-  useActionItemsByTeamsSubscription(String(teamId));
-  useActionItemAssignSubscription(String(teamId));
-
   const {
     register,
     handleSubmit,
@@ -54,12 +46,6 @@ const ActionItems = ({
   } = useForm<{ title: string }>({
     defaultValues: { title: '' },
   });
-
-  useEffect(() => {
-    if (initialItems) {
-      setItems(initialItems);
-    }
-  }, [initialItems]);
 
   const onSubmit = handleSubmit((data) => {
     if (!data.title.trim()) return;
@@ -73,16 +59,8 @@ const ActionItems = ({
       question_id: questionId,
     } as ActionItem;
 
-    const optimisticAction: ActionItemWithAssignees = {
-      ...newAction,
-      id: Date.now().toString(),
-      created_at: new Date().toISOString(),
-      action_item_assignees: [],
-    };
-
-    setItems((prevItems) => [optimisticAction, ...prevItems]);
-    reset();
     createActionItem(newAction);
+    reset();
   });
 
   return (
@@ -96,12 +74,12 @@ const ActionItems = ({
       />
 
       <div className="max-h-5/6 overflow-y-auto">
-        {items.length === 0 ? (
+        {actionItems.length === 0 ? (
           <div className="border py-4 text-center text-sm text-gray-400">
             No actions yet
           </div>
         ) : (
-          items.map((item) => (
+          actionItems.map((item) => (
             <ActionItemRow
               key={item.id}
               item={item}

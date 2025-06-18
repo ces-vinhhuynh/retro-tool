@@ -6,18 +6,16 @@ import { ActionItem } from '../types/health-check';
 export const useCreateActionItem = () => {
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  return useMutation({
     mutationFn: (actionItem: ActionItem) =>
       actionItemService.create(actionItem),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['action-items', data.health_check_id],
+        queryKey: ['create-action-items'],
       });
     },
-    onError: (error) => {
-      console.error('Error creating action item:', error);
+    onError: () => {
+      console.error('Error creating action item');
     },
   });
-
-  return { mutate, isPending };
 };

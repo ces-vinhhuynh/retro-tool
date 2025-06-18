@@ -78,6 +78,7 @@ export type Database = {
           created_at: string | null;
           description: string | null;
           due_date: string | null;
+          event_id: string | null;
           health_check_id: string | null;
           id: string;
           priority: Database['public']['Enums']['action_item_priority'] | null;
@@ -91,6 +92,7 @@ export type Database = {
           created_at?: string | null;
           description?: string | null;
           due_date?: string | null;
+          event_id?: string | null;
           health_check_id?: string | null;
           id?: string;
           priority?: Database['public']['Enums']['action_item_priority'] | null;
@@ -104,6 +106,7 @@ export type Database = {
           created_at?: string | null;
           description?: string | null;
           due_date?: string | null;
+          event_id?: string | null;
           health_check_id?: string | null;
           id?: string;
           priority?: Database['public']['Enums']['action_item_priority'] | null;

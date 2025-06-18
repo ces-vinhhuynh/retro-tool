@@ -19,7 +19,7 @@ export const useActionItemsByTeamsSubscription = (teamId: string) => {
         },
         () => {
           queryClient.invalidateQueries({
-            queryKey: ['action-items', teamId],
+            queryKey: ['get-action-items-by-teamId'],
           });
         },
       )

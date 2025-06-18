@@ -13,7 +13,7 @@ interface DatePopoverProps {
   item: ActionItem;
   openDatePopovers?: Record<string, boolean>;
   setOpenDatePopovers?: (value: Record<string, boolean>) => void;
-  setDueDate?: (id: string, date?: Date) => void;
+  setDueDate?: (date?: Date) => void;
   isUpdating?: boolean;
   isEditable?: boolean;
 }
@@ -45,8 +45,9 @@ export const DatePopover = ({
     <CalendarComponent
       mode="single"
       selected={item.due_date ? new Date(item.due_date) : undefined}
-      onSelect={(date) => setDueDate?.(item.id, date)}
+      onSelect={(date) => setDueDate?.(date)}
       initialFocus
+      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
     />
   );
 

@@ -1,12 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { actionItemAssigneeService } from '../api/action-item-assigne';
 
 export const useCreateActionItemAssignee = () => {
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
+  return useMutation({
     mutationFn: ({
       actionItemId,
       teamUserIds,
@@ -14,20 +12,9 @@ export const useCreateActionItemAssignee = () => {
       actionItemId: string;
       teamUserIds: string[];
     }) => actionItemAssigneeService.create(actionItemId, teamUserIds),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['action-items'],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['action-item-assignees'],
-      });
-    },
-    onError: (error) => {
-      toast.error('Failed to assign user to action item', {
-        description: error.message,
-      });
+    onSuccess: () => {},
+    onError: () => {
+      toast.error('Failed to assign user to action item');
     },
   });
-
-  return { mutate, isPending };
 };

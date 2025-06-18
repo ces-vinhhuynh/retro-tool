@@ -1,12 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { actionItemService } from '../api/action-item';
 import { ActionItem } from '../types/health-check';
 
 export const useUpdateActionItem = () => {
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
+  return useMutation({
     mutationFn: ({
       id,
       actionItem,
@@ -14,15 +12,9 @@ export const useUpdateActionItem = () => {
       id: string;
       actionItem: Partial<ActionItem>;
     }) => actionItemService.update(id, actionItem),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ['action-items', data.health_check_id],
-      });
-    },
-    onError: (error) => {
-      console.error('Error updating action item:', error);
+    onSuccess: () => {},
+    onError: () => {
+      console.error('Error updating action item');
     },
   });
-
-  return { mutate, isPending };
 };

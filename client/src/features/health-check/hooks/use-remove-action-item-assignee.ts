@@ -1,12 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { actionItemAssigneeService } from '../api/action-item-assigne';
 
 export const useRemoveActionItemAssignee = () => {
-  const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  return useMutation({
     mutationFn: ({
       actionItemId,
       teamUserIds,
@@ -15,16 +14,10 @@ export const useRemoveActionItemAssignee = () => {
       teamUserIds: string[];
     }) => actionItemAssigneeService.remove(actionItemId, teamUserIds),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['action-items'],
-      });
+
     },
-    onError: (error) => {
-      toast.error('Failed to remove user from action item', {
-        description: error.message,
-      });
+    onError: () => {
+      toast.error('Failed to remove user from action item');
     },
   });
-
-  return { mutate, isPending };
 };

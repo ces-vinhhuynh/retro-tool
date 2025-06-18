@@ -11,6 +11,7 @@ create table action_items (
     due_date timestamp with time zone,
     status action_item_status default 'todo',
     priority action_item_priority,
+    event_id text,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now()
 );

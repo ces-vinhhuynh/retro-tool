@@ -7,12 +7,15 @@ import { useAgreementMutation } from '@/features/health-check/hooks/agreements/u
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
 import { useIssuesMutation } from '@/features/health-check/hooks/issues/use-issues-mutation';
 import { useIssuesSubscription } from '@/features/health-check/hooks/issues/use-issues-subscription';
+import { useActionItemAssignSubscription } from '@/features/health-check/hooks/use-action-item-assign-subscription';
+import { useActionItemsByTeamsSubscription } from '@/features/health-check/hooks/use-action-items-by-teams-subscriptions';
 import { Agreement } from '@/features/health-check/types/agreements';
 import {
   ActionItemWithAssignees,
   User,
 } from '@/features/health-check/types/health-check';
 import { Issue } from '@/features/health-check/types/issues';
+
 
 import { useGetTeamMembers } from '../../hooks/use-get-team-member';
 
@@ -62,7 +65,9 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
 
   useAgreementsSubscription(teamId);
   useIssuesSubscription(teamId);
-
+  useActionItemsByTeamsSubscription(String(teamId));
+  useActionItemAssignSubscription(String(teamId));
+  
   return (
     <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
       <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">

@@ -20,6 +20,8 @@ import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
 import { useIssuesSubscription } from '@/features/health-check/hooks/issues/use-issues-subscription';
+import { useActionItemAssignSubscription } from '@/features/health-check/hooks/use-action-item-assign-subscription';
+import { useActionItemsByTeamsSubscription } from '@/features/health-check/hooks/use-action-items-by-teams-subscriptions';
 import { useCreateParticipant } from '@/features/health-check/hooks/use-create-participants';
 import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeamsAndTemplate } from '@/features/health-check/hooks/use-get-health-checks-by-teams-and-template';
@@ -42,12 +44,12 @@ import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/u
 import { useUpdateAverageScores } from '@/features/health-check/hooks/use-update-average-scores';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
-  Score,
   HealthCheckSettings,
   HealthCheckStatus,
   HealthCheckWithTemplate,
   Question,
   ResponseWithUser,
+  Score,
   User,
 } from '@/features/health-check/types/health-check';
 import {
@@ -136,6 +138,8 @@ export default function HealthCheckPage() {
   useParticipantsSubscription(healthCheckId);
   useAgreementsSubscription(healthCheck?.team_id || '');
   useIssuesSubscription(healthCheck?.team_id || '');
+  useActionItemsByTeamsSubscription(healthCheck?.team_id || '');
+  useActionItemAssignSubscription(healthCheck?.team_id || '');
 
   useScrumHealthCheckSubscription(
     healthCheck?.template_id || '',
@@ -287,7 +291,7 @@ export default function HealthCheckPage() {
 
   if (isLoading) {
     return (
-      <div className="flex w-full flex-col gap-10 p-10 items-center">
+      <div className="flex w-full flex-col items-center gap-10 p-10">
         <Skeleton className="h-12 w-[40vw]" />
         <Skeleton className="h-[80vh] w-full" />
       </div>

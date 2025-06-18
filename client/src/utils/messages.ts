@@ -24,4 +24,21 @@ export const MESSAGE = {
   FAILED_TO_UPDATE_TEMPLATE: 'Failed to update template',
   DELETE_TEMPLATE_SUCCESS: 'Template deleted successfully',
   FAILED_TO_DELETE_TEMPLATE: 'Failed to delete template',
+  CALENDAR_MESSAGES: {
+    CREATE: {
+      SUCCESS: 'Event created successfully',
+      ERROR: 'Failed to create calendar event',
+      ERROR_DESCRIPTION: 'Unknown error occurred',
+    },
+    UPDATE: {
+      SUCCESS: 'Event updated successfully',
+      ERROR: 'Failed to update calendar event',
+      ERROR_DESCRIPTION: 'Unknown error occurred',
+    },
+    REMOVE: {
+      SUCCESS: 'Event removed successfully',
+      ERROR: 'Failed to remove calendar event',
+      ERROR_DESCRIPTION: 'Unknown error occurred',
+    },
+  },
 };
