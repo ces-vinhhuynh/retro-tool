@@ -151,7 +151,7 @@ export default function HealthCheckPage() {
   const { mutate: createResponse, isPending } = useCreateResponse();
   const { mutate: updateAverageScores } = useUpdateAverageScores();
 
-  const questions: Question[] = template?.questions || [];
+  const questions: Question[] = (template?.questions as Question[]) || [];
   const grouped = _groupBy(questions, 'section');
   const sections = Object.keys(grouped);
   const isFacilitator =

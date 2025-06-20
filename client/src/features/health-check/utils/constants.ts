@@ -163,3 +163,5 @@ export const HEALTH_CHECK_ROLE_OPTIONS = [
     description: 'Contribute survey responses only.',
   },
 ];
+
+export const COMMENT_MAX_LENGTH = 500;

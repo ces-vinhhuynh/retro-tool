@@ -19,7 +19,7 @@ const GeneralTab = () => {
   return (
     <div className="flex flex-col gap-4 py-4">
       <div>
-        <Label htmlFor="session-name" className="block text-sm font-medium">
+        <Label htmlFor="session-name" className="block text-sm font-medium pb-2">
           Session Title
         </Label>
         <Input
@@ -30,7 +30,7 @@ const GeneralTab = () => {
         />
       </div>
       <div>
-        <Label htmlFor="due-date" className="block text-sm font-medium">
+        <Label htmlFor="due-date" className="block text-sm font-medium pb-2">
           Due Date
         </Label>
         <Controller

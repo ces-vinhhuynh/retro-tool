@@ -17,6 +17,7 @@ import { getAvatarCharacters } from '@/utils/user';
 
 import { Score } from '../types/health-check';
 import { splitAndCleanLines } from '../utils/comment';
+import { COMMENT_MAX_LENGTH } from '../utils/constants';
 
 import ScoreButton from './score-button';
 
@@ -193,12 +194,18 @@ const SurveyQuestionRow = ({
             onChange={(e) => handleCommentChange(e.target.value)}
             disabled={disabled}
             rows={3}
+            maxLength={COMMENT_MAX_LENGTH}
           />
-          {showSaved && (
-            <span className="absolute right-2 bottom-[-20px] text-xs font-medium text-green-600 sm:bottom-[-24px] sm:text-sm">
-              Saved
+          <div className="absolute top-2 right-2 flex items-center gap-2">
+            {showSaved && (
+              <span className="text-xs font-medium text-green-600 sm:text-sm">
+                Saved
+              </span>
+            )}
+            <span className="text-muted-foreground text-xs sm:text-sm">
+              {localComment.length}/{COMMENT_MAX_LENGTH}
             </span>
-          )}
+          </div>
           <p className="text-muted-foreground mt-1 text-[10px] sm:text-xs">
             Press Enter for new line. Each line will be saved as a separate
             comment.
