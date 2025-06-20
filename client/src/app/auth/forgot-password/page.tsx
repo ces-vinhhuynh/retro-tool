@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      {isSuccess && (
+      {isSuccess ? (
         <AuthCard
           title="Check your email"
           description="We've sent you a link to reset your password"
@@ -34,44 +34,45 @@ export default function ForgotPasswordPage() {
             </p>
           </CardContent>
         </AuthCard>
+      ) : (
+        <AuthCard
+          title="Reset Your Password"
+          description="Type in your email and we'll send you a link to reset your password"
+        >
+          <CardContent>
+            <form
+              onSubmit={handleSubmit((data) => forgotPassword(data.email))}
+              className="flex flex-col gap-y-4"
+            >
+              <AuthFormField
+                label="Email"
+                id="email"
+                type="email"
+                placeholder="Enter your email address"
+                register={register}
+              />
+              <Button
+                type="submit"
+                disabled={isForgotPasswordPending}
+                className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white"
+              >
+                {isForgotPasswordPending ? 'Sending...' : 'Reset Password'}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-secondary text-sm">
+              Already have an account?{' '}
+              <Link
+                href="/auth/signin"
+                className="text-ces-orange-500 hover:text-ces-orange-600 font-medium"
+              >
+                Sign in
+              </Link>
+            </p>
+          </CardFooter>
+        </AuthCard>
       )}
-      <AuthCard
-        title="Reset Your Password"
-        description="Type in your email and we'll send you a link to reset your password"
-      >
-        <CardContent>
-          <form
-            onSubmit={handleSubmit((data) => forgotPassword(data.email))}
-            className="flex flex-col gap-y-4"
-          >
-            <AuthFormField
-              label="Email"
-              id="email"
-              type="email"
-              placeholder="Enter your email address"
-              register={register}
-            />
-            <Button
-              type="submit"
-              disabled={isForgotPasswordPending}
-              className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white"
-            >
-              {isForgotPasswordPending ? 'Sending...' : 'Reset Password'}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-secondary text-sm">
-            Already have an account?{' '}
-            <Link
-              href="/auth/signin"
-              className="text-ces-orange-500 hover:text-ces-orange-600 font-medium"
-            >
-              Sign in
-            </Link>
-          </p>
-        </CardFooter>
-      </AuthCard>
     </>
   );
 }

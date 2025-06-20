@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { authService } from '../api/auth';
 
@@ -10,7 +11,9 @@ export function useForgotPassword() {
   } = useMutation({
     mutationFn: authService.forgotPassword,
     onError: (error) => {
-      console.error(error);
+      toast.error('Error sending reset password email', {
+        description: error.message,
+      });
     },
   });
 
