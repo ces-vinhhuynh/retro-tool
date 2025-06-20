@@ -13,24 +13,37 @@ import {
 } from '@/components/ui/popover';
 import { HealthCheckFormData } from '@/features/health-check/types/health-check';
 
+import { LONG_TEXT_INPUT_MAX_LENGTH } from '../../utils/constants';
+
 const GeneralTab = () => {
-  const { register, control } = useFormContext<HealthCheckFormData>();
+  const { register, control, watch } = useFormContext<HealthCheckFormData>();
 
   return (
     <div className="flex flex-col gap-4 py-4">
       <div>
-        <Label htmlFor="session-name" className="block text-sm font-medium pb-2">
-          Session Title
-        </Label>
-        <Input
-          id="session-name"
-          {...register('title', { required: true })}
-          placeholder="Team Health Check"
-          required
-        />
+        <div className="flex justify-between pb-2">
+          <Label htmlFor="session-name" className="block text-sm font-medium">
+            Session Title
+          </Label>
+          <span className="text-muted-foreground text-xs">
+            {watch('title', '')?.length}/{LONG_TEXT_INPUT_MAX_LENGTH}
+          </span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Input
+            id="session-name"
+            {...register('title', {
+              required: true,
+              maxLength: LONG_TEXT_INPUT_MAX_LENGTH,
+            })}
+            placeholder="Team Health Check"
+            required
+            maxLength={LONG_TEXT_INPUT_MAX_LENGTH}
+          />
+        </div>
       </div>
       <div>
-        <Label htmlFor="due-date" className="block text-sm font-medium pb-2">
+        <Label htmlFor="due-date" className="block pb-2 text-sm font-medium">
           Due Date
         </Label>
         <Controller

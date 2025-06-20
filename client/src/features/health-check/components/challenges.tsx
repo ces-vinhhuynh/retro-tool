@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
 import {
-  ActionItem,
+  ActionItemWithAssignees,
   Challenge,
   HealthCheck,
   Question,
@@ -28,17 +28,17 @@ interface TopChallengesProps {
   responses: Response[];
   questions: Question[];
   healthCheck: HealthCheck;
-  actionItems: ActionItem[];
+  actionItems: ActionItemWithAssignees[];
   teamMembers: User[];
 }
 
-export default function TopChallenges({
+const TopChallenges = ({
   responses,
   questions,
   healthCheck,
   actionItems,
   teamMembers,
-}: TopChallengesProps) {
+}: TopChallengesProps) => {
   const [selectedTags, setSelectedTags] = useState<Record<string, string>>({});
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null,
@@ -126,10 +126,10 @@ export default function TopChallenges({
                   >
                     <Button
                       variant="ghost"
-                      className="flex-1 justify-start hover:bg-transparent"
+                      className="max-w-7xl flex-1 justify-start truncate hover:bg-transparent"
                       onClick={() => handleChallengeClick(challenge)}
                     >
-                      <span title={challenge.text}>{challenge.text}</span>
+                      <span className="truncate">{challenge.text}</span>
                     </Button>
                     <span className="ml-4">
                       <TagDropdown
@@ -172,4 +172,6 @@ export default function TopChallenges({
       )}
     </div>
   );
-}
+};
+
+export default TopChallenges;

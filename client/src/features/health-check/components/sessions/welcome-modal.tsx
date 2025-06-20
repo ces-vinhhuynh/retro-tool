@@ -48,7 +48,7 @@ const WelcomeModal = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
+          <DialogTitle className="text-2xl max-w-3xl font-bold truncate">
             Welcome to {healthCheck.title}
           </DialogTitle>
         </DialogHeader>
@@ -59,7 +59,7 @@ const WelcomeModal = ({
             <p className="text-gray-600">
               This session uses the{' '}
               <span className="font-medium">
-                {template?.name || 'Team Morale Assessment'}
+                {template?.name ?? 'Team Morale Assessment'}
               </span>{' '}
               template to gather feedback about your team&apos;s health and
               dynamics.

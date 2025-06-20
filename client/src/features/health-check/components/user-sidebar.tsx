@@ -174,11 +174,11 @@ const UserSidebar = ({
                   </div>
                 </div>
 
-                <div className="flex min-h-0 flex-1 flex-col">
+                <div className="flex h-full min-h-0 flex-1 flex-col">
                   <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase">
                     Participants
                   </h3>
-                  <div className="max-h-3/6 flex-1 space-y-2 overflow-y-auto">
+                  <div className="max-h-9/12 flex-1 space-y-2 overflow-y-auto">
                     {participantsFiltered?.map((participant) => (
                       <UserItem
                         key={participant.user_id}

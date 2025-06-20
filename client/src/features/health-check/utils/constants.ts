@@ -165,3 +165,4 @@ export const HEALTH_CHECK_ROLE_OPTIONS = [
 ];
 
 export const COMMENT_MAX_LENGTH = 500;
+export const LONG_TEXT_INPUT_MAX_LENGTH = 255;
