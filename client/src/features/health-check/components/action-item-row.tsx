@@ -16,7 +16,6 @@ import { MESSAGE } from '@/utils/messages';
 
 import { useHandleCalendar } from '../hooks/calendar/use-handle-calendar';
 import { useRemoveCalendar } from '../hooks/calendar/use-remove-calendar';
-import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
 import { useCreateActionItemAssignee } from '../hooks/use-create-action-item-assignee';
 import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-assignee';
 import { useUpdateActionItem } from '../hooks/use-update-action-item';
@@ -73,7 +72,6 @@ export const ActionItemRow = ({
   teamMembers,
   isEditable = true,
 }: ActionItemRowProps) => {
-  useActionItemAssignSubscription(item.id);
   const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } =
     useCreateActionItemAssignee();
   const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =

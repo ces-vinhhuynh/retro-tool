@@ -135,22 +135,23 @@ const Timer = ({ isFacilitator, healthCheckId, endTime }: TimerProps) => {
             </Button>
           )}
         </div>
-
-        <Button
-          variant="ghost"
-          onClick={isRunning ? handleReset : handleStart}
-          disabled={
-            (!isRunning && setupTime === TIMER_CONFIG.MIN_TIME) ||
-            !isFacilitator
-          }
-          className="text-md text-ces-orange-400 hover:text-ces-orange-500 h-8 w-8 rounded-full font-medium hover:bg-white"
-        >
-          {isRunning ? (
-            <RotateCcw className="h-4 w-4" />
-          ) : (
-            <Play className="h-4 w-4" />
-          )}
-        </Button>
+        {isFacilitator && (
+          <Button
+            variant="ghost"
+            onClick={isRunning ? handleReset : handleStart}
+            disabled={
+              (!isRunning && setupTime === TIMER_CONFIG.MIN_TIME) ||
+              !isFacilitator
+            }
+            className="text-md text-ces-orange-400 hover:text-ces-orange-500 h-8 w-8 rounded-full font-medium hover:bg-white"
+          >
+            {isRunning ? (
+              <RotateCcw className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
+          </Button>
+        )}
       </div>
     </div>
   );

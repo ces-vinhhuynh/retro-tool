@@ -14,7 +14,6 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-
 import EntryForm from './entry-form';
 
 interface ActionItemsProps {
@@ -73,21 +72,23 @@ const ActionItems = ({
         Icon={CheckCircle}
       />
 
-      <div className="max-h-5/6 overflow-y-auto">
+      <div className="max-h-5/6 overflow-auto">
         {actionItems.length === 0 ? (
           <div className="border py-4 text-center text-sm text-gray-400">
             No actions yet
           </div>
         ) : (
-          actionItems.map((item) => (
-            <ActionItemRow
-              key={item.id}
-              item={item}
-              isDeleting={isDeleting}
-              onDelete={() => deleteActionItem({ actionItemId: item.id })}
-              teamMembers={teamMembers}
-            />
-          ))
+          <div className="w-fit min-w-full">
+            {actionItems.map((item) => (
+              <ActionItemRow
+                key={item.id}
+                item={item}
+                isDeleting={isDeleting}
+                onDelete={() => deleteActionItem({ actionItemId: item.id })}
+                teamMembers={teamMembers}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

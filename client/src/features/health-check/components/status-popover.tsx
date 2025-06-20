@@ -27,7 +27,7 @@ export const StatusPopover = ({
   isUpdating,
 }: StatusPopoverProps) => {
   const triggerButton = (
-    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+    <Button variant="ghost" size="icon" className="h-8 min-w-8 p-0">
       {getStatusIcon?.(item.status as ActionStatus)}
     </Button>
   );
