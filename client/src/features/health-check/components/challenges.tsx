@@ -165,7 +165,7 @@ const TopChallenges = ({
           data={[addtionalQuestion(selectedChallenge)]}
           actionItems={actionItems}
           currentIndex={0}
-          setCurrentIndex={() => {}}
+          onCurrentIndexChange={() => {}}
           healthCheck={healthCheck}
           teamMembers={teamMembers}
         />

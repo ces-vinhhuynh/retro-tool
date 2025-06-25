@@ -197,7 +197,7 @@ const TeamHealthChart = ({
             onOpenChange={setDialogOpen}
             data={chartData}
             currentIndex={selectedIndex}
-            setCurrentIndex={setSelectedIndex}
+            onCurrentIndexChange={setSelectedIndex}
             actionItems={actionItems}
             teamMembers={teamMembers}
           />

@@ -3,6 +3,18 @@ import supabaseClient from '@/lib/supabase/client';
 import { ActionItem, ActionItemWithAssignees } from '../types/health-check';
 
 class ActionItemService {
+
+  async getByActionId(actionId: string): Promise<ActionItem> {
+    const { data, error } = await supabaseClient
+      .from('action_items')
+      .select('*')
+      .eq('id', actionId)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
   async getByHealthCheckId(healthCheckId: string): Promise<ActionItem[]> {
     const { data, error } = await supabaseClient
       .from('action_items')

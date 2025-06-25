@@ -18,6 +18,20 @@ export function formatDate(date: Date) {
   return `${day} ${dayNum} ${month}`;
 }
 
+export function formatLocalizedDate(dateString: string, locale: string): string {
+  if (!dateString) return 'No date';
+
+  try {
+    return new Date(dateString).toLocaleDateString(locale, {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'long',
+    });
+  } catch {
+    return dateString;
+  }
+}
+
 export function formatDateTime(date: Date) {
   return format(date, 'MM/dd/yyyy');
 }

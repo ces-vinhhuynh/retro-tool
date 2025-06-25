@@ -27,6 +27,7 @@ interface HomeTabProps {
 }
 
 const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
+
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
 
   const {
@@ -82,6 +83,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
             actionItems={actionItems}
             teamId={teamId}
             teamMembers={teamMembers as unknown as User[]}
+            isHandlingOpenLink
           />
         </CardContent>
       </Card>

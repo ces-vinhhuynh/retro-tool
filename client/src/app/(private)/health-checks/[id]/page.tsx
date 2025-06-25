@@ -1,13 +1,14 @@
 'use client';
 
 import _groupBy from 'lodash.groupby';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import ChartDialog from '@/features/health-check/components/chart-dialog';
 import ClosePhase from '@/features/health-check/components/close-phase';
 import DiscussPhase from '@/features/health-check/components/discuss-phase';
 import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
@@ -51,12 +52,15 @@ import {
   ResponseWithUser,
   Score,
   User,
+  Section,
 } from '@/features/health-check/types/health-check';
+import { getCommentsByQuestionId } from '@/features/health-check/utils/comment';
 import {
   FIRST_STEP,
   LAST_STEP,
   STEPS,
 } from '@/features/health-check/utils/constants';
+import { getRatings } from '@/features/health-check/utils/rating';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 import { cn } from '@/utils/cn';
 
@@ -67,6 +71,10 @@ export type GroupedQuestions = {
 export default function HealthCheckPage() {
   const router = useRouter();
   const { id: healthCheckId } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const questionId = searchParams.get('questionId');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const isManuallyClosingRef = useRef(false);
 
   const {
     isOpen: isWelcomeModalOpen,
@@ -132,6 +140,7 @@ export default function HealthCheckPage() {
     createParticipant,
     healthCheckId,
   ]);
+
   // Subscribe to real-time updates for the health check and responses
   useHealthCheckSubscription(healthCheckId);
   useResponsesSubscription(healthCheckId);
@@ -158,6 +167,81 @@ export default function HealthCheckPage() {
     !!currentUser?.id && healthCheck?.facilitator_ids?.includes(currentUser.id);
 
   const isCompleted = healthCheck?.status === HealthCheckStatus.DONE;
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const visibleQuestions = questions.filter(
+    (q) => q.section !== Section.AdditionalQuestions,
+  );
+  
+  const chartData = visibleQuestions.map((question) => {
+    const ratings = getRatings(responses || [], question.id);
+    const comments = getCommentsByQuestionId(responses || [], question.id);
+    const total = ratings.reduce((sum, r) => sum + r.count, 0);
+    const avgScore = total
+      ? ratings.reduce((sum, r) => sum + r.score * r.count, 0) / total
+      : 0;
+
+    return {
+      id: question.id,
+      subject: question.title,
+      value: avgScore,
+      fullTitle: question.title,
+      description: question.description,
+      comments: comments.map((c) => ({
+        comment: c.comment,
+        created_at: c.created_at || new Date().toISOString(),
+      })),
+    };
+  });
+
+  // Function to update URL param when question changes
+  const updateQuestionUrl = (questionIndex: number) => {
+    const question = visibleQuestions[questionIndex];
+    if (question) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('questionId', question.id);
+      router.push(url.pathname + url.search, { scroll: false });
+    }
+  };
+
+  const onCurrentIndexChange = (index: number) => {
+    setSelectedIndex(index);
+    updateQuestionUrl(index);
+  };
+
+  const handleQuestionClick = (index: number) => {
+    setSelectedIndex(index);
+    setDialogOpen(true);
+    updateQuestionUrl(index);
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    
+    // Remove questionId from URL when closing dialog
+    if (!open) {
+      isManuallyClosingRef.current = true;
+      const url = new URL(window.location.href);
+      url.searchParams.delete('questionId');
+      router.push(url.pathname + url.search, { scroll: false });
+    }
+  };
+
+  // Handle questionId query parameter from URL
+  useEffect(() => {
+    if (questionId && visibleQuestions.length > 0 && !isManuallyClosingRef.current) {
+      const questionIndex = visibleQuestions.findIndex(q => q.id === questionId);
+      if (questionIndex !== -1) {
+        setSelectedIndex(questionIndex);
+        setDialogOpen(true);
+      }
+    }
+    // Reset the flag after processing
+    if (!questionId) {
+      isManuallyClosingRef.current = false;
+    }
+  }, [questionId, visibleQuestions]);
 
   useEffect(() => {
     if (
@@ -354,6 +438,7 @@ export default function HealthCheckPage() {
                   actionItems={actionItems ?? []}
                   //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
+                  handleQuestionClick={handleQuestionClick}
                 />
               )}
               {healthCheck.current_step === STEPS['review'].key && (
@@ -410,6 +495,25 @@ export default function HealthCheckPage() {
             </Button>
           </div>
         )}
+      {dialogOpen && (
+        <ChartDialog
+          teamMembers={teamMembers.map((member) => ({
+            id: member.id,
+            full_name: member.full_name,
+            email: member.email,
+            avatar_url: member.avatar_url,
+            created_at: null,
+            updated_at: null,
+          }))}
+          open={dialogOpen}
+          onOpenChange={handleDialogOpenChange}
+          data={chartData}
+          currentIndex={selectedIndex}
+          onCurrentIndexChange={onCurrentIndexChange}
+          healthCheck={healthCheck}
+          actionItems={actionItems || []}
+        />
+      )}
       </div>
     </div>
   );

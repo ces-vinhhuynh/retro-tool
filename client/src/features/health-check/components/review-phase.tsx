@@ -149,6 +149,7 @@ const ReviewPhase = ({
             healthCheckId={healthCheck.id}
             teamId={teamId}
             teamMembers={teamMembers}
+            isHandlingOpenLink={false}
           />
         </EntryWrapper>
 

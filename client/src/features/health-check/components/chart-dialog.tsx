@@ -31,7 +31,7 @@ interface ChartDialogProps {
   }[];
   actionItems: ActionItemWithAssignees[];
   currentIndex: number;
-  setCurrentIndex: (index: number) => void;
+  onCurrentIndexChange: (index: number) => void;
   open: boolean;
   healthCheck: HealthCheck;
   teamMembers: User[];
@@ -41,7 +41,7 @@ const ChartDialog = ({
   onOpenChange,
   data,
   currentIndex,
-  setCurrentIndex,
+  onCurrentIndexChange,
   open,
   actionItems,
   healthCheck,
@@ -50,24 +50,29 @@ const ChartDialog = ({
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
 
   const scrollToIndex = (index: number) => {
+    // Update index and URL when user manually clicks button
+    onCurrentIndexChange(index); // Update URL param
+    // Then scroll to that index
     carouselApi?.scrollTo(index);
   };
 
   useEffect(() => {
     if (!carouselApi) return;
 
-    setCurrentIndex(carouselApi.selectedScrollSnap());
+    const handleSelect = () => {
+      const newIndex = carouselApi.selectedScrollSnap();
+      // Only update if different from current to avoid loops
+      if (newIndex !== currentIndex) {
+        onCurrentIndexChange(newIndex); // Update URL param when carousel changes
+      }
+    };
 
-    carouselApi.on('select', () => {
-      setCurrentIndex(carouselApi.selectedScrollSnap());
-    });
+    carouselApi.on('select', handleSelect);
 
     return () => {
-      carouselApi.off('select', () => {
-        setCurrentIndex(carouselApi.selectedScrollSnap());
-      });
+      carouselApi.off('select', handleSelect);
     };
-  }, [carouselApi, setCurrentIndex]);
+  }, [carouselApi, currentIndex, onCurrentIndexChange]);
 
   const roundedValue = Math.max(
     0,

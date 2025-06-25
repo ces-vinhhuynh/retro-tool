@@ -1,4 +1,5 @@
 import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useReducer, useState } from 'react';
 
 import ConfirmModal from '@/components/modal/confirm-modal';
@@ -21,6 +22,7 @@ import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-ass
 import { useUpdateActionItem } from '../hooks/use-update-action-item';
 import { PRIORITY_CONFIG, STATUS_CONFIG } from '../utils/constants';
 
+import ActionSummaryDialog from './sessions/action-summary-dialog';
 import UserAssignmentPopover from './user-assignment-popover';
 
 interface ActionItemRowProps {
@@ -28,6 +30,7 @@ interface ActionItemRowProps {
   isUpdating?: boolean;
   isDeleting?: boolean;
   onDelete?: (id: string) => void;
+  isHandlingOpenLink?: boolean;
   isEditable?: boolean;
   teamMembers: User[];
 }
@@ -68,20 +71,16 @@ export const ActionItemRow = ({
   item,
   isUpdating,
   onDelete,
+  isHandlingOpenLink,
   isDeleting,
   teamMembers,
   isEditable = true,
 }: ActionItemRowProps) => {
-  const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } =
-    useCreateActionItemAssignee();
-  const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
-    useRemoveActionItemAssignee();
-  const { mutateAsync: removeCalendarEvent } = useRemoveCalendar();
-  const { mutateAsync: handleCalendar } = useHandleCalendar();
-  const { mutateAsync: updateActionItem } = useUpdateActionItem();
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenModalConfirm, setIsOpenModalConfirm] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<ActionItemWithAssignees | null>(null);
 
   const allEmails = teamMembers.flatMap((member) =>
     member.email ? [member.email] : [],
@@ -90,6 +89,24 @@ export const ActionItemRow = ({
   const assignedEmails = item.action_item_assignees.flatMap((assignee) =>
     assignee.team_users?.users?.email ? [assignee.team_users.users.email] : [],
   );
+
+  const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } = useCreateActionItemAssignee();
+  const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } = useRemoveActionItemAssignee();
+  const { mutateAsync: removeCalendarEvent } = useRemoveCalendar();
+  const { mutateAsync: handleCalendar } = useHandleCalendar();
+  const { mutateAsync: updateActionItem } = useUpdateActionItem();
+
+  const handleActionItemClick = (action: ActionItemWithAssignees) => {
+    setSelectedAction(action);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      setIsDialogOpen(false);
+      setSelectedAction(null);
+    }
+  };
 
   const updateCalendar = (emails: string[]) => {
     if (!item.event_id) return;
@@ -280,6 +297,7 @@ export const ActionItemRow = ({
               ? 'ml-1 text-gray-400 line-through'
               : 'ml-1'
           }
+          onClick={() => handleActionItemClick(item)}
         >
           {item.title}
         </span>
@@ -337,6 +355,7 @@ export const ActionItemRow = ({
           </Button>
         )}
       </div>
+
       <ConfirmModal
         variant="delete"
         isOpen={isOpenModalConfirm}
@@ -345,6 +364,21 @@ export const ActionItemRow = ({
         onCancel={() => setIsOpenModalConfirm(false)}
         onConfirm={() => handleDeleteActionItem(item.id)}
         loading={isDeleting}
+      />
+
+      <ActionSummaryDialog
+        open={isDialogOpen}
+        onOpenChange={handleDialogClose}
+        action={selectedAction}
+        isHandlingNavigate={isHandlingOpenLink || false}
+        teamMembers={teamMembers.map((member) => ({
+          id: member.id,
+          full_name: member.full_name,
+          email: member.email,
+          avatar_url: member.avatar_url,
+          created_at: null,
+          updated_at: null,
+        }))}
       />
     </div>
   );

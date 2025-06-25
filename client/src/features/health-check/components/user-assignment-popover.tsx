@@ -84,7 +84,9 @@ const UserAssignmentPopover = ({
   // Popover content
   const popoverContent = (
     <div className="w-full">
+      
       <div className="flex border-b border-gray-200 px-3 py-2">
+        {assignToNone && assignToAll && (
         <div className="flex items-center justify-between">
           <span className="font-medium text-gray-500">ASSIGN TO</span>
           <div className="flex">
@@ -112,6 +114,7 @@ const UserAssignmentPopover = ({
             </Button>
           </div>
         </div>
+        )}
       </div>
       <div className="flex max-h-64 w-full flex-col justify-start gap-2 overflow-x-hidden overflow-y-auto px-2 py-2">
         {teamMembers?.map((member) => (

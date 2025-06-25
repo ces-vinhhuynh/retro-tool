@@ -21,6 +21,7 @@ interface DiscussPhaseProps {
   responses: Response[];
   actionItems: ActionItemWithAssignees[];
   teamMembers: User[];
+  handleQuestionClick: (index: number) => void;
 }
 
 const DiscussPhase = ({
@@ -29,6 +30,7 @@ const DiscussPhase = ({
   responses,
   actionItems,
   teamMembers,
+  handleQuestionClick,
 }: DiscussPhaseProps) => {
   const [allOpen, setAllOpen] = useState(false);
 
@@ -78,6 +80,7 @@ const DiscussPhase = ({
           allOpen={allOpen}
           actionItems={actionItems}
           healthCheck={healthCheck}
+          handleQuestionClick={handleQuestionClick}
         />
         <TopChallenges
           questions={questions}
