@@ -17,6 +17,7 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DayPicker
+      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
       showOutsideDays={showOutsideDays}
       className={cn('p-3', className)}
       classNames={{

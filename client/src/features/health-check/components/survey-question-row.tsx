@@ -186,6 +186,9 @@ const SurveyQuestionRow = ({
         </Avatar>
 
         <div className="relative min-w-0">
+          <span className="text-muted-foreground absolute top-[-20] right-2 text-xs sm:text-sm">
+            {localComment.length}/{COMMENT_MAX_LENGTH}
+          </span>
           <Textarea
             id={'comment_' + question.id}
             placeholder="Add comments (one per line)..."
@@ -196,20 +199,18 @@ const SurveyQuestionRow = ({
             rows={3}
             maxLength={COMMENT_MAX_LENGTH}
           />
-          <div className="absolute top-2 right-2 flex items-center gap-2">
+
+          <div className="flex justify-between gap-2">
+            <p className="text-muted-foreground mt-1 text-[10px] sm:text-xs">
+              Press Enter for new line. Each line will be saved as a separate
+              comment.
+            </p>
             {showSaved && (
               <span className="text-xs font-medium text-green-600 sm:text-sm">
                 Saved
               </span>
             )}
-            <span className="text-muted-foreground text-xs sm:text-sm">
-              {localComment.length}/{COMMENT_MAX_LENGTH}
-            </span>
           </div>
-          <p className="text-muted-foreground mt-1 text-[10px] sm:text-xs">
-            Press Enter for new line. Each line will be saved as a separate
-            comment.
-          </p>
         </div>
       </div>
     </div>

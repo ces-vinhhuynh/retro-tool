@@ -47,7 +47,7 @@ const AdditionalQuestion = ({
       <h3 className="mb-1 text-lg font-bold text-[#222] sm:text-xl">{title}</h3>
       <p className="text-muted-foreground text-sm">{description}</p>
       <div className="flex items-center gap-2 p-1">
-        <div className="flex-1">
+        <div className="relative flex-1">
           <Input
             type="text"
             placeholder={`Answer ${comments.length + 1}`}
@@ -64,7 +64,7 @@ const AdditionalQuestion = ({
             className="focus:border-ces-orange-500 focus:ring-ces-orange-500 rounded-lg border border-gray-200 bg-[#F7F7F7] focus:ring-1"
             maxLength={LONG_TEXT_INPUT_MAX_LENGTH}
           />
-          <div className="bt-1 flex justify-end">
+          <div className="absolute top-12 right-2 flex justify-end">
             <span className="text-muted-foreground text-xs">
               {newComment.length}/{LONG_TEXT_INPUT_MAX_LENGTH}
             </span>
