@@ -212,6 +212,15 @@ class HealthCheckService {
       body: { healthCheckId },
     });
   }
+
+  async inviteUsers(userIds: string[], healthCheckId: string) {
+    return await supabaseClient.functions.invoke(
+      'invite-user-to-health-check',
+      {
+        body: { userIds, healthCheckId },
+      },
+    );
+  }
 }
 
 export const healthCheckService = new HealthCheckService();

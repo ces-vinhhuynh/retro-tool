@@ -38,6 +38,7 @@ class TeamUsersService {
       full_name: users.full_name,
       avatar_url: users.avatar_url,
       email: users.email,
+      userId: users.id,
     }));
   }
 

@@ -34,6 +34,7 @@ import {
 import { useHealthCheckSubscription } from '@/features/health-check/hooks/use-health-check-subscription';
 import { useGetTemplateById } from '@/features/health-check/hooks/use-health-check-templates';
 import { useHealthChecksSubscription } from '@/features/health-check/hooks/use-health-checks-subscription';
+import { useInviteUserToHealthCheck } from '@/features/health-check/hooks/use-invite-user-to-health-check';
 import { useParticipantsSubscription } from '@/features/health-check/hooks/use-participants-subscription';
 import {
   useCreateResponse,
@@ -119,6 +120,9 @@ export default function HealthCheckPage() {
   const { data: teamMembers = [] } = useGetTeamMembers(
     healthCheck?.team_id ?? '',
   );
+
+  const { mutate: inviteUserToHealthCheck, isPending: isInviting } =
+    useInviteUserToHealthCheck();
 
   useEffect(() => {
     if (!isLoadingParticipants && !isLoadingUser && currentUser) {
@@ -362,6 +366,10 @@ export default function HealthCheckPage() {
     router.push(`/teams/${healthCheck.team_id}`);
   };
 
+  const handleInviteUser = (userIds: string[]) => {
+    inviteUserToHealthCheck({ userIds, healthCheckId });
+  };
+
   const isLoading =
     isLoadingUser ||
     isLoadingHealthCheck ||
@@ -477,6 +485,12 @@ export default function HealthCheckPage() {
               onClose={closeWelcomeModal}
               healthCheck={healthCheck}
               template={template}
+              teamMembers={teamMembers}
+              facilitatorIds={healthCheck?.facilitator_ids}
+              participants={participants}
+              handleInviteUser={handleInviteUser}
+              isInviting={isInviting}
+              healthCheckId={healthCheckId}
             />
           )}
         </div>

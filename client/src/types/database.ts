@@ -230,6 +230,7 @@ export type Database = {
           end_time: string | null;
           facilitator_ids: string[] | null;
           id: string;
+          invited_user_ids: Json | null;
           participants: Json | null;
           settings: Json | null;
           status: Database['public']['Enums']['health_check_status'] | null;
@@ -248,6 +249,7 @@ export type Database = {
           end_time?: string | null;
           facilitator_ids?: string[] | null;
           id?: string;
+          invited_user_ids?: Json | null;
           participants?: Json | null;
           settings?: Json | null;
           status?: Database['public']['Enums']['health_check_status'] | null;
@@ -266,6 +268,7 @@ export type Database = {
           end_time?: string | null;
           facilitator_ids?: string[] | null;
           id?: string;
+          invited_user_ids?: Json | null;
           participants?: Json | null;
           settings?: Json | null;
           status?: Database['public']['Enums']['health_check_status'] | null;

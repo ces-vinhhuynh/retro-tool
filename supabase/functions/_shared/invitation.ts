@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from "https://esm.sh/uuid";
-import { CONFIG } from "./config.ts";
+import { v4 as uuidv4 } from 'https://esm.sh/uuid';
+import { CONFIG } from './config.ts';
 import {
   WorkspaceInvitePayload,
   WorkspaceInvitationData,
@@ -7,7 +7,8 @@ import {
   TeamInvitePayload,
   TeamInvitationData,
   TeamEmailTemplate,
-} from "./type.ts";
+  HealthCheckInvitePayload,
+} from './type.ts';
 import {
   createSupabaseClient,
   findExistingUser,
@@ -15,14 +16,14 @@ import {
   getWorkspaceName,
   getTeamName,
   findExistingTeamInvite,
-} from "./database.ts";
-import { sendEmail } from "./email.ts";
+} from './database.ts';
+import { sendEmail } from './email.ts';
 import {
   ERROR_MESSAGES,
   INVITATION_STATUS,
   WORKSPACE_ROLES,
   TEAM_ROLES,
-} from "./constants.ts";
+} from './constants.ts';
 
 export async function handleWorkspaceInvitation(
   payload: WorkspaceInvitePayload
@@ -63,13 +64,13 @@ export async function handleWorkspaceInvitation(
   // Update or insert invitation
   const result = existingInvite
     ? await supabase
-        .from("workspace_users")
+        .from('workspace_users')
         .update(invitationData)
-        .eq("id", existingInvite.id)
+        .eq('id', existingInvite.id)
         .select()
         .single()
     : await supabase
-        .from("workspace_users")
+        .from('workspace_users')
         .insert(invitationData)
         .select()
         .single();
@@ -107,17 +108,17 @@ export async function handleTeamInvitation(payload: TeamInvitePayload) {
 
   // Verify team belongs to workspace
   const { data: team, error: teamError } = await supabase
-    .from("teams")
-    .select("workspace_id")
-    .eq("id", team_id)
+    .from('teams')
+    .select('workspace_id')
+    .eq('id', team_id)
     .single();
 
   if (teamError) {
-    throw new Error("Team not found");
+    throw new Error('Team not found');
   }
 
   if (team.workspace_id !== workspace_id) {
-    throw new Error("Team does not belong to the specified workspace");
+    throw new Error('Team does not belong to the specified workspace');
   }
 
   // Find existing user and invitations
@@ -150,7 +151,7 @@ export async function handleTeamInvitation(payload: TeamInvitePayload) {
     getTeamName(supabase, team_id),
   ]);
 
-  let teamInvitationData: Omit<TeamInvitationData, "workspace_id">;
+  let teamInvitationData: Omit<TeamInvitationData, 'workspace_id'>;
 
   let inviteUrl: string;
   let emailContent: string;
@@ -203,7 +204,7 @@ export async function handleTeamInvitation(payload: TeamInvitePayload) {
     };
 
     await supabase
-      .from("workspace_users")
+      .from('workspace_users')
       .insert(workspaceInvitationData)
       .select()
       .single();
@@ -226,13 +227,13 @@ export async function handleTeamInvitation(payload: TeamInvitePayload) {
   // Update or insert team invitation
   const result = existingTeamInvite
     ? await supabase
-        .from("team_users")
+        .from('team_users')
         .update(teamInvitationData)
-        .eq("id", existingTeamInvite.id)
+        .eq('id', existingTeamInvite.id)
         .select()
         .single()
     : await supabase
-        .from("team_users")
+        .from('team_users')
         .insert(teamInvitationData)
         .select()
         .single();
@@ -263,5 +264,55 @@ export async function handleTeamInvitation(payload: TeamInvitePayload) {
       existingWorkspaceInvite?.status === INVITATION_STATUS.ACCEPTED,
     token: teamInvitationData.token,
     inviteUrl,
+  };
+}
+
+export async function handleHealthCheckInvitation(
+  payload: HealthCheckInvitePayload
+) {
+  const { userIds, healthCheckId } = payload;
+  const supabase = createSupabaseClient();
+
+  const { data: users = [] } = await supabase
+    .from('users')
+    .select('email')
+    .in('id', userIds);
+
+  const emails = users?.map(({ email }) => email) || [];
+
+  const inviteUrl = `${CONFIG.APP_URL}/health-checks/${healthCheckId}`;
+  const emailContent = `You've been invited to join the health check .<p>Click <a href="${inviteUrl}">here</a> to join the health check.</p>`;
+
+  for (const email of emails) {
+    const emailTemplate = {
+      to: email,
+      subject: `${CONFIG.APP_NAME} – Health check Invitation`,
+      content: emailContent,
+      isExistingUser: true,
+      workspaceName: '',
+    };
+
+    await sendEmail(emailTemplate);
+  }
+
+  const { data: healthCheck } = await supabase
+    .from('health_checks')
+    .select('invited_user_ids')
+    .eq('id', healthCheckId)
+    .single();
+
+  const { invited_user_ids } = healthCheck;
+
+  invited_user_ids.push(...userIds);
+
+  await supabase
+    .from('health_checks')
+    .update({ invited_user_ids })
+    .eq('id', healthCheckId)
+    .select()
+    .single();
+
+  return {
+    success: true,
   };
 }

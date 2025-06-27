@@ -12,6 +12,7 @@ create table health_checks (
     status health_check_status default 'in progress',
     average_score jsonb default '{}',
     participants jsonb default '[]',
+    invited_user_ids jsonb default '[]',
     settings jsonb default '{
         "display_mode": "grouped",
         "allow_participant_navigation": true

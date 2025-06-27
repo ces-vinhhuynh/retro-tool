@@ -1,4 +1,4 @@
-import { INVITATION_STATUS } from "./constants.ts";
+import { INVITATION_STATUS } from './constants.ts';
 
 export interface WorkspaceInvitePayload {
   email: string;
@@ -87,3 +87,8 @@ export type AverageScore = {
     average_score: number;
   };
 };
+
+export interface HealthCheckInvitePayload {
+  userIds: string[];
+  healthCheckId: string;
+}
