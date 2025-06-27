@@ -13,7 +13,7 @@
   --card-foreground: oklch(0.12 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.12 0 0);
-  --primary: oklch(0.645 0.162 27.072);
+  --primary: #2f3b63;
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.94 0 0);
   --secondary-foreground: oklch(0.12 0 0);
@@ -31,7 +31,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.98 0 0);
+  --sidebar: #1f2d52;
   --sidebar-foreground: oklch(0.32 0.007 262.25);
   --sidebar-primary: oklch(0.645 0.162 27.072);
   --sidebar-primary-foreground: oklch(1 0 0);
@@ -39,22 +39,24 @@
   --sidebar-accent-foreground: oklch(0.15 0.008 262.25);
   --sidebar-border: oklch(0.89 0.015 262.25);
   --sidebar-ring: oklch(0.645 0.162 27.072);
-  --ces-orange-50: #fdf5ef;
-  --ces-orange-100: #fbe7d9;
-  --ces-orange-200: #f5ccb3;
-  --ces-orange-300: #eeaa83;
-  --ces-orange-400: #e77d50;
-  --ces-orange-500: #e15d2f;
-  --ces-orange-600: #d24524;
-  --ces-orange-700: #af331f;
-  --ces-orange-800: #8c2b20;
-  --ces-orange-900: #71261d;
-  --ces-orange-950: #3d110d;
-  --primary: #1e1e1e;
-  --secondary: #555555;
   --background: #f7f7f7;
   --font-Roboto: Roboto, 'serif';
   --font-Inter: Inter, 'sans-serif';
+
+  --primary-text: #333333;
+  --secondary-text: #666666;
+
+  --color-rhino-50: #f3f6fb;
+  --color-rhino-100: #e3eaf6;
+  --color-rhino-200: #cddcf0;
+  --color-rhino-300: #abc4e5;
+  --color-rhino-400: #82a7d8;
+  --color-rhino-500: #6589cc;
+  --color-rhino-600: #5171bf;
+  --color-rhino-700: #475fae;
+  --color-rhino-800: #3e4f8f;
+  --color-rhino-900: #2f3b63;
+  --color-rhino-950: #252b46;
 }
 
 @theme inline {
@@ -95,19 +97,19 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-ces-orange-50: var(--ces-orange-50);
-  --color-ces-orange-100: var(--ces-orange-100);
-  --color-ces-orange-200: var(--ces-orange-200);
-  --color-ces-orange-300: var(--ces-orange-300);
-  --color-ces-orange-400: var(--ces-orange-400);
-  --color-ces-orange-500: var(--ces-orange-500);
-  --color-ces-orange-600: var(--ces-orange-600);
-  --color-ces-orange-700: var(--ces-orange-700);
-  --color-ces-orange-800: var(--ces-orange-800);
-  --color-ces-orange-900: var(--ces-orange-900);
-  --color-ces-orange-950: var(--ces-orange-950);
+  --color-rhino-50: var(--rhino-50);
+  --color-rhino-100: var(--rhino-100);
+  --color-rhino-200: var(--rhino-200);
+  --color-rhino-300: var(--rhino-300);
+  --color-rhino-400: var(--rhino-400);
+  --color-rhino-500: var(--rhino-500);
+  --color-rhino-600: var(--rhino-600);
+  --color-rhino-700: var(--rhino-700);
+  --color-rhino-800: var(--rhino-800);
+  --color-rhino-900: var(--rhino-900);
+  --color-rhino-950: var(--rhino-950);
   --color-primary-text: var(--primary-text);
-  --color-secondary: var(--secondary-text);
+  --color-secondary-text: var(--secondary-text);
   --color-background: var(--background);
   --font-heading: var(--font-Roboto);
   --font-body: var(--font-Inter);
@@ -160,11 +162,11 @@
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    display: none;
   }
- /* Hide scrollbar for IE, Edge and Firefox */
+  /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
-}
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
