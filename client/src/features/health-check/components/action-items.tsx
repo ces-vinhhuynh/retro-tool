@@ -36,15 +36,11 @@ const ActionItems = ({
   teamMembers,
   isHandlingOpenLink,
 }: ActionItemsProps) => {
-  
   const { mutate: createActionItem, isPending: isCreating } =
     useCreateActionItem();
 
   const { mutate: deleteActionItem, isPending: isDeleting } =
     useDeleteActionItem();
-
-  useActionItemsByTeamsSubscription(String(teamId));
-  useActionItemAssignSubscription(String(teamId));
 
   const {
     register,
