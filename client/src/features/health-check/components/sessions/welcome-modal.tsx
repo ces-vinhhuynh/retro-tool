@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,20 +12,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   HealthCheck,
+  HealthCheckWithTeam,
   ParticipantWithUser,
 } from '@/features/health-check/types/health-check';
 import { Template } from '@/features/health-check/types/templates';
 import { DataTable } from '@/features/workspace/components/data-table';
+import { useInviteUserToTeam } from '@/features/workspace/hooks/use-invite-user-to-team';
 
 import { TeamMember, useColumns } from '../invite-table/columns';
 
 interface WelcomeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  healthCheck: HealthCheck;
+  healthCheck: HealthCheckWithTeam;
   template?: Template | null;
   teamMembers: TeamMember[];
   facilitatorIds: string[];
@@ -33,6 +37,8 @@ interface WelcomeModalProps {
   isInviting: boolean;
   healthCheckId: string;
 }
+
+const emailSchema = z.string().email();
 
 const WelcomeModal = ({
   isOpen,
@@ -51,6 +57,13 @@ const WelcomeModal = ({
   const pathname = usePathname();
   const [sessionLink, setSessionLink] = useState('');
   const participantIds = participants.map(({ user_id }) => user_id);
+
+  // const { data: healthCheck, isLoading: isLoadingHealthCheck } = useHealthCheck(
+  //     isHealthCheckRoute ? params.id : '',
+  //   );
+  //   const healthCheckData = healthCheck as HealthCheckWithTeam;
+
+  const { mutate: inviteUserToTeam } = useInviteUserToTeam();
 
   useEffect(() => {
     // Use the current URL as the session link
@@ -97,6 +110,29 @@ const WelcomeModal = ({
     handleInviteUser(inviteIds);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+
+    e.preventDefault();
+    const inputEl = e.currentTarget;
+    const raw = inputEl.value;
+
+    const tokens = raw.split(/[\s,]+/).filter(Boolean);
+
+    tokens.forEach((token) => {
+      const parsed = emailSchema.safeParse(token);
+      if (parsed.success) {
+        inviteUserToTeam({
+          email: parsed.data,
+          teamId: healthCheck.team_id || '',
+          workspaceId: healthCheck.team.workspace_id,
+        });
+      }
+    });
+
+    inputEl.value = '';
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl">
@@ -126,6 +162,10 @@ const WelcomeModal = ({
             <TabsContent value="email" className="flex flex-col gap-2">
               <div className="bg-ces-orange-50 rounded-lg p-6">
                 <DataTable columns={columns} data={teamMembers} />
+                <Input
+                  placeholder="Enter emails..."
+                  onKeyDown={handleKeyDown}
+                />
               </div>
 
               <Button
