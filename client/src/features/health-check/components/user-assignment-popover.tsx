@@ -17,9 +17,19 @@ interface UserAssignmentPopoverProps {
   setOpenPopovers?: (value: Record<string, boolean>) => void;
   assignToNone?: (actionId: string) => void;
   assignToAll?: (actionId: string) => void;
-  toggleAssignee?: ({id, memberId, email}: {id: string, memberId: string, email:string}) => void;
+  toggleAssignee?: ({
+    id,
+    memberId,
+    email,
+  }: {
+    id: string;
+    memberId: string;
+    email: string;
+  }) => void;
   isCreatingAssignee?: boolean;
   isRemovingAssignee?: boolean;
+  variant?: 'avatars' | 'text';
+  showLabel?: boolean;
 }
 
 const UserAssignmentPopover = ({
@@ -34,9 +44,37 @@ const UserAssignmentPopover = ({
   toggleAssignee,
   isCreatingAssignee,
   isRemovingAssignee,
+  variant = 'avatars',
+  showLabel = false,
 }: UserAssignmentPopoverProps) => {
   const isAllAssigned = assignees?.length === teamMembers?.length;
 
+  // Helper function to get assigned user names for text variant
+  const getAssignedUserNames = () => {
+    if (assignees.length === 0) return 'Unassigned';
+
+    const assignedNames = assignees
+      .map((id) => teamMembers.find((member) => member.id === id)?.full_name)
+      .filter(Boolean)
+      .slice(0, 2);
+
+    if (assignees.length > 2) {
+      return `${assignedNames.join(', ')} +${assignees.length - 2}`;
+    }
+
+    return assignedNames.join(', ');
+  };
+
+  if (variant === 'text') {
+    return (
+      <span className="text-muted-foreground text-sm">
+        {showLabel && 'Assigned: '}
+        <span className="text-foreground">{getAssignedUserNames()}</span>
+      </span>
+    );
+  }
+
+  // Original avatar variant for editable lists
   const triggerButton = (
     <div className="flex cursor-pointer items-center">
       {assignees?.length > 0 ? (
@@ -84,36 +122,35 @@ const UserAssignmentPopover = ({
   // Popover content
   const popoverContent = (
     <div className="w-full">
-      
       <div className="flex border-b border-gray-200 px-3 py-2">
         {assignToNone && assignToAll && (
-        <div className="flex items-center justify-between">
-          <span className="font-medium text-gray-500">ASSIGN TO</span>
-          <div className="flex">
-            <Button
-              variant="ghost"
-              className="cursor-pointer border-none bg-transparent text-blue-400"
-              onClick={(e) => {
-                e.stopPropagation();
-                assignToNone?.(item.id);
-              }}
-              disabled={isRemovingAssignee}
-            >
-              NONE
-            </Button>
-            <Button
-              variant="ghost"
-              className="cursor-pointer border-none bg-transparent text-blue-400"
-              onClick={(e) => {
-                e.stopPropagation();
-                assignToAll?.(item.id);
-              }}
-              disabled={isCreatingAssignee || isAllAssigned}
-            >
-              ALL
-            </Button>
+          <div className="flex items-center justify-between">
+            <span className="font-medium text-gray-500">ASSIGN TO</span>
+            <div className="flex">
+              <Button
+                variant="ghost"
+                className="cursor-pointer border-none bg-transparent text-blue-400"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  assignToNone?.(item.id);
+                }}
+                disabled={isRemovingAssignee}
+              >
+                NONE
+              </Button>
+              <Button
+                variant="ghost"
+                className="cursor-pointer border-none bg-transparent text-blue-400"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  assignToAll?.(item.id);
+                }}
+                disabled={isCreatingAssignee || isAllAssigned}
+              >
+                ALL
+              </Button>
+            </div>
           </div>
-        </div>
         )}
       </div>
       <div className="flex max-h-64 w-full flex-col justify-start gap-2 overflow-x-hidden overflow-y-auto px-2 py-2">
@@ -124,7 +161,11 @@ const UserAssignmentPopover = ({
             className="flex w-full items-center justify-start rounded-none py-2"
             onClick={(e) => {
               e.stopPropagation();
-              toggleAssignee?.({id: item.id, memberId: member.id, email: member.email ?? ''} );
+              toggleAssignee?.({
+                id: item.id,
+                memberId: member.id,
+                email: member.email ?? '',
+              });
             }}
             disabled={isCreatingAssignee}
           >

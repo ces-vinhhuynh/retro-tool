@@ -16,6 +16,7 @@ interface DatePopoverProps {
   setDueDate?: (date?: Date) => void;
   isUpdating?: boolean;
   isEditable?: boolean;
+  variant?: 'icon' | 'text';
 }
 
 export const DatePopover = ({
@@ -25,21 +26,57 @@ export const DatePopover = ({
   setDueDate,
   isUpdating,
   isEditable = true,
+  variant = 'icon',
 }: DatePopoverProps) => {
-  const triggerButton = (
-    <Button
-      variant="ghost"
-      size="sm"
-      className={cn(
-        'h-8 text-xs font-normal',
-        item.due_date ? 'text-cyan-500' : 'text-gray-400',
-      )}
-      disabled={isUpdating || !isEditable}
-    >
-      <Calendar size={16} className="mr-1" />
-      {item.due_date ? formatDate(new Date(item.due_date)) : null}
-    </Button>
-  );
+  // Format date for dashboard display
+  const formatDateForDashboard = () => {
+    const dateStr = item.due_date
+      ? new Date(item.due_date).toLocaleDateString()
+      : 'No date set';
+    return `Date: ${dateStr}`;
+  };
+
+  // If not editable, return just text
+  if (!isEditable) {
+    return (
+      <span className="text-muted-foreground text-sm">
+        {variant === 'text'
+          ? formatDateForDashboard()
+          : item.due_date
+            ? formatDate(new Date(item.due_date))
+            : 'No date'}
+      </span>
+    );
+  }
+
+  // Create trigger button based on variant
+  const triggerButton =
+    variant === 'text' ? (
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          'text-muted-foreground hover:text-foreground h-auto p-1 text-sm font-normal',
+          item.due_date ? 'text-cyan-500' : 'text-gray-400',
+        )}
+        disabled={isUpdating}
+      >
+        {formatDateForDashboard()}
+      </Button>
+    ) : (
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          'h-8 text-xs font-normal',
+          item.due_date ? 'text-cyan-500' : 'text-gray-400',
+        )}
+        disabled={isUpdating}
+      >
+        <Calendar size={16} className="mr-1" />
+        {item.due_date ? formatDate(new Date(item.due_date)) : null}
+      </Button>
+    );
 
   const popoverContent = (
     <CalendarComponent

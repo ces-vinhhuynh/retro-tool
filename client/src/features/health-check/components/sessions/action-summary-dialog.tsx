@@ -42,7 +42,6 @@ const ActionSummaryDialog = ({
   teamMembers,
   isHandlingNavigate,
 }: ActionSummaryDialogProps) => {
-
   const questionId = action?.question_id || null;
   const healthCheckId = action?.health_check_id || null;
 
@@ -72,7 +71,7 @@ const ActionSummaryDialog = ({
       window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
-  
+
   const getQuestionFromHealthCheck = (): Question | null => {
     if (!questionId || !healthCheck) return null;
 
@@ -165,6 +164,7 @@ const ActionSummaryDialog = ({
                 PRIORITY&nbsp;
               </span>
               <PriorityPopover
+                variant="text"
                 item={action}
                 isEditable={true}
                 getPriorityIcon={getPriorityIcon}
@@ -187,6 +187,7 @@ const ActionSummaryDialog = ({
                 ASSIGNED TO&nbsp;
               </span>
               <UserAssignmentPopover
+                variant="avatars"
                 item={action}
                 teamMembers={teamMembers}
                 isEditable={false}

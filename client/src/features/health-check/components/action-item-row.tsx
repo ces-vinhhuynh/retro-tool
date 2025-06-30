@@ -1,5 +1,4 @@
-import { Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Edit3, Trash2 } from 'lucide-react';
 import { useReducer, useState } from 'react';
 
 import ConfirmModal from '@/components/modal/confirm-modal';
@@ -76,11 +75,11 @@ export const ActionItemRow = ({
   teamMembers,
   isEditable = true,
 }: ActionItemRowProps) => {
-
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenModalConfirm, setIsOpenModalConfirm] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<ActionItemWithAssignees | null>(null);
+  const [selectedAction, setSelectedAction] =
+    useState<ActionItemWithAssignees | null>(null);
 
   const allEmails = teamMembers.flatMap((member) =>
     member.email ? [member.email] : [],
@@ -90,8 +89,10 @@ export const ActionItemRow = ({
     assignee.team_users?.users?.email ? [assignee.team_users.users.email] : [],
   );
 
-  const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } = useCreateActionItemAssignee();
-  const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } = useRemoveActionItemAssignee();
+  const { mutate: createActionItemAssignee, isPending: isCreatingAssignee } =
+    useCreateActionItemAssignee();
+  const { mutate: removeActionItemAssignee, isPending: isRemovingAssignee } =
+    useRemoveActionItemAssignee();
   const { mutateAsync: removeCalendarEvent } = useRemoveCalendar();
   const { mutateAsync: handleCalendar } = useHandleCalendar();
   const { mutateAsync: updateActionItem } = useUpdateActionItem();
@@ -279,81 +280,113 @@ export const ActionItemRow = ({
   };
 
   return (
-    <div className="flex items-center justify-between border-b border-gray-100 py-2">
-      <div className="flex items-center">
-        <StatusPopover
-          item={item}
-          openStatusPopovers={state.openStatusPopovers}
-          setOpenStatusPopovers={(payload) =>
-            dispatch({ type: 'SET_OPEN_STATUS_POPOVERS', payload })
-          }
-          getStatusIcon={getStatusIcon}
-          setActionStatus={setActionStatus}
-          isUpdating={isUpdating}
-        />
-        <span
-          className={
-            item.status === ActionStatus.DONE
-              ? 'ml-1 text-gray-400 line-through'
-              : 'ml-1'
-          }
-          onClick={() => handleActionItemClick(item)}
-        >
-          {item.title}
-        </span>
-      </div>
+    <>
+      <div className="mb-3 space-y-3 rounded-lg border p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center">
+              <StatusPopover
+                item={item}
+                openStatusPopovers={state.openStatusPopovers}
+                setOpenStatusPopovers={(payload) =>
+                  dispatch({ type: 'SET_OPEN_STATUS_POPOVERS', payload })
+                }
+                getStatusIcon={getStatusIcon}
+                setActionStatus={setActionStatus}
+                isUpdating={isUpdating}
+              />
+              <span
+                role="button"
+                tabIndex={0}
+                className={
+                  item.status === ActionStatus.DONE
+                    ? 'ml-1 text-gray-400 line-through'
+                    : 'ml-1 cursor-pointer hover:text-blue-600'
+                }
+                onClick={() => handleActionItemClick(item)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleActionItemClick(item);
+                  }
+                }}
+              >
+                {item.title}
+              </span>
+              {item.description && (
+                <p className="text-muted-foreground text-sm">
+                  {item.description}
+                </p>
+              )}
+            </div>
 
-      <div className="flex items-center">
-        <PriorityPopover
-          item={item}
-          isEditable={isEditable}
-          openPriorityPopovers={state.openPriorityPopovers}
-          setOpenPriorityPopovers={(payload) =>
-            dispatch({ type: 'SET_OPEN_PRIORITY_POPOVERS', payload })
-          }
-          getPriorityIcon={getPriorityIcon}
-          setPriority={setPriority}
-          isUpdating={isUpdating}
-        />
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Priority Badge using PriorityPopover with badge variant */}
+              <PriorityPopover
+                item={item}
+                variant="text"
+                isEditable={isEditable}
+                openPriorityPopovers={state.openPriorityPopovers}
+                setOpenPriorityPopovers={(payload) =>
+                  dispatch({ type: 'SET_OPEN_PRIORITY_POPOVERS', payload })
+                }
+                setPriority={setPriority}
+                getPriorityIcon={getPriorityIcon}
+                isUpdating={isUpdating}
+              />
 
-        <DatePopover
-          item={item}
-          isEditable={isEditable}
-          openDatePopovers={state.openDatePopovers}
-          setOpenDatePopovers={(payload) =>
-            dispatch({ type: 'SET_OPEN_DATE_POPOVERS', payload })
-          }
-          setDueDate={setDueDate}
-          isUpdating={isUpdating}
-        />
+              {/* Assigned Users using UserAssignmentPopover with text variant */}
+              <UserAssignmentPopover
+                item={item}
+                teamMembers={teamMembers}
+                isEditable={isEditable}
+                assignees={getAssignees(item)}
+                variant="avatars"
+                showLabel={true}
+                openPopovers={state.openAssigneePopovers}
+                setOpenPopovers={(payload) =>
+                  dispatch({ type: 'SET_OPEN_ASSIGNEE_POPOVERS', payload })
+                }
+                assignToNone={assignToNone}
+                assignToAll={assignToAll}
+                toggleAssignee={toggleAssignee}
+                isCreatingAssignee={isCreatingAssignee}
+                isRemovingAssignee={isRemovingAssignee}
+              />
 
-        <UserAssignmentPopover
-          item={item}
-          teamMembers={teamMembers}
-          isEditable={isEditable}
-          assignees={getAssignees(item)}
-          openPopovers={state.openAssigneePopovers}
-          setOpenPopovers={(payload) =>
-            dispatch({ type: 'SET_OPEN_ASSIGNEE_POPOVERS', payload })
-          }
-          assignToNone={assignToNone}
-          assignToAll={assignToAll}
-          toggleAssignee={toggleAssignee}
-          isCreatingAssignee={isCreatingAssignee}
-          isRemovingAssignee={isRemovingAssignee}
-        />
-
-        {isEditable && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-600"
-            onClick={() => setIsOpenModalConfirm(true)}
-            disabled={isDeleting}
-          >
-            <Trash2 size={18} />
-          </Button>
-        )}
+              {/* Date using DatePopover with text variant */}
+              <DatePopover
+                item={item}
+                variant="text"
+                isEditable={isEditable}
+                openDatePopovers={state.openDatePopovers}
+                setOpenDatePopovers={(payload) =>
+                  dispatch({ type: 'SET_OPEN_DATE_POPOVERS', payload })
+                }
+                setDueDate={setDueDate}
+                isUpdating={isUpdating}
+              />
+            </div>
+          </div>
+          {isEditable && (
+            <div className="ml-4 flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleActionItemClick(item)}
+              >
+                <Edit3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpenModalConfirm(true)}
+                disabled={isDeleting}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       <ConfirmModal
@@ -380,7 +413,7 @@ export const ActionItemRow = ({
           updated_at: null,
         }))}
       />
-    </div>
+    </>
   );
 };
 

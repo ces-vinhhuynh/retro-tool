@@ -107,7 +107,7 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
         const team = teams?.find((t) => t.id === healthCheckData.team.id);
         if (workspace)
           setCurrentWorkspace(workspace as WorkspaceUserWithWorkspace);
-        if (team) setCurrentTeam(team);
+        if (team) setCurrentTeam(team as unknown as Team);
       }
     };
 
@@ -139,7 +139,8 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
         <AppSidebar
           workspaces={workspaces as WorkspaceUserWithWorkspace[]}
           currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
-          teams={teams as Team[]}
+          teams={teams as unknown[] as Team[]}
+          currentTeam={currentTeam as Team}
         />
       )}
       <SidebarInset>

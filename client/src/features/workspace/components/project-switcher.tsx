@@ -17,26 +17,21 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import ProjectLogo from '@/features/workspace/components/project-logo';
+import { Team } from '@/types/team';
 import { cn } from '@/utils/cn';
 
-import { WorkspaceUserWithWorkspace } from '../types/workspace-users';
-
-import WorkspaceLogo from './workspace-logo';
-
-interface WorkspaceSwitcherProps {
-  workspaces: WorkspaceUserWithWorkspace[];
-  currentWorkspace: WorkspaceUserWithWorkspace;
+interface ProjectSwitcherProps {
+  teams: Team[];
+  currentTeam?: Team;
 }
 
-export function WorkspaceSwitcher({
-  workspaces,
-  currentWorkspace,
-}: WorkspaceSwitcherProps) {
+export function ProjectSwitcher({ teams, currentTeam }: ProjectSwitcherProps) {
   const router = useRouter();
   const { isMobile } = useSidebar();
 
-  const handleWorkspaceChange = (workspaceId: string) => {
-    router.push(`/workspaces/${workspaceId}`);
+  const handleProjectChange = (projectId: string) => {
+    router.push(`/teams/${projectId}`);
   };
 
   return (
@@ -54,13 +49,15 @@ export function WorkspaceSwitcher({
               )}
             >
               <div className="flex size-8 items-center justify-center rounded-lg bg-blue-300 font-bold text-blue-800">
-                <WorkspaceLogo
-                  name={String(currentWorkspace?.workspace?.name)}
-                />
+                {currentTeam ? (
+                  <ProjectLogo name={currentTeam.name} />
+                ) : (
+                  <ProjectLogo name="Select Project" />
+                )}
               </div>
               <div className="grid min-w-32 flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {currentWorkspace?.workspace?.name}
+                  {currentTeam?.name || 'Select Project'}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto text-blue-200" />
@@ -73,15 +70,14 @@ export function WorkspaceSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Workspaces
+              Projects
             </DropdownMenuLabel>
-            {workspaces?.map((workspace) => {
-              const isActive =
-                currentWorkspace?.workspace_id === workspace.workspace_id;
+            {teams?.map((team) => {
+              const isActive = currentTeam && currentTeam.id === team.id;
               return (
                 <DropdownMenuItem
-                  key={workspace.id}
-                  onClick={() => handleWorkspaceChange(workspace.workspace_id)}
+                  key={team.id}
+                  onClick={() => handleProjectChange(team.id)}
                   className={cn(
                     'cursor-pointer p-2 text-gray-800 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800',
                     {
@@ -91,22 +87,22 @@ export function WorkspaceSwitcher({
                   )}
                 >
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-blue-300 font-bold text-blue-800">
-                    <WorkspaceLogo name={String(workspace?.workspace?.name)} />
+                    <ProjectLogo name={team.name} />
                   </div>
-                  {workspace?.workspace?.name}
+                  {team.name}
                 </DropdownMenuItem>
               );
             })}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
-              onClick={() => router.push('/workspaces/create')}
+              onClick={() => router.push('/projects/create')}
             >
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />
               </div>
               <div className="text-muted-foreground font-medium">
-                Add workspace
+                Add project
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -14,9 +14,6 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
-import { useActionItemsByTeamsSubscription } from '../hooks/use-action-items-by-teams-subscriptions';
-
 import EntryForm from './entry-form';
 
 interface ActionItemsProps {

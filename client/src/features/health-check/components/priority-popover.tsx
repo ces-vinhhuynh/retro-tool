@@ -2,6 +2,7 @@
 
 import { CheckCircle } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GenericPopover } from '@/features/health-check/components/generic-popover';
 import {
@@ -19,6 +20,7 @@ interface PriorityPopoverProps {
   setPriority?: (id: string, priority: ActionPriority) => void;
   isUpdating?: boolean;
   isEditable?: boolean;
+  variant?: 'icon' | 'text';
 }
 
 export const PriorityPopover = ({
@@ -29,17 +31,45 @@ export const PriorityPopover = ({
   setPriority,
   isUpdating,
   isEditable = true,
+  variant = 'icon',
 }: PriorityPopoverProps) => {
-  const triggerButton = (
-    <Button
-      variant="ghost"
-      size="icon"
-      disabled={!isEditable}
-      className={'h-8 w-8'}
-    >
-      {getPriorityIcon?.(item.priority as ActionPriority)}
-    </Button>
-  );
+  // Helper function to get priority color for badge variant
+  const getPriorityColor = (priority: string) => {
+    switch (priority?.toUpperCase()) {
+      case 'HIGH':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'MEDIUM':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'LOW':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  // Trigger button based on variant
+  const triggerButton =
+    variant === 'text' ? (
+      <Badge
+        variant="outline"
+        className={cn(
+          'cursor-pointer transition-colors',
+          getPriorityColor(item.priority || 'LOW'),
+          !isEditable && 'cursor-default',
+        )}
+      >
+        {item.priority?.toUpperCase() || 'LOW'}
+      </Badge>
+    ) : (
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={!isEditable}
+        className={'h-8 w-8'}
+      >
+        {getPriorityIcon?.(item.priority as ActionPriority)}
+      </Button>
+    );
 
   const popoverContent = (
     <div className="space-y-2">
@@ -59,8 +89,19 @@ export const PriorityPopover = ({
                 {item.priority === key && <CheckCircle className="h-3 w-3" />}
               </div>
             </div>
-            <Icon className={cn('h-4 w-4', config.className)} />
-            {config.label}
+            {variant === 'text' ? (
+              <Badge
+                variant="outline"
+                className={cn('ml-2', getPriorityColor(key))}
+              >
+                {key.toUpperCase()}
+              </Badge>
+            ) : (
+              <>
+                <Icon className={cn('h-4 w-4', config.className)} />
+                {config.label}
+              </>
+            )}
           </Button>
         );
       })}

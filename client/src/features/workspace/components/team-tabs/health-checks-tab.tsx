@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -36,9 +37,10 @@ const HealthChecksTab = ({
             <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
               <Button
                 variant="default"
-                className="ml-auto"
+                className="bg-primary ml-auto hover:bg-blue-900"
                 onClick={() => setShowDialog(true)}
               >
+                <Plus />
                 New Health Check
               </Button>
             </div>

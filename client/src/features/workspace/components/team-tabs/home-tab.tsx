@@ -1,23 +1,29 @@
-import { BadgeAlert, Handshake } from 'lucide-react';
+import { BadgeAlert, Handshake, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import ActionItems from '@/features/health-check/components/action-items';
-import EntryList from '@/features/health-check/components/entry-list';
-import { useAgreementMutation } from '@/features/health-check/hooks/agreements/use-agreements-mutation';
+import DashboardActionItems from '@/features/health-check/components/dashboard-action-items';
+import SessionTemplateDialog from '@/features/health-check/components/sessions/session-template-dialog';
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
-import { useIssuesMutation } from '@/features/health-check/hooks/issues/use-issues-mutation';
 import { useIssuesSubscription } from '@/features/health-check/hooks/issues/use-issues-subscription';
-import { useActionItemAssignSubscription } from '@/features/health-check/hooks/use-action-item-assign-subscription';
-import { useActionItemsByTeamsSubscription } from '@/features/health-check/hooks/use-action-items-by-teams-subscriptions';
+import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
+import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { Agreement } from '@/features/health-check/types/agreements';
 import {
   ActionItemWithAssignees,
+  HealthCheck,
   User,
 } from '@/features/health-check/types/health-check';
 import { Issue } from '@/features/health-check/types/issues';
-
+import { Template } from '@/features/health-check/types/templates';
+import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
+import { sortTemplatesByLatestHealthCheck } from '@/features/health-check/utils/template';
 
 import { useGetTeamMembers } from '../../hooks/use-get-team-member';
+
+import TeamHealthTrend from './team-health-trend';
 
 interface HomeTabProps {
   teamId: string;
@@ -27,104 +33,224 @@ interface HomeTabProps {
 }
 
 const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
-
+  const router = useRouter();
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
 
-  const {
-    createAgreements,
-    deleteAgreements,
-    isLoading: isLoadingAgreements,
-  } = useAgreementMutation();
+  // State to control EntryForm visibility
+  const [showEntryForm, setShowEntryForm] = useState(false);
 
-  const {
-    createIssue,
-    deleteIssue,
-    isLoading: isLoadingIssues,
-  } = useIssuesMutation();
-
-  const handleCreateAgreement = (title: string) => {
-    createAgreements({
-      title,
-      team_id: teamId,
-    });
-  };
-
-  const handleDeleteAgreement = (id: string) => {
-    deleteAgreements(id);
-  };
-
-  const handleCreateIssue = (title: string) => {
-    createIssue({
-      title,
-      team_id: teamId,
-    });
-  };
-
-  const handleDeleteIssue = (id: string) => {
-    deleteIssue(id);
+  const getIssueColor = (index: number) => {
+    const colors = [
+      'bg-red-50 border-red-200',
+      'bg-yellow-50 border-yellow-200',
+      'bg-green-50 border-green-200',
+    ];
+    return colors[index % colors.length];
   };
 
   useAgreementsSubscription(teamId);
   useIssuesSubscription(teamId);
-  useActionItemsByTeamsSubscription(String(teamId));
-  useActionItemAssignSubscription(String(teamId));
-  
+
+  const { data: scrumHealthChecks = [] } = useGetHealthChecksByTeam(teamId);
+  const { data: templates = [] } = useTemplates();
+
+  const healthChecksGrouped = splitHealthChecksByTemplateId(
+    templates as Template[],
+    scrumHealthChecks as HealthCheck[],
+  );
+
+  const sortedTemplates = sortTemplatesByLatestHealthCheck(
+    templates as Template[],
+    scrumHealthChecks as HealthCheck[],
+  );
+
+  const [selectedTemplate] = useState<string>(sortedTemplates[0]?.id || '');
+
+  const [showDialog, setShowDialog] = useState(false);
+
+  const healthChecks = healthChecksGrouped[selectedTemplate];
+
   return (
-    <Card className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
-        <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
-        <CardHeader>
-          <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-2xl font-semibold text-transparent">
-            Team actions
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <ActionItems
-            actionItems={actionItems}
-            teamId={teamId}
-            teamMembers={teamMembers as unknown as User[]}
-            isHandlingOpenLink
-          />
-        </CardContent>
-      </Card>
-      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
-        <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
-        <CardHeader>
-          <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-2xl font-semibold text-transparent">
-            Team agreements
-          </CardTitle>
+    <div className="space-y-6">
+      {/* Breadcrumb & Header */}
+      <div className="flex items-center justify-between">
+        <Button
+          className="bg-primary ml-auto hover:bg-blue-900"
+          onClick={() => setShowDialog(true)}
+        >
+          <Plus />
+          New Health Check
+        </Button>
+      </div>
+
+      {/* Main Dashboard Grid - Using flex layout for equal heights */}
+      <div className="flex flex-col gap-6 lg:flex-row">
+        {/* Top Team Actions Section - Left Column (2/3 width) */}
+        <div className="lg:w-2/3">
+          <Card className="flex h-full flex-col">
+            <CardHeader className="flex flex-shrink-0 flex-row items-center justify-between space-y-0 pb-4">
+              <CardTitle className="text-xl font-semibold">
+                Top Team Actions
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setShowEntryForm(!showEntryForm);
+                }}
+              >
+                {showEntryForm ? 'Cancel' : 'Add Action'}
+              </Button>
+            </CardHeader>
+            <CardContent className="flex flex-1 flex-col space-y-4">
+              <div className="flex-1">
+                <DashboardActionItems
+                  showEntryForm={showEntryForm}
+                  actionItems={actionItems}
+                  teamId={teamId}
+                  teamMembers={teamMembers as unknown as User[]}
+                />
+              </div>
+
+              {actionItems.length > 0 && (
+                <div className="flex-shrink-0 border-t pt-4">
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-blue-600"
+                    onClick={() => router.push(`/teams/${teamId}/actions`)}
+                  >
+                    View All Actions ({actionItems.length})
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Issues and Agreements (1/3 width) */}
+        <div className="flex flex-col gap-6 lg:w-1/3">
+          {/* Long Term Issues Section */}
+          <Card className="flex-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+              <div className="flex items-center gap-2">
+                <BadgeAlert className="h-5 w-5 text-orange-600" />
+                <CardTitle className="text-lg font-semibold">
+                  Long Term Issues
+                </CardTitle>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  /* Add issue handler */
+                }}
+              >
+                Add
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {issues.length === 0 ? (
+                <div className="text-muted-foreground py-6 text-center">
+                  <p className="text-sm">No issues yet</p>
+                </div>
+              ) : (
+                <>
+                  {issues.slice(0, 3).map((issue, index) => (
+                    <div
+                      key={issue.id}
+                      className={`rounded-lg border p-3 text-sm ${getIssueColor(index)}`}
+                    >
+                      {issue.title}
+                    </div>
+                  ))}
+                  <div className="pt-2">
+                    <Button
+                      variant="link"
+                      className="h-auto p-0 text-sm text-blue-600"
+                      onClick={() =>
+                        router.push(`/teams/${teamId}/long-term-issues`)
+                      }
+                    >
+                      View All Issues ({issues.length})
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Team Agreements Section */}
+          <Card className="flex-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+              <div className="flex items-center gap-2">
+                <Handshake className="h-5 w-5 text-blue-600" />
+                <CardTitle className="text-lg font-semibold">
+                  Team Agreements
+                </CardTitle>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  /* Add agreement handler */
+                }}
+              >
+                Add
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {agreements.length === 0 ? (
+                <div className="text-muted-foreground py-6 text-center">
+                  <p className="text-sm">No agreements yet</p>
+                </div>
+              ) : (
+                <>
+                  {agreements.slice(0, 3).map((agreement) => (
+                    <div
+                      key={agreement.id}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <div className="h-2 w-2 flex-shrink-0 rounded-full bg-blue-500"></div>
+                      <span>{agreement.title}</span>
+                    </div>
+                  ))}
+                  <div className="pt-2">
+                    <Button
+                      variant="link"
+                      className="h-auto p-0 text-sm text-blue-600"
+                      onClick={() => router.push(`/teams/${teamId}/agreements`)}
+                    >
+                      View All Agreements ({agreements.length})
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Data Trend Chart - Full Width */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <CardTitle className="text-xl font-semibold">Data Tracking</CardTitle>
+          <Button
+            variant="outline"
+            onClick={() => router.push(`/teams/${teamId}/health-checks`)}
+          >
+            View All
+          </Button>
         </CardHeader>
         <CardContent>
-          <EntryList
-            items={agreements}
-            emptyItemMessage="No agreements yet"
-            Icon={Handshake}
-            handleAddItem={handleCreateAgreement}
-            handleDeleteItem={handleDeleteAgreement}
-            isLoading={isLoadingAgreements}
-          />
+          <TeamHealthTrend healthChecks={healthChecks} />
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
-        <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
-        <CardHeader>
-          <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-2xl font-semibold text-transparent">
-            Long term issues
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <EntryList
-            items={issues}
-            emptyItemMessage="No issues yet"
-            Icon={BadgeAlert}
-            handleAddItem={handleCreateIssue}
-            handleDeleteItem={handleDeleteIssue}
-            isLoading={isLoadingIssues}
-          />
-        </CardContent>
-      </Card>
-    </Card>
+      <SessionTemplateDialog
+        open={showDialog}
+        onOpenChange={() => setShowDialog(!showDialog)}
+      />
+    </div>
   );
 };
 
