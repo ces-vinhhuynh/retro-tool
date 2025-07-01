@@ -14,9 +14,6 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import { useActionItemAssignSubscription } from '../hooks/use-action-item-assign-subscription';
-import { useActionItemsByTeamsSubscription } from '../hooks/use-action-items-by-teams-subscriptions';
-
 import EntryForm from './entry-form';
 
 interface DashboardActionItemsProps {
@@ -39,9 +36,6 @@ const DashboardActionItems = ({
 
   const { mutate: deleteActionItem, isPending: isDeleting } =
     useDeleteActionItem();
-
-  // useActionItemsByTeamsSubscription(String(teamId));
-  // useActionItemAssignSubscription(String(teamId));
 
   const {
     register,
@@ -71,9 +65,6 @@ const DashboardActionItems = ({
     }
   });
 
-  // Limit to top 3 action items for dashboard
-  const displayedActionItems = actionItems.slice(0, 3);
-
   return (
     <div className="flex h-full w-full flex-col bg-white">
       {/* Always show EntryForm when showEntryForm is true */}
@@ -91,7 +82,7 @@ const DashboardActionItems = ({
 
       {/* Content area */}
       <div className="flex flex-1 flex-col">
-        {displayedActionItems.length === 0 ? (
+        {actionItems.length === 0 ? (
           // Empty state - different message based on whether form is showing
           <div className="text-muted-foreground flex flex-1 flex-col justify-center text-center">
             {showEntryForm ? (
@@ -107,7 +98,7 @@ const DashboardActionItems = ({
           // Show action items
           <div className="max-h-full overflow-auto">
             <div className="w-fit min-w-full">
-              {displayedActionItems.map((item) => (
+              {actionItems.map((item) => (
                 <ActionItemRow
                   key={item.id}
                   item={item}

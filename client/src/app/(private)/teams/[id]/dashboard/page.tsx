@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
-import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
+import { useGetActionItemsByTeamIdFromRecentHealthChecks } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import HomeTab from '@/features/workspace/components/team-tabs/home-tab';
 import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
@@ -18,7 +18,7 @@ const DashboardPage = () => {
   const router = useRouter();
 
   // Data fetching for dashboard
-  const { data: actionItems = [] } = useGetActionItemsByTeamId(teamId);
+  const { data: actionItems = [] } = useGetActionItemsByTeamIdFromRecentHealthChecks(teamId, 2);
   const { data: agreements = [] } = useAgreementsQuery(teamId);
   const { data: issues = [] } = useIssuesQuery(teamId);
 

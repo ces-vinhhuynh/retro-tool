@@ -231,7 +231,7 @@ export const ActionItemRow = ({
         emails: assignedEmails,
         dueDate: item.due_date ?? '',
       });
-      updateActionItem({
+      await updateActionItem({
         id,
         actionItem: {
           event_id: eventId,

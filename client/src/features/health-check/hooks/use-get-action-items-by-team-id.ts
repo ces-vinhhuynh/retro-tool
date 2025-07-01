@@ -20,3 +20,11 @@ export const useGetActionItemsByTeamId = (teamId: string) => {
 
   return { data, isLoading };
 };
+
+export const useGetActionItemsByTeamIdFromRecentHealthChecks = (teamId: string, numOfRecentHealthChecks: number) => {
+  return useQuery({
+    queryKey: ['get-action-items-by-teamId', teamId],
+    queryFn: () => actionItemService.getByTeamIdFromRecentHealthChecks(teamId, numOfRecentHealthChecks),
+    enabled: !!teamId,
+  });
+};
