@@ -268,7 +268,7 @@ const ManageCustomTemplateModal = ({
               <Button
                 type="button"
                 variant="outline"
-                className="hover:bg-ces-orange-500 size-9 rounded-full text-2xl hover:text-white"
+                className="hover:bg-primary size-9 rounded-full text-2xl hover:text-white"
                 onClick={() =>
                   append({
                     id: crypto.randomUUID(),
@@ -283,19 +283,11 @@ const ManageCustomTemplateModal = ({
             </div>
 
             {isEdit ? (
-              <Button
-                className="bg-ces-orange-500 hover:bg-ces-orange-600"
-                type="submit"
-                disabled={isTemplateUpdating || !isValid}
-              >
+              <Button type="submit" disabled={isTemplateUpdating || !isValid}>
                 {isTemplateUpdating ? 'Updating...' : 'Update Template'}
               </Button>
             ) : (
-              <Button
-                className="bg-ces-orange-500 hover:bg-ces-orange-600"
-                type="submit"
-                disabled={isTemplateCreating || !isValid}
-              >
+              <Button type="submit" disabled={isTemplateCreating || !isValid}>
                 {isTemplateCreating ? 'Creating...' : 'Create Template'}
               </Button>
             )}

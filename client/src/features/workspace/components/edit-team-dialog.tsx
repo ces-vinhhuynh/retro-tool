@@ -99,11 +99,7 @@ export default function EditTeamDialog({
               </div>
             </div>
 
-            <Button
-              className="bg-ces-orange-500 hover:bg-ces-orange-600"
-              type="submit"
-              disabled={isPending}
-            >
+            <Button type="submit" disabled={isPending}>
               Update Team
             </Button>
           </form>

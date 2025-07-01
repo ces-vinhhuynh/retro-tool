@@ -22,8 +22,7 @@ const TabNavigation = ({
           onClick={() => onTabChange(tab.id as HealthCheckTab)}
           className={cn(
             'cursor-pointer px-6 py-3 text-sm font-medium transition-colors',
-            activeTab === tab.id &&
-              'border-ces-orange-500 text-ces-orange-500 border-b-2',
+            activeTab === tab.id && 'border-primary text-primary border-b-2',
           )}
         >
           {tab.label}

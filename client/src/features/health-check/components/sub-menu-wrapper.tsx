@@ -31,10 +31,10 @@ const SubMenuWrapper = ({
         <div className="flex h-full flex-col rounded-2xl p-6">
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between">
-              <Icon size={30} className="text-ces-orange-500" />
+              <Icon size={30} className="text-rhino-500" />
               <ArrowRightToLine
                 size={25}
-                className="hover:text-ces-orange-500 cursor-pointer"
+                className="hover:text-rhino-500 cursor-pointer"
                 onClick={() => setSelectedSubmenu('')}
               />
             </div>

@@ -51,7 +51,7 @@ const CommentItem = ({
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="hover:bg-ces-orange-50 hover:text-ces-orange-500 size-9 cursor-pointer rounded-full text-gray-500"
+                  className="hover:bg-rhino-50 hover:text-rhino-500 size-9 cursor-pointer rounded-full text-gray-500"
                   onClick={() => onClickCreateIssue(comment)}
                 >
                   <MessageSquareShare className="h-6 w-6" />
@@ -60,7 +60,7 @@ const CommentItem = ({
               <TooltipContent
                 align="end"
                 alignOffset={-20}
-                className="bg-ces-orange-100 text-ces-orange-500 text-xs font-medium"
+                className="bg-rhino-100 text-rhino-500 text-xs font-medium"
               >
                 <p>Create Long term issue</p>
               </TooltipContent>

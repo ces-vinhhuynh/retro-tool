@@ -88,7 +88,7 @@ export const SurveyNavigation = ({
                       className={cn(
                         `h-8 w-8 min-w-8 rounded-full bg-white text-sm font-semibold transition hover:cursor-pointer`,
                         {
-                          'border-ces-orange-500 text-ces-orange-500 pointer-events-none':
+                          'border-primary text-primary pointer-events-none':
                             page === index,
                         },
                       )}

@@ -24,7 +24,7 @@ export const ActionsCell = ({ row }: ActionsCellProps) => {
       variant="ghost"
       onClick={() => handleDeleteWorkspaceUser(id)}
       disabled={role === WORKSPACE_ROLES.owner}
-      className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
+      className="hover:text-primary p-0 hover:bg-transparent"
     >
       <Trash2 />
     </Button>

@@ -50,8 +50,7 @@ const ConfirmModal = ({
             onClick={onConfirm}
             className={cn(
               'bg-red-600 hover:bg-red-700',
-              variant === 'confirm' &&
-                'bg-ces-orange-500 hover:bg-ces-orange-600',
+              variant === 'confirm' && 'bg-primary hover:bg-primary/90',
               className,
             )}
             disabled={loading}

@@ -131,7 +131,7 @@ const SubMenu = () => {
                 trigger={
                   <Button
                     variant="ghost"
-                    className="hover:text-ces-orange-500 flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
+                    className="hover:text-primary flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
                   >
                     {item.icon}
                     <span className="text-xs">{item.name}</span>
@@ -142,7 +142,7 @@ const SubMenu = () => {
               <Button
                 key={item.value}
                 variant={'ghost'}
-                className="hover:text-ces-orange-500 flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
+                className="hover:text-primary flex w-full cursor-pointer flex-col items-center gap-2 text-gray-600 hover:bg-white"
                 onClick={() => {
                   setSelectedSubmenu(
                     selectedSubmenu === item.value ? '' : item.value,

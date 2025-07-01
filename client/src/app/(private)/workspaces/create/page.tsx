@@ -83,7 +83,7 @@ const CreateWorkspacePage = () => {
     <div className="mx-auto flex h-screen w-full max-w-md flex-col items-center justify-center px-4 sm:px-0">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-ces-orange-500 text-center text-2xl font-bold">
+          <CardTitle className="text-primary text-center text-2xl font-bold">
             {STEPS[currentStep].title}
           </CardTitle>
           <CardDescription className="text-center text-gray-700">
@@ -111,7 +111,7 @@ const CreateWorkspacePage = () => {
 
               {isWorkspaceStep ? (
                 <Button
-                  className="bg-ces-orange-500 hover:bg-ces-orange-600 ml-auto"
+                  className="ml-auto"
                   type="button"
                   onClick={(e) => handleStepChange('team', e)}
                   disabled={!workspaceName}
@@ -120,11 +120,7 @@ const CreateWorkspacePage = () => {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               ) : (
-                <Button
-                  className="bg-ces-orange-500 hover:bg-ces-orange-600"
-                  type="submit"
-                  disabled={isCreating || !teamName}
-                >
+                <Button type="submit" disabled={isCreating || !teamName}>
                   Create Team
                 </Button>
               )}

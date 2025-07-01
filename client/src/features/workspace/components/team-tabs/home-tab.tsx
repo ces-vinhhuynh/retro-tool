@@ -116,7 +116,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                 <div className="flex-shrink-0 border-t pt-4">
                   <Button
                     variant="link"
-                    className="h-auto p-0 text-blue-600"
+                    className="text-primary-link h-auto p-0"
                     onClick={() => router.push(`/teams/${teamId}/actions`)}
                   >
                     View All Actions ({actionItems.length})

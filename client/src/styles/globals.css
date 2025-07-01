@@ -45,6 +45,7 @@
 
   --primary-text: #333333;
   --secondary-text: #666666;
+  --link-text: #3366cc;
 
   --color-rhino-50: #f3f6fb;
   --color-rhino-100: #e3eaf6;
@@ -110,6 +111,7 @@
   --color-rhino-950: var(--color-rhino-950);
   --color-primary-text: var(--primary-text);
   --color-secondary-text: var(--secondary-text);
+  --color-link-text: var(--link-text);
   --color-background: var(--background);
   --font-heading: var(--font-Roboto);
   --font-body: var(--font-Inter);

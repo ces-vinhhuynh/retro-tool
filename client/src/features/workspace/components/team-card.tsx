@@ -59,7 +59,7 @@ const TeamCard = ({
             <Button
               variant="ghost"
               onSelect={() => setDialogOpen(true)}
-              className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+              className="hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
             >
               <Pencil className="h-4 w-4" />
             </Button>
@@ -67,7 +67,7 @@ const TeamCard = ({
           <Button
             variant="ghost"
             onClick={() => onDelete(team.id)}
-            className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
+            className="hover:text-primary p-0 hover:bg-transparent"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -106,8 +106,7 @@ const TeamCard = ({
             className={cn(
               'inline-block w-fit rounded-full border border-gray-200 bg-gray-300/50 px-2.5 py-1 text-xs font-medium capitalize',
               {
-                'bg-ces-orange-500 text-white':
-                  currentUserRole === TEAM_ROLES.admin,
+                'bg-primary text-white': currentUserRole === TEAM_ROLES.admin,
               },
             )}
           >

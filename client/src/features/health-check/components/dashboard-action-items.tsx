@@ -40,8 +40,8 @@ const DashboardActionItems = ({
   const { mutate: deleteActionItem, isPending: isDeleting } =
     useDeleteActionItem();
 
-  useActionItemsByTeamsSubscription(String(teamId));
-  useActionItemAssignSubscription(String(teamId));
+  // useActionItemsByTeamsSubscription(String(teamId));
+  // useActionItemAssignSubscription(String(teamId));
 
   const {
     register,

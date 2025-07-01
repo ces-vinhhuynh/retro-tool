@@ -49,7 +49,7 @@ const UserItem = ({
         <p className="truncate text-sm font-medium">
           {participant.user.full_name}
         </p>
-        <span className="text-ces-orange-600 text-xs font-medium">
+        <span className="text-rhino-600 text-xs font-medium">
           {participant.progress} %
         </span>
       </div>

@@ -35,7 +35,7 @@ export default function UpdatePasswordPage() {
           <Button
             type="submit"
             disabled={isPending}
-            className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white"
+            className="w-full text-white"
           >
             {isPending ? 'Updating...' : 'Update Password'}
           </Button>

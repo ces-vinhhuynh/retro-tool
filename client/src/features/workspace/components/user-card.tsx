@@ -76,7 +76,7 @@ const UserCard = ({
           {(currentUserRole === WORKSPACE_ROLES.owner || !isOwnerOrAdmin) && (
             <div
               className={cn(
-                'bg-ces-orange-500 flex h-8 w-fit min-w-24 cursor-pointer items-center justify-center rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                'bg-primary flex h-8 w-fit min-w-24 cursor-pointer items-center justify-center rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
                 {
                   'bg-gray-100 text-gray-900': isWorkspaceUserCard
                     ? user.role === WORKSPACE_ROLES.member
@@ -93,7 +93,7 @@ const UserCard = ({
               <Select value={user.role} onValueChange={onUpdateRole}>
                 <SelectTrigger
                   className={cn(
-                    'bg-ces-orange-500 h-8 w-fit min-w-24 cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                    'bg-primary h-8 w-fit min-w-24 cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
                     {
                       'bg-gray-100 text-gray-900': isWorkspaceUserCard
                         ? user.role === WORKSPACE_ROLES.member
@@ -127,7 +127,7 @@ const UserCard = ({
               {user.teams?.map((team, idx) => (
                 <div
                   key={`${user.id}_${team}_${idx}`}
-                  className="bg-ces-orange-100/60 text-ces-orange-600 flex max-w-full items-center truncate rounded-full px-3 py-2 text-sm font-semibold"
+                  className="bg-rhino-100/60 text-rhino-600 flex max-w-full items-center truncate rounded-full px-3 py-2 text-sm font-semibold"
                 >
                   {team}
                 </div>
@@ -140,7 +140,7 @@ const UserCard = ({
         <Button
           variant="ghost"
           onClick={() => onDelete(user.id)}
-          className="hover:text-ces-orange-500 p-0 hover:bg-transparent"
+          className="hover:text-primary p-0 hover:bg-transparent"
         >
           <Trash2 className="h-4 w-4" />
         </Button>

@@ -104,7 +104,7 @@ export const useColumns = (
 
         return (
           <Select value={role} onValueChange={handleUpdateUserRole}>
-            <SelectTrigger className="bg-ces-orange-500 t w-fit cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger className="bg-primary w-fit cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0">
               <SelectValue placeholder={'participant'} />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ export const useColumns = (
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
-                        className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+                        className="hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
                         onClick={() => handleInviteUser([userId])}
                       >
                         <Send className="h-4 w-4" />

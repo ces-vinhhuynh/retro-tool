@@ -16,8 +16,8 @@ const ToggleSwitch = ({ id, checked, onCheckedChange }: ToggleSwitchProps) => {
       aria-checked={checked}
       id={id}
       className={cn(
-        'focus:ring-ces-orange-500 relative inline-flex h-5 w-10 cursor-pointer items-center rounded-full transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none',
-        checked ? 'bg-ces-orange-500' : 'bg-gray-200',
+        'focus:ring-primary relative inline-flex h-5 w-10 cursor-pointer items-center rounded-full transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none',
+        checked ? 'bg-primary' : 'bg-gray-200',
       )}
       onClick={() => onCheckedChange(!checked)}
       onKeyDown={(e) => {

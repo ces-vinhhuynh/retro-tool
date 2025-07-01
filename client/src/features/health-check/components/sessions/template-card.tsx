@@ -30,7 +30,7 @@ const TemplateCard = ({
     <Card
       className={cn(
         'relative cursor-pointer border',
-        isSelected ? 'border-ces-orange-500' : 'border-transparent',
+        isSelected ? 'border-primary' : 'border-transparent',
       )}
       onClick={() => onSelect(template)}
       tabIndex={0}
@@ -38,7 +38,7 @@ const TemplateCard = ({
     >
       <Button
         variant="ghost"
-        className="focus:ring-primary hover:bg-ces-orange-100/70 hover:text-ces-orange-500 absolute top-3 right-3 z-10 size-8 rounded-full bg-white p-1 text-gray-500 focus:ring-0 focus:outline-none"
+        className="focus:ring-primary hover:bg-rhino-100/70 hover:text-rhino-500 absolute top-3 right-3 z-10 size-8 rounded-full bg-white p-1 text-gray-500 focus:ring-0 focus:outline-none"
         onClick={(e) => {
           e.stopPropagation();
           onPreview(template);

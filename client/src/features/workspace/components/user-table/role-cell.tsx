@@ -32,7 +32,7 @@ export const RoleCell = ({ row, isOwnerOrAdmin }: RoleCellProps) => {
         className={cn(
           'w-fit rounded-4xl border border-gray-200 bg-gray-100 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0 focus:ring-offset-0',
           {
-            'bg-ces-orange-500 text-white':
+            'bg-primary text-white':
               role === WORKSPACE_ROLES.owner || role === WORKSPACE_ROLES.admin,
           },
         )}
@@ -47,7 +47,7 @@ export const RoleCell = ({ row, isOwnerOrAdmin }: RoleCellProps) => {
         className={cn(
           'w-fit cursor-pointer rounded-4xl border border-gray-200 bg-gray-100 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0 focus:ring-offset-0',
           {
-            'bg-ces-orange-500 text-white': role === WORKSPACE_ROLES.admin,
+            'bg-primary text-white': role === WORKSPACE_ROLES.admin,
           },
         )}
       >

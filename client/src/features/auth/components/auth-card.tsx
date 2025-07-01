@@ -26,11 +26,11 @@ export function AuthCard({ children, title, description }: AuthCardProps) {
             className="mx-auto"
           />
 
-          <CardTitle className="text-ces-orange-500 text-center text-xl font-bold uppercase">
+          <CardTitle className="text-primary-text text-center text-xl font-bold uppercase">
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className="text-secondary text-center">
+            <CardDescription className="text-secondary-text text-center">
               {description}
             </CardDescription>
           )}

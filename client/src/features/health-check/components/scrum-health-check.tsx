@@ -57,7 +57,7 @@ const ScrumHealthCheck = ({
           <Switch
             checked={showBreakdown}
             onCheckedChange={setShowBreakdown}
-            className="data-[state=checked]:bg-ces-orange-500"
+            className="data-[state=checked]:bg-primary"
           />
         </div>
       </div>

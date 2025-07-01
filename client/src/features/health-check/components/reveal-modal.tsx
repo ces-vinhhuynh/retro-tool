@@ -68,7 +68,7 @@ export default function RevealModal({
                             {user.avatar ? (
                               <AvatarImage src={user.avatar} alt={user.name} />
                             ) : (
-                              <AvatarFallback className="bg-ces-orange-500 text-white">
+                              <AvatarFallback className="bg-primary text-white">
                                 {user.name.charAt(0).toUpperCase()}
                               </AvatarFallback>
                             )}

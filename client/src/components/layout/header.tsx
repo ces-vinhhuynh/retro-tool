@@ -11,13 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
@@ -46,19 +39,8 @@ export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
   const { data: currentUser, isLoading } = useCurrentUser();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const base = `/workspaces/${currentWorkspace?.workspace_id}`;
-
-  const links = [
-    { href: `${base}`, label: 'Home' },
-    { href: `${base}/teams`, label: 'Teams' },
-    { href: `${base}/users`, label: 'Users' },
-    { href: `${base}/settings`, label: 'Settings' }, // fix duplicate href with Home
-    { href: `${base}/data`, label: 'Data' },
-  ];
-
   const isTeamRoute =
     pathname.startsWith('/teams/') || pathname.startsWith('/health-checks/');
-  const isWorkspaceRoute = pathname.startsWith('/workspaces/');
 
   const handleSignOut = async () => {
     try {
@@ -107,44 +89,6 @@ export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-
-          {currentWorkspace?.workspace_id && isWorkspaceRoute && (
-            <>
-              <Select
-                value={pathname}
-                onValueChange={(value) => router.push(value)}
-              >
-                <SelectTrigger className="text-ces-orange-500 w-24 rounded-none border-none bg-transparent text-base font-semibold focus:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none sm:hidden">
-                  <SelectValue placeholder="Home" />
-                </SelectTrigger>
-                <SelectContent sideOffset={-5} className="rounded-sm">
-                  {links.map(({ href, label }) => (
-                    <SelectItem key={label} value={href} className="">
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <nav className="hidden flex-wrap gap-3 sm:flex sm:gap-4 md:gap-5">
-                {links.map(({ href, label }) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className={cn(
-                      'text-sm text-gray-500 hover:text-black sm:text-base',
-                      {
-                        'text-ces-orange-500 hover:text-ces-orange-500 font-bold':
-                          pathname === href,
-                      },
-                    )}
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </nav>
-            </>
-          )}
 
           {isLoading && (
             <div className="h-8 w-32 animate-pulse rounded bg-gray-200 sm:h-9 sm:w-36 dark:bg-gray-700"></div>

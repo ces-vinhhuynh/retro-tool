@@ -50,14 +50,14 @@ export const ActionsCell = ({ row, isOwnerOrAdmin }: RoleCellProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onSelect={() => setDialogOpen(true)}
-            className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+            className="primary hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
           >
             <Pencil className="h-4 w-4" />
             <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => handleDeleteTeam(id)}
-            className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+            className="primary focus:text-primary flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
           >
             <Trash2 className="h-4 w-4" />
             <span>Delete</span>

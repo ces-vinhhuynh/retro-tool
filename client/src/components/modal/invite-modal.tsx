@@ -62,7 +62,7 @@ const InviteModal = ({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="p-2">
-          <div className="bg-ces-orange-100 rounded-md p-4 text-gray-700">
+          <div className="bg-rhino-100 rounded-md p-4 text-gray-700">
             <span>{description}</span>
           </div>
           <div className="flex items-end justify-between gap-2 pt-4">

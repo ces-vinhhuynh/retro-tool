@@ -36,7 +36,7 @@ export default function WorkspacePage() {
   const isOwnerOrAdmin =
     workspaceUser?.role === WORKSPACE_ROLES.owner ||
     workspaceUser?.role === WORKSPACE_ROLES.admin;
-
+  console.log(workspaceUser);
   const columns = useColumns(isOwnerOrAdmin);
 
   const handleClose = () => {

@@ -182,7 +182,11 @@ export function AppSidebar({
           <SidebarMenu className="px-1">
             <SidebarMenuItem className="w-full overflow-x-hidden">
               <SidebarMenuButton
-                onClick={() => router.push('/data-insight')}
+                onClick={() =>
+                  router.push(
+                    `/workspaces/${currentWorkspace.workspace_id}/data`,
+                  )
+                }
                 className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
               >
                 <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
@@ -197,7 +201,11 @@ export function AppSidebar({
           <SidebarMenu className="px-1">
             <SidebarMenuItem className="w-full overflow-x-hidden">
               <SidebarMenuButton
-                onClick={() => router.push('/users')}
+                onClick={() =>
+                  router.push(
+                    `/workspaces/${currentWorkspace.workspace_id}/users`,
+                  )
+                }
                 className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
               >
                 <Users className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />

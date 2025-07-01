@@ -71,14 +71,17 @@ const SignInPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Checkbox id="rememberMe" {...register('rememberMe')} />
-              <Label htmlFor="rememberMe" className="text-secondary text-sm">
+              <Label
+                htmlFor="rememberMe"
+                className="text-secondary-text text-sm"
+              >
                 Remember me
               </Label>
             </div>
 
             <Link
               href="/auth/forgot-password"
-              className="text-ces-orange-500 text-sm hover:underline"
+              className="text-link-text text-sm hover:underline"
             >
               Forgot password?
             </Link>
@@ -86,7 +89,7 @@ const SignInPage = () => {
 
           <Button
             type="submit"
-            className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white"
+            className="w-full"
             disabled={isSigningInWithEmail}
           >
             {isSigningInWithEmail ? (
@@ -104,7 +107,7 @@ const SignInPage = () => {
             <Separator />
           </div>
           <div className="relative flex justify-center">
-            <span className="text-secondary bg-white px-2 text-sm">
+            <span className="text-secondary-text bg-white px-2 text-sm">
               Or continue with
             </span>
           </div>
@@ -115,9 +118,9 @@ const SignInPage = () => {
         />
       </CardContent>
       <CardFooter className="justify-center">
-        <p className="text-secondary text-sm">
+        <p className="text-secondary-text text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/auth/signup" className="text-ces-orange-500 font-medium">
+          <Link href="/auth/signup" className="text-link-text font-medium">
             Sign up
           </Link>
         </p>

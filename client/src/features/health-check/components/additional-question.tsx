@@ -61,7 +61,7 @@ const AdditionalQuestion = ({
                 addNewComment();
               }
             }}
-            className="focus:border-ces-orange-500 focus:ring-ces-orange-500 rounded-lg border border-gray-200 bg-[#F7F7F7] focus:ring-1"
+            className="focus:border-primary focus:ring-primary rounded-lg border border-gray-200 bg-[#F7F7F7] focus:ring-1"
             maxLength={LONG_TEXT_INPUT_MAX_LENGTH}
           />
           <div className="absolute top-12 right-2 flex justify-end">
@@ -75,7 +75,7 @@ const AdditionalQuestion = ({
           size="sm"
           disabled={!newComment}
           onClick={addNewComment}
-          className="bg-ces-orange-500 hover:bg-ces-orange-300 whitespace-nowrap text-white"
+          className="whitespace-nowrap"
         >
           <Plus size={14} className="mr-1" />
           Add

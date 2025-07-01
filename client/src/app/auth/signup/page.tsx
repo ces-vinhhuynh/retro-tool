@@ -72,11 +72,7 @@ export default function RegisterPage() {
             onTogglePassword={() => setShowPassword(!showPassword)}
           />
 
-          <Button
-            type="submit"
-            className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white"
-            disabled={isSigningUp}
-          >
+          <Button type="submit" className="w-full" disabled={isSigningUp}>
             {isSigningUp ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -93,7 +89,7 @@ export default function RegisterPage() {
             <Separator />
           </div>
           <div className="relative flex justify-center">
-            <span className="text-secondary bg-white px-2 text-sm">
+            <span className="text-secondary-text bg-white px-2 text-sm">
               Or continue with
             </span>
           </div>
@@ -106,12 +102,9 @@ export default function RegisterPage() {
       </CardContent>
 
       <CardFooter className="justify-center">
-        <p className="text-secondary text-sm">
+        <p className="text-secondary-text text-sm">
           Already have an account?{' '}
-          <Link
-            href="/auth/signin"
-            className="text-ces-orange-500 hover:text-ces-orange-600 font-medium"
-          >
+          <Link href="/auth/signin" className="text-link-text font-medium">
             Sign in
           </Link>
         </p>

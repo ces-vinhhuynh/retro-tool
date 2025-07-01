@@ -44,10 +44,10 @@ const NavTeams = ({ teams }: NavTeamsProps) => {
                     className={cn(
                       'cursor-pointer',
                       isActive &&
-                        'bg-ces-orange-100/70 text-ces-orange-600 hover:bg-ces-orange-100/70 data-[state=open]:hover:bg-ces-orange-100/70 data-[state=open]:hover:text-ces-orange-600 hover:text-ces-orange-600 font-medium',
+                        'bg-rhino-100/70 text-rhino-600 hover:bg-rhino-100/70 data-[state=open]:hover:bg-rhino-100/70 data-[state=open]:hover:text-rhino-600 hover:text-rhino-600 font-medium',
                     )}
                   >
-                    <Users className={cn(isActive && 'text-ces-orange-600')} />
+                    <Users className={cn(isActive && 'text-rhino-600')} />
                     <span>{team.name}</span>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>

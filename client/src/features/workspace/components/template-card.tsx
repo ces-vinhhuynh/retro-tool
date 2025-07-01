@@ -30,7 +30,7 @@ export const TemplateCard = ({
   isAdmin,
 }: TemplateCardProps) => {
   return (
-    <div className="hover:bg-ces-orange-50/30 relative h-full max-h-60 min-h-40 rounded-sm border border-gray-400 p-5 transition-transform duration-200 ease-in-out">
+    <div className="hover:bg-rhino-50/30 relative h-full max-h-60 min-h-40 rounded-sm border border-gray-400 p-5 transition-transform duration-200 ease-in-out">
       <div className="flex h-full flex-col gap-2 overflow-hidden">
         <p className="font truncate text-lg font-bold">{template?.name}</p>
         <p className="line-clamp-3 text-sm break-words">
@@ -52,7 +52,7 @@ export const TemplateCard = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" portalled={false}>
             <DropdownMenuItem
-              className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+              className="hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
               onClick={() => {
                 setOpenModal(CustomTemplateModalType.MANAGE);
                 setSelectedTemplate(template);
@@ -62,7 +62,7 @@ export const TemplateCard = ({
               <span>Edit</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+              className="focus:text-primary flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
               onClick={() => {
                 setOpenModal(CustomTemplateModalType.DELETE);
                 setSelectedTemplate(template);

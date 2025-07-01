@@ -56,7 +56,7 @@ export const useColumns = (
             {teams?.map((team, idx) => (
               <div
                 key={`${id}_${team}_${idx}`}
-                className="bg-ces-orange-100/60 text-ces-orange-600 flex items-center rounded-full px-3 py-2 font-semibold"
+                className="bg-rhino-100/60 text-rhino-600 flex items-center rounded-full px-3 py-2 font-semibold"
               >
                 {team}
               </div>

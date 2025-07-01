@@ -13,7 +13,7 @@ const ScoreMetric = ({
   label,
   value,
   unit = '/10',
-  colorClass = 'text-ces-orange-500',
+  colorClass = 'text-primary',
 }: ScoreMetricProps) => {
   return (
     <div

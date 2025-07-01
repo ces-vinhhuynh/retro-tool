@@ -160,7 +160,7 @@ const WelcomeModal = ({
               <TabsTrigger value="link">Code/Link</TabsTrigger>
             </TabsList>
             <TabsContent value="email" className="flex flex-col gap-2">
-              <div className="bg-ces-orange-50 rounded-lg p-6">
+              <div className="bg-rhino-50 rounded-lg p-6">
                 <DataTable columns={columns} data={teamMembers} />
                 <Input
                   placeholder="Enter emails..."
@@ -177,7 +177,7 @@ const WelcomeModal = ({
               </Button>
             </TabsContent>
             <TabsContent value="link">
-              <div className="bg-ces-orange-50 rounded-lg p-6">
+              <div className="bg-rhino-50 rounded-lg p-6">
                 <div className="flex flex-col md:flex-row md:items-start">
                   <div className="md:w-2/5">
                     <h4 className="mb-2 text-lg font-medium">Scan to Join</h4>

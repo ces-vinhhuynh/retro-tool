@@ -19,7 +19,6 @@ import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { HealthCheck } from '@/features/health-check/types/health-check';
 import { cn } from '@/utils/cn';
-import { MESSAGE } from '@/utils/messages';
 
 import { TEAM_ROLES } from '../constants/user';
 import { useDeleteTeam } from '../hooks/use-delete-team';
@@ -54,8 +53,6 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
     templates,
   );
 
-  console.log('teamScore', teamScore);
-
   const { mutate: deleteTeam } = useDeleteTeam();
 
   const currentUserRole = team.users.find(
@@ -66,11 +63,35 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
     deleteTeam(id);
   };
 
+  function simpleTimeAgo(dateStr: string): string {
+    const now = new Date();
+    const then = new Date(dateStr);
+
+    // Strip time from both for full-day accuracy
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const thenDate = new Date(
+      then.getFullYear(),
+      then.getMonth(),
+      then.getDate(),
+    );
+
+    const diffMs = nowDate.getTime() - thenDate.getTime();
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (isNaN(days)) return 'not yet';
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 365) return `${Math.floor(days / 30)} months ago`;
+    return 'last year';
+  }
+
   return (
     <>
       <Card
         key={team.id}
-        className="relative flex h-64 flex-col gap-4 rounded-lg border p-6 text-gray-900 shadow-sm"
+        className="relative flex h-72 flex-col gap-4 rounded-lg border p-6 text-gray-900 shadow-sm"
       >
         <div className="flex items-center justify-between">
           <p className="text-2xl font-medium">{team.name}</p>
@@ -89,14 +110,14 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onSelect={() => setDialogOpen(true)}
-                className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+                className="hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
               >
                 <Pencil className="h-4 w-4" />
                 <span>Edit</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => setIsOpenModalConfirm(true)}
-                className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+                className="focus:text-primary flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
               >
                 <Trash2 className="h-4 w-4" />
                 <span>Delete</span>
@@ -118,16 +139,24 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
             </span>
           </span>
         </div>
-        <Progress
-          value={teamScore * 100}
-          className={cn('mt-auto h-1.5 bg-gray-100 [&>div]:bg-green-500', {
-            '[&>div]:bg-yellow-500': teamScore > 0.3 && teamScore <= 0.7,
-            '[&>div]:bg-red-500': teamScore <= 0.3,
-          })}
-        />
+        <div className="text-secondary-text mt-auto flex flex-col gap-1">
+          <div className="flex items-center justify-between text-sm">
+            <span>Project Health</span>
+            <span>
+              Last check: {simpleTimeAgo(healthChecks?.[0]?.created_at || '')}
+            </span>
+          </div>
+          <Progress
+            value={teamScore * 100}
+            className={cn('h-1.5 bg-gray-100 [&>div]:bg-green-500', {
+              '[&>div]:bg-yellow-500': teamScore > 0.3 && teamScore <= 0.7,
+              '[&>div]:bg-red-500': teamScore <= 0.3,
+            })}
+          />
+        </div>
         <Link
           href={`/teams/${team.id}`}
-          className="text-rhino-500 hover:text-rhino-500/70 text-center"
+          className="text-link-text text-center hover:underline"
         >
           View Team
         </Link>

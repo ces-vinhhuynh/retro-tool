@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 disabled={isForgotPasswordPending}
-                className="bg-ces-orange-500 hover:bg-ces-orange-600 w-full text-white"
+                className="text-white"
               >
                 {isForgotPasswordPending ? 'Sending...' : 'Reset Password'}
               </Button>
@@ -63,10 +63,7 @@ export default function ForgotPasswordPage() {
           <CardFooter className="justify-center">
             <p className="text-secondary text-sm">
               Already have an account?{' '}
-              <Link
-                href="/auth/signin"
-                className="text-ces-orange-500 hover:text-ces-orange-600 font-medium"
-              >
+              <Link href="/auth/signin" className="text-link-text font-medium">
                 Sign in
               </Link>
             </p>

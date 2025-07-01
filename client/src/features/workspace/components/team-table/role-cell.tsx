@@ -20,8 +20,7 @@ export const RoleCell = ({ row }: RoleCellProps) => {
         className={cn(
           'w-fit rounded-4xl border border-gray-200 bg-gray-300/50 px-3 py-1.5 font-medium text-gray-900 capitalize focus:ring-0',
           {
-            'bg-ces-orange-500 text-white':
-              currentUserRole === TEAM_ROLES.admin,
+            'bg-primary text-white': currentUserRole === TEAM_ROLES.admin,
           },
         )}
       >

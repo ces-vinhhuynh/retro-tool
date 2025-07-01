@@ -19,7 +19,7 @@ const AdditionalItemRow = ({
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="focus:border-ces-orange-500 focus:ring-ces-orange-500 flex-1 rounded-lg border border-gray-200 bg-[#F7F7F7] focus:ring-1"
+      className="focus:border-primary focus:ring-primary flex-1 rounded-lg border border-gray-200 bg-[#F7F7F7] focus:ring-1"
       placeholder="Click to edit this item"
     />
     <Button

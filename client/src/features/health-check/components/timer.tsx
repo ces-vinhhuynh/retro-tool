@@ -103,7 +103,7 @@ const Timer = ({ isFacilitator, healthCheckId, endTime }: TimerProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="bg-ces-orange-100 h-6 w-6 rounded-full"
+              className="bg-rhino-100 h-6 w-6 rounded-full"
               onClick={() => adjustTime(false)}
               disabled={setupTime <= TIMER_CONFIG.MIN_TIME}
             >
@@ -127,7 +127,7 @@ const Timer = ({ isFacilitator, healthCheckId, endTime }: TimerProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="bg-ces-orange-100 h-6 w-6 rounded-full"
+              className="bg-rhino-100 h-6 w-6 rounded-full"
               onClick={() => adjustTime(true)}
               disabled={setupTime >= TIMER_CONFIG.MAX_TIME}
             >
@@ -143,7 +143,7 @@ const Timer = ({ isFacilitator, healthCheckId, endTime }: TimerProps) => {
               (!isRunning && setupTime === TIMER_CONFIG.MIN_TIME) ||
               !isFacilitator
             }
-            className="text-md text-ces-orange-400 hover:text-ces-orange-500 h-8 w-8 rounded-full font-medium hover:bg-white"
+            className="text-md text-rhino-400 hover:text-rhino-500 h-8 w-8 rounded-full font-medium hover:bg-white"
           >
             {isRunning ? (
               <RotateCcw className="h-4 w-4" />

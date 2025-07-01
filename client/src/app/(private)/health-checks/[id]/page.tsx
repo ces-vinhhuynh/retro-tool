@@ -177,7 +177,7 @@ export default function HealthCheckPage() {
   const visibleQuestions = questions.filter(
     (q) => q.section !== Section.AdditionalQuestions,
   );
-  
+
   const chartData = visibleQuestions.map((question) => {
     const ratings = getRatings(responses || [], question.id);
     const comments = getCommentsByQuestionId(responses || [], question.id);
@@ -222,7 +222,7 @@ export default function HealthCheckPage() {
 
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
-    
+
     // Remove questionId from URL when closing dialog
     if (!open) {
       isManuallyClosingRef.current = true;
@@ -234,8 +234,14 @@ export default function HealthCheckPage() {
 
   // Handle questionId query parameter from URL
   useEffect(() => {
-    if (questionId && visibleQuestions.length > 0 && !isManuallyClosingRef.current) {
-      const questionIndex = visibleQuestions.findIndex(q => q.id === questionId);
+    if (
+      questionId &&
+      visibleQuestions.length > 0 &&
+      !isManuallyClosingRef.current
+    ) {
+      const questionIndex = visibleQuestions.findIndex(
+        (q) => q.id === questionId,
+      );
       if (questionIndex !== -1) {
         setSelectedIndex(questionIndex);
         setDialogOpen(true);
@@ -498,7 +504,7 @@ export default function HealthCheckPage() {
           <div className="mx-auto flex py-5">
             <Button
               className={cn('ml-auto w-full text-white sm:w-auto', {
-                'bg-ces-orange-500 hover:bg-ces-orange-600':
+                'bg-rhino-500 hover:bg-rhino-600':
                   healthCheck?.current_step !== LAST_STEP.key,
               })}
               onClick={handleChangePhase}
@@ -509,25 +515,25 @@ export default function HealthCheckPage() {
             </Button>
           </div>
         )}
-      {dialogOpen && (
-        <ChartDialog
-          teamMembers={teamMembers.map((member) => ({
-            id: member.id,
-            full_name: member.full_name,
-            email: member.email,
-            avatar_url: member.avatar_url,
-            created_at: null,
-            updated_at: null,
-          }))}
-          open={dialogOpen}
-          onOpenChange={handleDialogOpenChange}
-          data={chartData}
-          currentIndex={selectedIndex}
-          onCurrentIndexChange={onCurrentIndexChange}
-          healthCheck={healthCheck}
-          actionItems={actionItems || []}
-        />
-      )}
+        {dialogOpen && (
+          <ChartDialog
+            teamMembers={teamMembers.map((member) => ({
+              id: member.id,
+              full_name: member.full_name,
+              email: member.email,
+              avatar_url: member.avatar_url,
+              created_at: null,
+              updated_at: null,
+            }))}
+            open={dialogOpen}
+            onOpenChange={handleDialogOpenChange}
+            data={chartData}
+            currentIndex={selectedIndex}
+            onCurrentIndexChange={onCurrentIndexChange}
+            healthCheck={healthCheck}
+            actionItems={actionItems || []}
+          />
+        )}
       </div>
     </div>
   );
