@@ -1,0 +1,151 @@
+'use client';
+
+import { Heart, MoreHorizontal, Pencil, Trash2, Users } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+
+import ConfirmModal from '@/components/modal/confirm-modal';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Progress } from '@/components/ui/progress';
+import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
+import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
+import { HealthCheck } from '@/features/health-check/types/health-check';
+import { cn } from '@/utils/cn';
+import { MESSAGE } from '@/utils/messages';
+
+import { TEAM_ROLES } from '../constants/user';
+import { useDeleteTeam } from '../hooks/use-delete-team';
+import { calculateTeamAverage } from '../utils/workspace-metrics';
+
+import EditTeamDialog from './edit-team-dialog';
+
+interface TeamItemProps {
+  team: {
+    id: string;
+    name: string;
+    logo_url: string | null;
+    users: {
+      id: string;
+      full_name: string;
+      avatar_url: string;
+      role: 'admin' | 'member' | null;
+    }[];
+  };
+  isOwnerOrAdmin: boolean;
+}
+
+export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
+  const { data: currentUser } = useCurrentUser();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isOpenModalConfirm, setIsOpenModalConfirm] = useState(false);
+  const { data: healthChecks } = useGetHealthChecksByTeam(team.id);
+  const { data: templates = [] } = useTemplates();
+
+  const teamScore = calculateTeamAverage(
+    healthChecks as HealthCheck[],
+    templates,
+  );
+
+  console.log('teamScore', teamScore);
+
+  const { mutate: deleteTeam } = useDeleteTeam();
+
+  const currentUserRole = team.users.find(
+    (user) => user.id === currentUser?.id,
+  )?.role;
+
+  const handleDeleteTeam = (id: string) => {
+    deleteTeam(id);
+  };
+
+  return (
+    <>
+      <Card
+        key={team.id}
+        className="relative flex h-64 flex-col gap-4 rounded-lg border p-6 text-gray-900 shadow-sm"
+      >
+        <div className="flex items-center justify-between">
+          <p className="text-2xl font-medium">{team.name}</p>
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                disabled={
+                  !isOwnerOrAdmin && currentUserRole !== TEAM_ROLES.admin
+                }
+                className="h-8 w-8 p-0"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onSelect={() => setDialogOpen(true)}
+                className="primary hover:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5"
+              >
+                <Pencil className="h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => setIsOpenModalConfirm(true)}
+                className="primary focus:text-ces-orange-500 flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-1 text-center text-sm font-medium">
+            <Users className="h-4 w-4" />
+            {team.users.length || 0} members
+          </span>
+          <span className="flex items-center gap-2">
+            <Heart className="h-4 w-4" />
+            <span>
+              {teamScore <= 0.3 && 'At Risk'}
+              {teamScore > 0.3 && teamScore <= 0.7 && 'Needs Attention'}
+              {teamScore > 0.7 && 'Good'}
+            </span>
+          </span>
+        </div>
+        <Progress
+          value={teamScore * 100}
+          className={cn('mt-auto h-1.5 bg-gray-100 [&>div]:bg-green-500', {
+            '[&>div]:bg-yellow-500': teamScore > 0.3 && teamScore <= 0.7,
+            '[&>div]:bg-red-500': teamScore <= 0.3,
+          })}
+        />
+        <Link
+          href={`/teams/${team.id}`}
+          className="text-rhino-500 hover:text-rhino-500/70 text-center"
+        >
+          View Team
+        </Link>
+      </Card>
+      <EditTeamDialog
+        teamId={team.id}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+      <ConfirmModal
+        variant="delete"
+        isOpen={isOpenModalConfirm}
+        title="Delete Team"
+        description="Are you sure you want to delete this team?"
+        onCancel={() => setIsOpenModalConfirm(false)}
+        onConfirm={() => handleDeleteTeam(team.id)}
+        loading={false}
+      />
+    </>
+  );
+};

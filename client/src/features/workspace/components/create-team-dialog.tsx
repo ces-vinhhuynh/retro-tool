@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -59,7 +60,8 @@ export default function CreateTeamDialog({
     >
       <DialogTrigger asChild>
         <Button className="primary h-8 rounded-md md:h-10 md:text-base">
-          Create Team
+          <Plus className="h-4 w-4" />
+          New Team
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-lg sm:max-w-md">
@@ -93,11 +95,7 @@ export default function CreateTeamDialog({
               </div>
             </div>
 
-            <Button
-              className="bg-ces-orange-500 hover:bg-ces-orange-600"
-              type="submit"
-              disabled={isPending}
-            >
+            <Button type="submit" disabled={isPending}>
               Create Team
             </Button>
           </form>

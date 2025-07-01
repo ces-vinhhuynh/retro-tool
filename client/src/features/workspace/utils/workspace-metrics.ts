@@ -158,3 +158,32 @@ export const getWorkspaceHealthTrendChartData = (
 
   return chartPoints;
 };
+
+export const calculateTeamAverage = (
+  healthChecks: HealthCheck[],
+  templates: Template[],
+) => {
+  if (!healthChecks?.length || !templates?.length) return 0;
+
+  const avgScores: number[] = [];
+
+  healthChecks.forEach((hc) => {
+    if (!hc.created_at || !hc.team_id || !hc.template_id) return;
+
+    const template = templates.find((t) => t.id === hc.template_id);
+    if (!template?.questions || !hc.average_score) return;
+    // Calculate health check average (0-10 scale)
+    const avgScore = parseFloat(
+      calcAverage(
+        template.questions as Question[],
+        hc.average_score as AverageScores,
+      ),
+    );
+
+    avgScores.push(avgScore / 10);
+  });
+
+  return avgScores.length > 0
+    ? avgScores.reduce((sum, score) => sum + score, 0) / avgScores.length
+    : 0;
+};
