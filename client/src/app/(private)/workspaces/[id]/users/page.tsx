@@ -7,7 +7,7 @@ import InviteModal from '@/components/modal/invite-modal';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { DataTable } from '@/features/workspace/components/data-table';
-import UserCard from '@/features/workspace/components/user-card';
+import { UserCard } from '@/features/workspace/components/user-item';
 import { useColumns } from '@/features/workspace/components/user-table/columns';
 import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useDeleteWorkspaceUser } from '@/features/workspace/hooks/use-delete-workspace-user';
@@ -36,7 +36,7 @@ export default function WorkspacePage() {
   const isOwnerOrAdmin =
     workspaceUser?.role === WORKSPACE_ROLES.owner ||
     workspaceUser?.role === WORKSPACE_ROLES.admin;
-  console.log(workspaceUser);
+
   const columns = useColumns(isOwnerOrAdmin);
 
   const handleClose = () => {
@@ -54,14 +54,19 @@ export default function WorkspacePage() {
 
   return (
     <div className="flex flex-col gap-3 p-3 sm:px-4 md:px-8 md:py-8 lg:px-10">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-bold md:text-2xl">User Management</h1>
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-bold md:text-2xl">User Management</h1>
+          <p className="text-sm text-gray-600">
+            Manage users and their account roles
+          </p>
+        </div>
         <div className="mb-1 sm:mb-0">
           {isOwnerOrAdmin && (
             <>
               <Button
                 variant="default"
-                className="primary h-8 rounded-md md:h-10 md:text-base"
+                className="primary h-8 w-full rounded-md sm:w-fit md:h-10 md:text-base"
                 onClick={() => setIsOpenModalInvite(true)}
               >
                 Invite User
@@ -78,16 +83,9 @@ export default function WorkspacePage() {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-6 rounded-xl bg-white p-3 shadow-sm sm:p-5">
-        <div className="flex flex-col">
-          <h2 className="text-lg font-bold md:text-xl">All Users</h2>
-          <p className="text-sm text-gray-600">
-            Manage users and their account roles
-          </p>
-        </div>
-
+      <div className="flex rounded-xl bg-white p-3 shadow-sm sm:p-5">
         {/* Mobile */}
-        <div className="flex flex-col gap-3 md:hidden">
+        <div className="grid w-full grid-cols-2 gap-3 md:hidden">
           {workspaceUsers.map((user) => (
             <UserCard
               key={user.id}

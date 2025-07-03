@@ -41,8 +41,8 @@ const WorkspacePage = () => {
 
   return (
     <div className="flex flex-col gap-3 p-3 sm:px-4 md:px-8 md:py-8 lg:px-10">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold">Welcome to {workspace?.name}</h1>
           <p className="text-sm text-gray-500">
             Manage your team&apos;s projects and track progress
@@ -57,7 +57,7 @@ const WorkspacePage = () => {
             You are not a member of any team in this workspace
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-6 lg:grid-cols-3">
             {teams?.map((team) => (
               <TeamItem key={team.id} team={team} isOwnerOrAdmin />
             ))}

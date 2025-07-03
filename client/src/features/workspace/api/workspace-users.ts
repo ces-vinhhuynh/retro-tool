@@ -91,7 +91,6 @@ class WorkspaceUsersService {
   }
 
   async getByWorkspaceIdAndUserId(workspaceId: string, userId: string) {
-    console.log('here', workspaceId, userId);
     const { data, error } = await supabaseClient
       .from('workspace_users')
       .select(`*`)

@@ -59,7 +59,7 @@ export default function CreateTeamDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button className="primary h-8 rounded-md md:h-10 md:text-base">
+        <Button className="primary h-8 w-full rounded-md sm:w-fit md:h-10 md:text-base">
           <Plus className="h-4 w-4" />
           New Team
         </Button>
