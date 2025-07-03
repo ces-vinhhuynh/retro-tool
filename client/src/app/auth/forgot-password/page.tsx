@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
             </form>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-secondary text-sm">
+            <p className="text-secondary-text text-sm">
               Already have an account?{' '}
               <Link href="/auth/signin" className="text-link-text font-medium">
                 Sign in

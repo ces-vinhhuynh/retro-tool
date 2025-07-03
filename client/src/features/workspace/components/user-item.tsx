@@ -59,10 +59,12 @@ export const UserCard = ({
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col items-center gap-1">
-          <p className="truncate text-base font-semibold text-gray-900">
+          <p className="truncate text-base font-semibold break-words break-all whitespace-normal text-gray-900">
             {user.full_name || ''}
           </p>
-          <p className="truncate text-sm text-gray-600">{user.email || ''}</p>
+          <p className="truncate text-sm break-words break-all whitespace-normal text-gray-600">
+            {user.email || ''}
+          </p>
         </div>
       </div>
       {(currentUserRole === WORKSPACE_ROLES.owner || !isOwnerOrAdmin) && (
