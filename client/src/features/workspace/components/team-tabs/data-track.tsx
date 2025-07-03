@@ -31,6 +31,7 @@ interface DataTrackTabProps {
   templates: Template[];
   healthChecksGrouped: Record<string, HealthCheck[]>;
   teamId: string;
+  isMobile: boolean;
 }
 
 const DataTrackTab = ({
@@ -41,6 +42,7 @@ const DataTrackTab = ({
   templates,
   healthChecksGrouped,
   teamId,
+  isMobile,
 }: DataTrackTabProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>(
     templates[0]?.id || '',
@@ -109,7 +111,7 @@ const DataTrackTab = ({
           </SelectContent>
         </Select>
       </div>
-      <TeamHealthTrend healthChecks={healthChecks} />
+      <TeamHealthTrend healthChecks={healthChecks} isMobile={isMobile} />
       <CategoryHealth healthChecks={healthChecks} />
     </div>
   );

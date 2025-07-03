@@ -18,6 +18,7 @@ import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const DataTrackPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
@@ -29,6 +30,8 @@ const DataTrackPage = () => {
   const { data: issues = [] } = useIssuesQuery(teamId);
   const { data: scrumHealthChecks = [] } = useGetHealthChecksByTeam(teamId);
   const { data: templates = [] } = useTemplates();
+
+  const isMobile = useIsMobile();
 
   const healthChecksGrouped = splitHealthChecksByTemplateId(
     templates as Template[],
@@ -71,6 +74,7 @@ const DataTrackPage = () => {
         templates={sortedTemplates}
         healthChecksGrouped={healthChecksGrouped}
         teamId={teamId}
+        isMobile={isMobile}
       />
     </div>
   );

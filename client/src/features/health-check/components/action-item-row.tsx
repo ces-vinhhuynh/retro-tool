@@ -10,6 +10,7 @@ import {
   ActionItemWithAssignees,
   ActionPriority,
   ActionStatus,
+  HealthCheck,
   User,
 } from '@/features/health-check/types/health-check';
 import { MESSAGE } from '@/utils/messages';
@@ -32,6 +33,7 @@ interface ActionItemRowProps {
   isHandlingOpenLink?: boolean;
   isEditable?: boolean;
   teamMembers: User[];
+  healthChecks?: HealthCheck[];
 }
 
 interface PopoverState {
@@ -73,6 +75,7 @@ export const ActionItemRow = ({
   isHandlingOpenLink,
   isDeleting,
   teamMembers,
+  healthChecks,
   isEditable = true,
 }: ActionItemRowProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -279,9 +282,20 @@ export const ActionItemRow = ({
     }
   };
 
+  const findHealthCheckById = (
+    healthCheckId?: string | null,
+  ): HealthCheck | undefined => {
+    if (!healthCheckId || !healthChecks || healthChecks.length === 0) {
+      return undefined;
+    }
+    return healthChecks.find(
+      (healthCheck) => healthCheck?.id === healthCheckId,
+    );
+  };
+
   return (
     <>
-      <div className="mb-3 space-y-3 rounded-lg border p-4">
+      <div className="mb-2 space-y-3 rounded-lg border pr-2 pl-2 sm:mb-3 md:p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 space-y-2">
             <div className="flex items-center">
@@ -319,7 +333,7 @@ export const ActionItemRow = ({
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 md:gap-4">
               {/* Priority Badge using PriorityPopover with badge variant */}
               <PriorityPopover
                 item={item}
@@ -365,6 +379,11 @@ export const ActionItemRow = ({
                 setDueDate={setDueDate}
                 isUpdating={isUpdating}
               />
+
+              {/* Health Check Title - responsive text size */}
+              <span className="h-auto p-1 text-sm font-normal">
+                {findHealthCheckById(item.health_check_id)?.title || ''}
+              </span>
             </div>
           </div>
           {isEditable && (

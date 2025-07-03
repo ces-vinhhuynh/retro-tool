@@ -27,9 +27,13 @@ import {
 
 interface TeamHealthTrendProps {
   healthChecks: HealthCheck[];
+  isMobile: boolean;
 }
 
-const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
+const TeamHealthTrend = ({
+  healthChecks = [],
+  isMobile = false,
+}: TeamHealthTrendProps) => {
   const chartData = useMemo(() => {
     if (!healthChecks?.length) return [];
 
@@ -83,14 +87,19 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
           Team Health Trend
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className="px-1 pt-4 sm:px-6 sm:pt-6">
         {chartData.length > 0 ? (
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 accessibilityLayer
                 data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                margin={{
+                  top: 20,
+                  right: isMobile ? 10 : 30,
+                  left: isMobile ? 10 : 20,
+                  bottom: 60,
+                }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
@@ -98,12 +107,18 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                   tickMargin={8}
                   angle={-45}
                   textAnchor="end"
-                  padding={{ left: 30, right: 30 }}
+                  padding={{
+                    left: isMobile ? 10 : 30,
+                    right: isMobile ? 10 : 30,
+                  }}
                   tick={(props) => {
                     const { x, y, payload } = props;
                     const name = payload.value;
+                    const maxLength = isMobile ? 8 : 12;
                     const displayName =
-                      name.length > 12 ? `${name.substring(0, 12)}...` : name;
+                      name.length > maxLength
+                        ? `${name.substring(0, maxLength)}...`
+                        : name;
 
                     return (
                       <g transform={`translate(${x},${y})`}>
@@ -115,7 +130,7 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                           textAnchor="end"
                           fill="#666"
                           transform="rotate(-45)"
-                          fontSize={12}
+                          fontSize={isMobile ? 10 : 12}
                         >
                           {displayName}
                         </text>
@@ -123,17 +138,23 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                     );
                   }}
                 />
-                <YAxis domain={[0, 10]} />
+                <YAxis domain={[0, 10]} width={isMobile ? 30 : 60} />
                 <Tooltip />
-                <Legend verticalAlign="top" height={36} />
+                <Legend
+                  verticalAlign="top"
+                  height={36}
+                  wrapperStyle={{
+                    fontSize: isMobile ? '12px' : '14px',
+                  }}
+                />
                 <Line
                   type="linear"
                   dataKey="overall"
                   name="Overall Project Health"
                   stroke={'#f59e0b'}
                   strokeWidth={3}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
+                  dot={{ r: isMobile ? 3 : 4 }}
+                  activeDot={{ r: isMobile ? 5 : 6 }}
                 />
                 <Line
                   type="linear"
@@ -141,8 +162,8 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                   name="Delivery & Execution Score"
                   stroke={'#4f46e5'}
                   strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
+                  dot={{ r: isMobile ? 3 : 4 }}
+                  activeDot={{ r: isMobile ? 5 : 6 }}
                 />
                 <Line
                   type="linear"
@@ -150,8 +171,8 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                   name="Team & Process Score"
                   stroke={'#10b981'}
                   strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
+                  dot={{ r: isMobile ? 3 : 4 }}
+                  activeDot={{ r: isMobile ? 5 : 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>

@@ -118,7 +118,7 @@ const SessionTemplateDialog = ({
           setStep('choose');
         }}
       >
-        <DialogContent className="max-h-[80vh] w-full max-w-2xl overflow-y-auto">
+        <DialogContent className="h-auto max-h-[calc(100vh-2rem)] w-[calc(100vw-1rem)] overflow-y-auto p-4 sm:mx-auto sm:my-auto sm:h-auto sm:max-h-[80vh] sm:w-full sm:max-w-2xl sm:p-6">
           <DialogHeader>
             <DialogTitle>
               {step === 'choose' ? 'Select a template' : 'Create Session'}

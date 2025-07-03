@@ -11,6 +11,7 @@ import {
   ActionItemWithAssignees,
   ActionPriority,
   ActionStatus,
+  HealthCheck,
   User,
 } from '@/features/health-check/types/health-check';
 
@@ -22,6 +23,7 @@ interface ActionItemsProps {
   healthCheckId?: string;
   questionId?: string;
   teamMembers: User[];
+  healthChecks?: HealthCheck[];
   isHandlingOpenLink?: boolean;
 }
 
@@ -31,6 +33,7 @@ const ActionItems = ({
   teamId,
   questionId,
   teamMembers,
+  healthChecks,
   isHandlingOpenLink,
 }: ActionItemsProps) => {
   const { mutate: createActionItem, isPending: isCreating } =
@@ -66,14 +69,15 @@ const ActionItems = ({
 
   return (
     <div className="w-full bg-white">
-      <EntryForm
-        register={register}
-        onSubmit={onSubmit}
-        isDisabled={isSubmitting || isCreating}
-        placeholder="Add new action..."
-        Icon={CheckCircle}
-      />
-
+      <div className="pb-3">
+        <EntryForm
+          register={register}
+          onSubmit={onSubmit}
+          isDisabled={isSubmitting || isCreating}
+          placeholder="Add new action..."
+          Icon={CheckCircle}
+        />
+      </div>
       <div className="max-h-5/6 overflow-auto">
         {actionItems.length === 0 ? (
           <div className="border py-4 text-center text-sm text-gray-400">
@@ -88,6 +92,7 @@ const ActionItems = ({
                 isDeleting={isDeleting}
                 onDelete={() => deleteActionItem({ actionItemId: item.id })}
                 teamMembers={teamMembers}
+                healthChecks={healthChecks}
                 isHandlingOpenLink={isHandlingOpenLink || false}
               />
             ))}

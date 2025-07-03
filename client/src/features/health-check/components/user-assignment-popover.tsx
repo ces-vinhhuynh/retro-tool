@@ -67,7 +67,7 @@ const UserAssignmentPopover = ({
 
   if (variant === 'text') {
     return (
-      <span className="text-muted-foreground text-sm">
+      <span className="h-auto p-1 text-sm font-normal">
         {showLabel && 'Assigned: '}
         <span className="text-foreground">{getAssignedUserNames()}</span>
       </span>
@@ -77,6 +77,9 @@ const UserAssignmentPopover = ({
   // Original avatar variant for editable lists
   const triggerButton = (
     <div className="flex cursor-pointer items-center">
+      <span className="h-auto p-1 text-sm font-normal">
+        {showLabel && 'Assigned: '}
+      </span>
       {assignees?.length > 0 ? (
         <>
           {assignees?.slice(0, 3).map((assigneeId) => {

@@ -1,6 +1,6 @@
 import { BadgeAlert, Handshake, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,8 @@ import { Issue } from '@/features/health-check/types/issues';
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
 import { sortTemplatesByLatestHealthCheck } from '@/features/health-check/utils/template';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 import { useGetTeamMembers } from '../../hooks/use-get-team-member';
 
@@ -40,11 +42,22 @@ interface HomeTabProps {
 const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
   const router = useRouter();
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
+  const isMobile = useIsMobile();
 
-  // State to control EntryForm visibility
-  const [showActionEntryForm, setShowActionEntryForm] = useState(false);
-  const [showIssueEntryForm, setShowIssueEntryForm] = useState(false);
-  const [showAgreementEntryForm, setShowAgreementEntryForm] = useState(false);
+  // State to control EntryForm visibility - auto open on mobile
+  const [showActionEntryForm, setShowActionEntryForm] = useState(isMobile);
+  const [showIssueEntryForm, setShowIssueEntryForm] = useState(isMobile);
+  const [showAgreementEntryForm, setShowAgreementEntryForm] =
+    useState(isMobile);
+
+  // Update mobile entry forms when isMobile changes
+  useEffect(() => {
+    if (isMobile) {
+      setShowActionEntryForm(true);
+      setShowIssueEntryForm(true);
+      setShowAgreementEntryForm(true);
+    }
+  }, [isMobile]);
 
   // Forms for Issues and Agreements
   const issueForm = useForm<{ title: string }>({
@@ -102,7 +115,9 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
     createIssue(newIssue, {
       onSuccess: () => {
         issueForm.reset();
-        setShowIssueEntryForm(false);
+        if (!isMobile) {
+          setShowIssueEntryForm(false);
+        }
       },
     });
   });
@@ -118,7 +133,9 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
     createAgreements(newAgreement, {
       onSuccess: () => {
         agreementForm.reset();
-        setShowAgreementEntryForm(false);
+        if (!isMobile) {
+          setShowAgreementEntryForm(false);
+        }
       },
     });
   });
@@ -132,11 +149,11 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
   const displayedActionItems = inProgressTodoActionItems.slice(0, 3);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2 md:space-y-6">
       {/* Breadcrumb & Header */}
       <div className="flex items-center justify-between">
         <Button
-          className="bg-primary ml-auto hover:bg-blue-900"
+          className="bg-primary ml-auto w-full hover:bg-blue-900 md:w-auto"
           onClick={() => setShowDialog(true)}
         >
           <Plus />
@@ -145,11 +162,11 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
       </div>
 
       {/* Main Dashboard Grid - Using flex layout for equal heights */}
-      <div className="flex flex-col gap-6 lg:flex-row">
+      <div className="flex flex-col gap-3 md:gap-6 lg:flex-row">
         {/* Top Team Actions Section - Left Column (2/3 width) */}
         <div className="lg:w-2/3">
           <Card className="flex h-full flex-col">
-            <CardHeader className="flex flex-shrink-0 flex-col space-y-2 pb-4">
+            <CardHeader className="flex flex-shrink-0 flex-col space-y-2 pb-1 md:pb-4">
               <div className="flex flex-row items-center justify-between space-y-0">
                 <div>
                   <CardTitle className="text-xl font-semibold">
@@ -160,35 +177,43 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                     & In progress from 2 recent sprints
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
-                  onClick={() => {
-                    setShowActionEntryForm(!showActionEntryForm);
-                  }}
-                >
-                  {showActionEntryForm ? 'Cancel' : 'Add Action'}
-                </Button>
+                {/* Hide Add Action button on mobile */}
+                {!isMobile && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
+                    onClick={() => {
+                      setShowActionEntryForm(!showActionEntryForm);
+                    }}
+                  >
+                    {showActionEntryForm ? 'Cancel' : 'Add Action'}
+                  </Button>
+                )}
               </div>
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col space-y-4">
+            <CardContent className={cn('flex flex-1 flex-col p-2 pt-0 md:p-4')}>
               <div className="flex-1">
                 <DashboardActionItems
                   showEntryForm={showActionEntryForm}
                   actionItems={displayedActionItems}
                   teamId={teamId}
                   teamMembers={teamMembers as unknown as User[]}
-                  onEntryFormToggle={() => setShowActionEntryForm(false)}
+                  healthChecks={scrumHealthChecks}
+                  onEntryFormToggle={() => {
+                    if (!isMobile) {
+                      setShowActionEntryForm(false);
+                    }
+                  }}
                 />
               </div>
 
               {actionItems.length > 0 && (
-                <div className="flex-shrink-0 pt-4">
+                <div className="flex-shrink-0 pt-1 pb-1 md:pt-3 md:pb-0">
                   <div className="flex justify-center">
                     <Button
                       variant="outline"
-                      className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
+                      className="w-full border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50 md:w-auto"
                       onClick={() => router.push(`/teams/${teamId}/actions`)}
                     >
                       View All Actions ({actionItems.length})
@@ -200,8 +225,8 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
           </Card>
         </div>
 
-        {/* Right Column - Issues and Agreements (1/3 width) */}
-        <div className="flex flex-col gap-6 lg:w-1/3">
+        {/* Right Column - Issues and Agreements (1/3 width) w-full sm:w-auto border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50 */}
+        <div className="flex flex-col gap-3 md:gap-6 lg:w-1/3">
           {/* Long Term Issues Section */}
           <Card className="flex h-full flex-col">
             <CardHeader className="flex flex-shrink-0 flex-row items-center justify-between space-y-0 pb-4">
@@ -211,21 +236,26 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                   Long Term Issues
                 </CardTitle>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
-                onClick={() => {
-                  setShowIssueEntryForm(!showIssueEntryForm);
-                }}
-              >
-                {showIssueEntryForm ? 'Cancel' : 'Add'}
-              </Button>
+              {/* Hide Add/Cancel buttons on mobile */}
+              {!isMobile && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
+                  onClick={() => {
+                    setShowIssueEntryForm(!showIssueEntryForm);
+                  }}
+                >
+                  {showIssueEntryForm ? 'Cancel' : 'Add'}
+                </Button>
+              )}
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col">
-              {/* EntryForm for Issues */}
+            <CardContent
+              className={cn('flex flex-1 flex-col pt-0 pr-3 pb-2 pl-3 md:p-4')}
+            >
+              {/* EntryForm for Issues - always show on mobile */}
               {showIssueEntryForm && (
-                <div className="mb-4 flex-shrink-0">
+                <div className="sm:md-4 mb-2 flex-shrink-0">
                   <EntryForm
                     register={issueForm.register}
                     onSubmit={onSubmitIssue}
@@ -259,7 +289,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                     ))}
                   </div>
                   {issues.length > 0 && (
-                    <div className="flex-shrink-0 pt-3">
+                    <div className="flex-shrink-0 pt-3 pb-1 sm:pb-0">
                       <div className="flex justify-center">
                         <Button
                           variant="outline"
@@ -279,7 +309,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
           </Card>
 
           {/* Team Agreements Section */}
-          <Card className="flex h-full flex-col">
+          <Card className="mb-1 flex h-full flex-col md:mb-0">
             <CardHeader className="flex flex-shrink-0 flex-row items-center justify-between space-y-0 pb-4">
               <div className="flex items-center gap-2">
                 <Handshake className="h-5 w-5 text-blue-600" />
@@ -287,19 +317,24 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                   Team Agreements
                 </CardTitle>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
-                onClick={() => {
-                  setShowAgreementEntryForm(!showAgreementEntryForm);
-                }}
-              >
-                {showAgreementEntryForm ? 'Cancel' : 'Add'}
-              </Button>
+              {/* Hide Add/Cancel buttons on mobile */}
+              {!isMobile && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
+                  onClick={() => {
+                    setShowAgreementEntryForm(!showAgreementEntryForm);
+                  }}
+                >
+                  {showAgreementEntryForm ? 'Cancel' : 'Add'}
+                </Button>
+              )}
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col">
-              {/* EntryForm for Agreements */}
+            <CardContent
+              className={cn('flex flex-1 flex-col pt-0 pr-3 pb-2 pl-3 md:p-4')}
+            >
+              {/* EntryForm for Agreements - always show on mobile */}
               {showAgreementEntryForm && (
                 <div className="mb-4 flex-shrink-0">
                   <EntryForm
@@ -337,7 +372,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                     ))}
                   </div>
                   {agreements.length > 0 && (
-                    <div className="flex-shrink-0 pt-3">
+                    <div className="flex-shrink-0 pt-3 pb-1 sm:pb-0">
                       <div className="flex justify-center">
                         <Button
                           variant="outline"
@@ -373,7 +408,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          <TeamHealthTrend healthChecks={healthChecks} />
+          <TeamHealthTrend healthChecks={healthChecks} isMobile={isMobile} />
         </CardContent>
       </Card>
 

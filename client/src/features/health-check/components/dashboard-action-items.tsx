@@ -11,6 +11,7 @@ import {
   ActionItemWithAssignees,
   ActionPriority,
   ActionStatus,
+  HealthCheck,
   User,
 } from '@/features/health-check/types/health-check';
 
@@ -20,14 +21,16 @@ interface DashboardActionItemsProps {
   actionItems: ActionItemWithAssignees[];
   teamId?: string;
   teamMembers: User[];
-  showEntryForm?: boolean; // New prop to control EntryForm visibility
-  onEntryFormToggle?: () => void; // Callback to toggle EntryForm
+  healthChecks: HealthCheck[];
+  showEntryForm?: boolean;
+  onEntryFormToggle?: () => void;
 }
 
 const DashboardActionItems = ({
   actionItems,
   teamId,
   teamMembers,
+  healthChecks,
   showEntryForm = false,
   onEntryFormToggle,
 }: DashboardActionItemsProps) => {
@@ -69,7 +72,7 @@ const DashboardActionItems = ({
     <div className="flex h-full w-full flex-col bg-white">
       {/* Always show EntryForm when showEntryForm is true */}
       {showEntryForm && (
-        <div className="mb-4 flex-shrink-0">
+        <div className="mb-3 flex-shrink-0">
           <EntryForm
             register={register}
             onSubmit={onSubmit}
@@ -105,6 +108,7 @@ const DashboardActionItems = ({
                   isDeleting={isDeleting}
                   onDelete={() => deleteActionItem({ actionItemId: item.id })}
                   teamMembers={teamMembers}
+                  healthChecks={healthChecks}
                   isHandlingOpenLink
                 />
               ))}
