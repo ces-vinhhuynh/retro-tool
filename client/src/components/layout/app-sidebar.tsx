@@ -221,7 +221,7 @@ export function AppSidebar({
         <SidebarMenu className="px-1">
           <SidebarMenuItem className="w-full overflow-x-hidden">
             <SidebarMenuButton
-              onClick={() => router.push('/settings')}
+              onClick={() => {}}
               className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
             >
               <Settings className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />

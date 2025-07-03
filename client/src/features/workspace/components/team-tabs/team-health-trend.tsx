@@ -129,7 +129,7 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                 <Line
                   type="linear"
                   dataKey="overall"
-                  name="Overall Average"
+                  name="Overall Project Health"
                   stroke={'#f59e0b'}
                   strokeWidth={3}
                   dot={{ r: 4 }}
@@ -138,7 +138,7 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                 <Line
                   type="linear"
                   dataKey="delivery"
-                  name="Delivery & Execution"
+                  name="Delivery & Execution Score"
                   stroke={'#4f46e5'}
                   strokeWidth={2}
                   dot={{ r: 4 }}
@@ -147,7 +147,7 @@ const TeamHealthTrend = ({ healthChecks = [] }: TeamHealthTrendProps) => {
                 <Line
                   type="linear"
                   dataKey="collaboration"
-                  name="Team Collaboration"
+                  name="Team & Process Score"
                   stroke={'#10b981'}
                   strokeWidth={2}
                   dot={{ r: 4 }}
