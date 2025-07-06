@@ -401,7 +401,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
             <Button
               variant="outline"
               className="border border-gray-300 bg-transparent text-blue-600 hover:bg-blue-50"
-              onClick={() => router.push(`/teams/${teamId}/health-checks`)}
+              onClick={() => router.push(`/teams/${teamId}/data-track`)}
             >
               View All
             </Button>

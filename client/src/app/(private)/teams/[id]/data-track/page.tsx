@@ -65,7 +65,7 @@ const DataTrackPage = () => {
   }, [error, workspaceUser, router]);
 
   return (
-    <div className="w-full p-4 md:p-6 lg:p-8">
+    <div className="w-full p-2 md:p-6 lg:p-8">
       <DataTrackTab
         agreements={agreements}
         issues={issues}

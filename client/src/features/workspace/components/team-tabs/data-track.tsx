@@ -42,7 +42,7 @@ const DataTrackTab = ({
   templates,
   healthChecksGrouped,
   teamId,
-  isMobile,
+  isMobile=false,
 }: DataTrackTabProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>(
     templates[0]?.id || '',
@@ -57,20 +57,20 @@ const DataTrackTab = ({
     {
       title: 'Total Team Agreements',
       value: agreements?.length || 0,
-      icon: <Handshake className="h-6 w-6 text-yellow-500" />,
+      icon: <Handshake className="h-4 w-4 md:h-6 md:w-6 text-yellow-500" />,
       iconBgColor: 'bg-yellow-500/10',
     },
     {
       title: 'Total Long-term Issues',
       value: issues?.length || 0,
-      icon: <BadgeAlert className="text-blue-600 dark:text-blue-400" />,
+      icon: <BadgeAlert className="h-4 w-4 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />,
       iconBgColor: 'bg-blue-500/10',
     },
     {
       title: 'Actions Created',
       value: actionItems?.length || 0,
       icon: (
-        <SquareCheckBig className="h-6 w-6 text-green-600 dark:text-green-400" />
+        <SquareCheckBig className="h-4 w-4 md:h-6 md:w-6 text-green-600 dark:text-green-400" />
       ),
       iconBgColor: 'bg-green-500/10',
     },
@@ -78,15 +78,16 @@ const DataTrackTab = ({
       title: 'Health Checks',
       value: scrumHealthChecks?.length || 0,
       icon: (
-        <Calendar className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+        <Calendar className="h-4 w-4 md:h-6 md:w-6 text-orange-600 dark:text-orange-400" />
       ),
       iconBgColor: 'bg-orange-500/10',
     },
   ];
 
   return (
-    <div className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+    <div className="flex flex-col gap-4 p-4 md:p-6 md:gap-8 lg:p-8">
+      {/* Stats Grid - 1 column on mobile, 4 columns on md+ */}
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-4 md:gap-4">
         {stats.map((stat, index) => (
           <TeamStatCard
             key={`stat-${index}`}
@@ -94,10 +95,13 @@ const DataTrackTab = ({
             value={stat.value}
             icon={stat.icon}
             iconBgColor={stat.iconBgColor}
+            isMobile={isMobile}
           />
         ))}
       </div>
-      <div className="w-64">
+      
+      {/* Template Selector */}
+      <div className="w-full md:w-64">
         <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
           <SelectTrigger className="w-full bg-white">
             <SelectValue placeholder="Select template" />
@@ -111,6 +115,7 @@ const DataTrackTab = ({
           </SelectContent>
         </Select>
       </div>
+      
       <TeamHealthTrend healthChecks={healthChecks} isMobile={isMobile} />
       <CategoryHealth healthChecks={healthChecks} />
     </div>

@@ -11,6 +11,7 @@ interface StatCardProps {
   children: ReactNode;
   className?: string;
   headerContent?: ReactNode;
+  isMobile?: boolean;
 }
 
 const StatCard = ({
@@ -21,8 +22,10 @@ const StatCard = ({
   headerContent,
 }: StatCardProps) => {
   return (
-    <Card className={cn('rounded-xl border shadow-sm', className)}>
-      <CardHeader className="pb-2">
+    <Card
+      className={cn('rounded-md border shadow-sm md:rounded-xl', className)}
+    >
+      <CardHeader className="p-0 md:p-6 md:pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium">{title}</CardTitle>
           {headerContent}
@@ -31,7 +34,9 @@ const StatCard = ({
           <p className="text-muted-foreground text-sm">{description}</p>
         )}
       </CardHeader>
-      <CardContent className={cn(className)}>{children}</CardContent>
+      <CardContent className={cn(className, 'mr-4 ml-4 p-2 md:p-3')}>
+        {children}
+      </CardContent>
     </Card>
   );
 };

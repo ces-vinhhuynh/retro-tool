@@ -44,14 +44,17 @@ const ScrumHealthCheck = ({
 
   return (
     <div className="rounded-lg bg-white">
-      <div className="flex flex-wrap items-center justify-between gap-x-2">
+      {/* Header with title and toggle */}
+      <div className="flex flex-col gap-3 mb-4 md:flex-row md:items-center md:justify-between md:gap-2">
         {isShowTitle && title && (
-          <h2 className="py-3 text-lg font-bold text-gray-900 sm:text-sm md:text-2xl">
+          <h2 className="text-lg font-bold text-gray-900 md:text-xl lg:text-2xl">
             {title}
           </h2>
         )}
-        <div className="flex items-center gap-2 py-1">
-          <Label className="text-xs font-medium text-gray-700 uppercase sm:text-sm">
+        
+        {/* Toggle Switch */}
+        <div className="flex items-center gap-2 self-start md:self-auto">
+          <Label className="text-xs font-medium text-gray-700 uppercase md:text-sm">
             Show Breakdown
           </Label>
           <Switch
@@ -62,23 +65,26 @@ const ScrumHealthCheck = ({
         </div>
       </div>
 
-      {!showBreakdown ? (
-        <HealthCheckTableView
-          healthChecks={healthChecks}
-          getHealthCheckRatings={getRatings}
-          isShowAddNew={canStartNewHealthCheck}
-          onAddNewSession={onAddNewSession}
-        />
-      ) : (
-        <HealthCheckBreakdownView
-          healthChecks={healthChecks}
-          questionData={questionData}
-          scoreRange={scoreRange}
-          isShowAddNew={canStartNewHealthCheck}
-          onAddNewSession={onAddNewSession}
-          getRatings={getRatings}
-        />
-      )}
+      {/* Content */}
+      <div className="w-full">
+        {!showBreakdown ? (
+          <HealthCheckTableView
+            healthChecks={healthChecks}
+            getHealthCheckRatings={getRatings}
+            isShowAddNew={canStartNewHealthCheck}
+            onAddNewSession={onAddNewSession}
+          />
+        ) : (
+          <HealthCheckBreakdownView
+            healthChecks={healthChecks}
+            questionData={questionData}
+            scoreRange={scoreRange}
+            isShowAddNew={canStartNewHealthCheck}
+            onAddNewSession={onAddNewSession}
+            getRatings={getRatings}
+          />
+        )}
+      </div>
     </div>
   );
 };

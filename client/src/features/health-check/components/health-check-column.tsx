@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,16 @@ interface HealthCheckColumnProps {
   getHealthCheckRatings: HealthCheckRatingFunction;
   isShowAddNew?: boolean;
   onAddNewSession?: () => void;
+  headerHeight?: string;
+  columnWidth?: string;
+  questionRowHeight?: string;
+  isFlexWidth?: boolean;
+  showPreviousButton?: boolean;
+  showNextButton?: boolean;
+  onPrevious?: () => void;
+  onNext?: () => void;
+  isAnyHeaderHovered?: boolean;
+  onHeaderHover?: (isHovered: boolean) => void;
 }
 
 const HealthCheckColumn = ({
@@ -24,61 +34,113 @@ const HealthCheckColumn = ({
   getHealthCheckRatings,
   isShowAddNew = false,
   onAddNewSession,
+  headerHeight = 'h-24',
+  columnWidth = 'min-w-48 max-w-48',
+  questionRowHeight = 'h-16',
+  isFlexWidth = false,
+  showPreviousButton = false,
+  showNextButton = false,
+  onPrevious,
+  onNext,
+  isAnyHeaderHovered = false,
+  onHeaderHover,
 }: HealthCheckColumnProps) => {
+  // Calculate flex width based on number of visible columns
+  const getColumnWidth = () => {
+    if (isFlexWidth) {
+      return `flex-1 min-w-0`;
+    }
+    return columnWidth;
+  };
+
   return (
     <div
       key={healthCheck.id}
       className={cn(
-        'flex w-full max-w-56 min-w-24 flex-col border transition-transform duration-200',
+        'relative flex flex-col border transition-transform duration-200',
+        getColumnWidth(),
         {
           'cursor-pointer bg-blue-50': isShowAddNew,
         },
       )}
     >
+      {/* Header */}
       <div
         className={cn(
-          'flex h-24 flex-col items-center justify-center gap-1 border-b bg-gray-50',
+          'relative flex flex-col items-center justify-center gap-1 border-b bg-gray-50 p-2',
+          headerHeight,
           {
             'border border-blue-200 bg-blue-50': isShowAddNew,
           },
         )}
+        onMouseEnter={() => onHeaderHover?.(true)}
+        onMouseLeave={() => onHeaderHover?.(false)}
       >
+        {/* Previous Button */}
+        {showPreviousButton && isAnyHeaderHovered && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onPrevious}
+            className="absolute top-1/2 left-2 z-20 h-8 w-8 -translate-y-1/2 transform border border-gray-200 bg-white/95 p-0 shadow-md hover:bg-white"
+          >
+            <ChevronLeft className="h-4 w-4 text-gray-700" />
+          </Button>
+        )}
+
+        {/* Next Button */}
+        {showNextButton && isAnyHeaderHovered && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onNext}
+            className="absolute top-1/2 right-2 z-20 h-8 w-8 -translate-y-1/2 transform border border-gray-200 bg-white/95 p-0 shadow-md hover:bg-white"
+          >
+            <ChevronRight className="h-4 w-4 text-gray-700" />
+          </Button>
+        )}
+
         {isShowAddNew ? (
           <Button
             variant={'ghost'}
-            className="flex flex-col items-center gap-2 hover:bg-blue-50"
+            className="flex h-full w-full flex-col items-center gap-1 text-xs hover:bg-blue-50 md:gap-2 md:text-sm"
             onClick={onAddNewSession}
           >
-            <Plus className="h-6 w-6 text-blue-400" />
-            <h2 className="text-lg font-medium text-blue-400">Start New</h2>
+            <Plus className="h-4 w-4 text-blue-400 md:h-6 md:w-6" />
+            <span className="font-medium text-blue-400">Start New</span>
           </Button>
         ) : (
           <Link
             href={`/health-checks/${healthCheck.id}`}
-            className="flex w-full flex-col items-center gap-1"
+            className="flex h-full w-full flex-col items-center justify-center gap-1 rounded p-1 transition-colors hover:bg-gray-100"
           >
-            <h2 className="max-w-full truncate text-lg font-bold">
+            <h2 className="max-w-full truncate text-center text-sm leading-tight font-bold md:text-base">
               {healthCheck.title}
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500 md:text-sm">
               {formatDateTime(new Date(String(healthCheck.createdAt)))}
             </p>
-            <div className="rounded bg-gray-200 px-2 text-xs capitalize">
+            <div className="rounded bg-gray-200 px-2 py-1 text-xs capitalize">
               {healthCheck?.status}
             </div>
           </Link>
         )}
       </div>
-      {healthCheck.questions?.map((item) => (
-        <RatingDisplay
-          key={item.id}
-          questionId={item.id}
-          healthCheckId={healthCheck.id}
-          averageScore={item.averageScore}
-          getRatings={getHealthCheckRatings}
-          isShowAddNew={isShowAddNew}
-        />
-      ))}
+
+      {/* Ratings */}
+      <div className="flex-1">
+        {healthCheck.questions?.map((item) => (
+          <RatingDisplay
+            key={item.id}
+            questionId={item.id}
+            healthCheckId={healthCheck.id}
+            averageScore={item.averageScore}
+            getRatings={getHealthCheckRatings}
+            isShowAddNew={isShowAddNew}
+            height={questionRowHeight}
+          />
+        ))}
+      </div>
     </div>
   );
 };

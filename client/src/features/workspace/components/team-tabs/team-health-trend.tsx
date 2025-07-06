@@ -24,6 +24,7 @@ import {
   calcAverage,
   calcSectionAverage,
 } from '@/features/health-check/utils/score';
+import { cn } from '@/lib/utils';
 
 interface TeamHealthTrendProps {
   healthChecks: HealthCheck[];
@@ -82,12 +83,12 @@ const TeamHealthTrend = ({
 
   return (
     <Card className="w-full">
-      <CardHeader>
+      <CardHeader className={cn("p-6 pt-3 pb-0 md:p-6")}>
         <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-2xl font-semibold text-transparent">
           Team Health Trend
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-1 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className="px-1 pt-3 pb-3 md:px-6 md:pt-6">
         {chartData.length > 0 ? (
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">

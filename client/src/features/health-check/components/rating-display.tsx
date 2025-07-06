@@ -17,6 +17,7 @@ interface RatingDisplayProps {
   averageScore: number;
   getRatings: (healthCheckId: string, questionId: string) => Rating[];
   isShowAddNew?: boolean;
+  height?: string;
 }
 
 const RatingDisplay = ({
@@ -25,6 +26,7 @@ const RatingDisplay = ({
   averageScore,
   getRatings,
   isShowAddNew = false,
+  height = 'h-16',
 }: RatingDisplayProps) => {
   const [hovered, setHovered] = useState(false);
   const { bg } = getScoreColors(averageScore);
@@ -36,6 +38,7 @@ const RatingDisplay = ({
       className={cn(
         'relative flex h-16 items-center justify-center border-gray-200',
         bg,
+        height,
         { 'bg-blue-50': isShowAddNew },
       )}
       onMouseEnter={() => setHovered(true)}
