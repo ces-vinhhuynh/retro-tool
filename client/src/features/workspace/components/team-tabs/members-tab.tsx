@@ -50,7 +50,7 @@ const MembersTab = ({
         <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
           <Button
             variant="default"
-            className="self-end"
+            className="w-full self-end md:w-auto"
             onClick={() => setShowInviteDialog(true)}
           >
             Invite member
@@ -66,8 +66,8 @@ const MembersTab = ({
         </div>
       )}
 
-      {/* Mobile */}
-      <div className="flex flex-col gap-3 sm:hidden">
+      {/* Mobile/Tablet - Grid 2 columns (≤768px) */}
+      <div className="grid grid-cols-2 gap-3 md:hidden">
         {teamMembers.map((user) => (
           <UserCard
             key={user.id}
@@ -84,12 +84,13 @@ const MembersTab = ({
             isWorkspaceUserCard={false}
             isOwnerOrAdmin={isAdmin}
             currentUserRole={currentUserRole}
+            isCompact={true} // Thêm prop để biết khi nào dùng layout compact
           />
         ))}
       </div>
 
-      {/* Desktop */}
-      <div className="hidden w-full overflow-x-auto sm:block">
+      {/* Desktop (≥768px) */}
+      <div className="hidden w-full overflow-x-auto md:block">
         <DataTable columns={columns} data={teamMembers} />
       </div>
     </Card>
