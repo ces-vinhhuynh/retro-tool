@@ -50,25 +50,27 @@ export const UserCard = ({
     : Object.values(TEAM_ROLES);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 rounded-xl border border-gray-200 p-8 shadow">
-      <div className="flex flex-col items-center gap-3">
-        <Avatar className="h-15 w-15">
+    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-gray-200 p-2 shadow md:gap-5 md:p-8">
+      <div className="flex flex-col items-center gap-2 sm:gap-3">
+        <Avatar className="h-12 w-12 sm:h-15 sm:w-15">
           <AvatarImage src={user.avatar_url || ''} />
           <AvatarFallback>
             {getAvatarCharacters(user.full_name || '')}
           </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col items-center gap-1">
-          <p className="truncate text-base font-semibold text-gray-900">
+        <div className="flex w-full max-w-full flex-col items-center gap-1 px-1">
+          <p className="w-full max-w-full text-center text-sm font-semibold break-words text-gray-900 sm:text-base">
             {user.full_name || ''}
           </p>
-          <p className="truncate text-sm text-gray-600">{user.email || ''}</p>
+          <p className="w-full max-w-full overflow-hidden text-center text-xs leading-tight break-all text-gray-600 sm:text-sm">
+            {user.email || ''}
+          </p>
         </div>
       </div>
       {(currentUserRole === WORKSPACE_ROLES.owner || !isOwnerOrAdmin) && (
         <div
           className={cn(
-            'bg-primary flex h-8 w-fit min-w-24 cursor-pointer items-center justify-center rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+            'bg-primary flex h-7 w-fit min-w-20 cursor-pointer items-center justify-center rounded-4xl border border-gray-200 px-2 py-1 text-xs font-medium text-white capitalize focus:ring-0 focus:ring-offset-0 sm:h-8 sm:min-w-24 sm:px-3 sm:py-1.5 sm:text-sm',
             {
               'bg-gray-100 text-gray-900': isWorkspaceUserCard
                 ? user.role === WORKSPACE_ROLES.member
@@ -85,7 +87,7 @@ export const UserCard = ({
           <Select value={user.role} onValueChange={onUpdateRole}>
             <SelectTrigger
               className={cn(
-                'bg-primary h-8 w-fit min-w-24 cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                'bg-primary h-7 w-fit min-w-20 cursor-pointer rounded-4xl border border-gray-200 px-2 py-1 text-xs font-medium text-white capitalize focus:ring-0 focus:ring-offset-0 sm:h-8 sm:min-w-24 sm:px-3 sm:py-1.5 sm:text-sm',
                 {
                   'bg-gray-100 text-gray-900': isWorkspaceUserCard
                     ? user.role === WORKSPACE_ROLES.member
@@ -108,27 +110,31 @@ export const UserCard = ({
             </SelectContent>
           </Select>
         )}
-      <div className="flex flex-col gap-1">
-        <p className="text-sm font-medium text-gray-700">Teams</p>
-        <div className="flex flex-wrap gap-2">
-          {user.teams?.map((team, idx) => (
-            <div
-              key={`${user.id}_${team}_${idx}`}
-              className="text-primary-text flex max-w-full items-center truncate rounded-sm bg-gray-100 px-3 py-2 text-sm font-semibold"
-            >
-              {team}
-            </div>
-          ))}
+
+      {/* Teams Section - Optimized for mobile */}
+      {user.teams && user.teams.length > 0 && (
+        <div className="flex w-full flex-col items-center gap-1 sm:gap-2">
+          <p className="text-xs font-medium text-gray-700 sm:text-sm">Teams</p>
+          <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
+            {user.teams?.map((team, idx) => (
+              <div
+                key={`${user.id}_${team}_${idx}`}
+                className="text-primary-text flex max-w-full items-center truncate rounded-sm bg-gray-100 px-2 py-1 text-xs font-medium sm:px-3 sm:py-2 sm:text-sm sm:font-semibold"
+              >
+                {team}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {isOwnerOrAdmin && (
         <Button
           variant="ghost"
           onClick={() => onDelete(user.id)}
-          className="hover:text-primary p-0 hover:bg-transparent"
+          className="flex h-7 items-center gap-1 p-0 text-xs hover:bg-transparent hover:text-red-500 sm:h-auto sm:text-sm"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
           <span>Remove</span>
         </Button>
       )}

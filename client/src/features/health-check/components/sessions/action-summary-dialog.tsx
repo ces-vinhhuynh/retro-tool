@@ -55,7 +55,7 @@ const ActionSummaryDialog = ({
 
   // Navigate to health check review page
   const handleNavigateToHealthCheck = () => {
-    if (isHandlingNavigate) {
+    if (isHandlingNavigate && healthCheckId) {
       const baseUrl = `/health-checks/${healthCheckId}`;
       window.open(baseUrl, '_blank', 'noopener,noreferrer');
     }
@@ -63,7 +63,7 @@ const ActionSummaryDialog = ({
 
   // Navigate to original action card or question details
   const handleNavigateToQuestion = () => {
-    if (isHandlingNavigate) {
+    if (isHandlingNavigate && healthCheckId) {
       const baseUrl = `/health-checks/${healthCheckId}`;
       const params = new URLSearchParams();
       params.set('questionId', action?.question_id || '');

@@ -84,7 +84,7 @@ const MembersTab = ({
             isWorkspaceUserCard={false}
             isOwnerOrAdmin={isAdmin}
             currentUserRole={currentUserRole}
-            isCompact={true} // Thêm prop để biết khi nào dùng layout compact
+            isCompact={true}
           />
         ))}
       </div>

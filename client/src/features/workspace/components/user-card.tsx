@@ -46,7 +46,7 @@ interface UserCardProps {
   isWorkspaceUserCard?: boolean;
   isOwnerOrAdmin: boolean;
   currentUserRole: WorkspaceRole;
-  isCompact?: boolean; // Thêm prop để control layout compact
+  isCompact?: boolean;
 }
 
 const UserCard = ({
@@ -69,11 +69,9 @@ const UserCard = ({
     setShowDeleteDialog(false);
   };
 
-  // Layout compact cho mobile
   if (isCompact) {
     return (
-      <div className="flex h-44 flex-col items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-3 shadow">
-        {/* Avatar và tên */}
+      <div className="flex h-44 flex-col items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-2 shadow">
         <div className="flex flex-col items-center gap-2 text-center">
           <Avatar className="h-8 w-8 flex-shrink-0">
             <AvatarImage src={user.avatar_url || ''} />
@@ -81,22 +79,21 @@ const UserCard = ({
               {getAvatarCharacters(user.full_name || '')}
             </AvatarFallback>
           </Avatar>
-          <div className="flex min-w-0 flex-col items-center gap-1">
+          <div className="flex w-full min-w-0 flex-col items-center gap-1">
             <span className="line-clamp-1 text-xs font-semibold text-gray-900">
               {user.full_name || 'No name'}
             </span>
-            <span className="line-clamp-1 text-xs text-gray-600">
+            <span className="max-h-8 overflow-hidden text-center text-xs leading-tight break-words break-all text-gray-600">
               {user.email || ''}
             </span>
           </div>
         </div>
 
-        {/* Role - không có label */}
         <div className="flex flex-col items-center">
           {(currentUserRole === WORKSPACE_ROLES.owner || !isOwnerOrAdmin) && (
             <div
               className={cn(
-                'bg-primary flex h-6 w-fit cursor-pointer items-center justify-center rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                'bg-primary flex h-6 w-fit cursor-pointer items-center justify-center rounded-full border border-gray-200 px-2 py-1 text-xs font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
                 {
                   'bg-gray-100 text-gray-900': isWorkspaceUserCard
                     ? user.role === WORKSPACE_ROLES.member
@@ -138,7 +135,6 @@ const UserCard = ({
             )}
         </div>
 
-        {/* Teams - chỉ hiển thị cho workspace user card */}
         {isWorkspaceUserCard && user.teams && user.teams.length > 0 && (
           <div className="flex w-full flex-col items-center gap-1">
             <span className="text-xs font-medium text-gray-700">Teams</span>
@@ -160,7 +156,6 @@ const UserCard = ({
           </div>
         )}
 
-        {/* Remove button - ở dưới cùng */}
         {isOwnerOrAdmin && (
           <>
             <Button
@@ -202,7 +197,6 @@ const UserCard = ({
     );
   }
 
-  // Layout mặc định cho desktop và tablet
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 shadow">
       <div className="flex w-full flex-col gap-5 sm:w-auto">
@@ -218,7 +212,7 @@ const UserCard = ({
               <span className="truncate text-base font-semibold text-gray-900">
                 {user.full_name || ''}
               </span>
-              <span className="truncate text-sm text-gray-600">
+              <span className="text-sm leading-tight break-words break-all text-gray-600">
                 {user.email || ''}
               </span>
             </div>

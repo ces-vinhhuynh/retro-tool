@@ -60,6 +60,7 @@ const TeamActionsPage = () => {
             teamId={teamId}
             teamMembers={teamMembers as unknown as User[]}
             healthChecks={healthChecks}
+            isHandlingOpenLink
           />
         </CardContent>
       </Card>

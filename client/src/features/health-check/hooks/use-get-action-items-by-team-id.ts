@@ -13,7 +13,7 @@ export const useGetActionItemsByTeamId = (teamId: string) => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ['get-action-items-by-teamId'],
+    queryKey: ['get-action-items-by-teamId', teamId],
     queryFn: getActionItems,
     enabled: !!teamId,
   });
