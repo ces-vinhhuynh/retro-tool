@@ -11,12 +11,10 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import ChartDialog from '@/features/health-check/components/chart-dialog';
 import ClosePhase from '@/features/health-check/components/close-phase';
 import DiscussPhase from '@/features/health-check/components/discuss-phase';
-import HealthCheckSteps from '@/features/health-check/components/health-check-steps';
 import OpenActionsPhase from '@/features/health-check/components/open-actions-phase';
 import ReviewPhase from '@/features/health-check/components/review-phase';
 import WelcomeModal from '@/features/health-check/components/sessions/welcome-modal';
 import SurveyPhase from '@/features/health-check/components/survey-phase';
-import Timer from '@/features/health-check/components/timer';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
@@ -316,28 +314,6 @@ export default function HealthCheckPage() {
     }
   };
 
-  const handleChangeStep = (newStep: keyof typeof STEPS) => {
-    if (!isFacilitator) return;
-
-    if (STEPS[newStep].key === healthCheck?.current_step) return;
-
-    if (healthCheck?.current_step !== 1) {
-      updateHealthCheck({
-        id: healthCheckId,
-        healthCheck: { current_step: STEPS[newStep].key },
-      });
-      return;
-    }
-
-    updateAverageScores({ healthCheckId: healthCheck.id });
-    updateHealthCheck({
-      id: healthCheck.id,
-      healthCheck: {
-        current_step: STEPS[newStep].key,
-      },
-    });
-  };
-
   const getNextPhaseButtonText = () => {
     if (healthCheck?.current_step === LAST_STEP.key) return;
     if (healthCheck?.current_step === STEPS['survey'].key)
@@ -405,21 +381,7 @@ export default function HealthCheckPage() {
       <div className="flex w-full flex-col">
         <div className="flex w-full">
           <div className="mx-auto w-full p-2 md:p-4 lg:p-8">
-            <div className="pb-6">
-              <div className="flex items-center justify-center pt-3">
-                <HealthCheckSteps
-                  currentStep={healthCheck.current_step || FIRST_STEP.key}
-                  isFacilitator={!!isFacilitator}
-                  handleChangeStep={handleChangeStep}
-                />
-              </div>
-            </div>
             <Card className="mx-auto w-full flex-shrink-0 overflow-hidden px-2 sm:px-4 md:px-6">
-              <Timer
-                isFacilitator={!!isFacilitator}
-                healthCheckId={healthCheckId}
-                endTime={healthCheck.end_time || ''}
-              />
               {healthCheck.current_step === STEPS['survey'].key && (
                 <SurveyPhase
                   healthCheck={healthCheck as HealthCheckWithTemplate}

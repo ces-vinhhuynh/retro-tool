@@ -27,6 +27,8 @@ import {
 } from '../ui/breadcrumb';
 import { SidebarTrigger } from '../ui/sidebar';
 
+import { HealthCheckHeader } from './health-check-header';
+
 interface HeaderProps {
   currentWorkspace: WorkspaceUserWithWorkspace;
   currentTeam: Team;
@@ -41,6 +43,7 @@ export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
 
   const isTeamRoute =
     pathname.startsWith('/teams/') || pathname.startsWith('/health-checks/');
+  const isHealthCheckRoute = pathname.startsWith('/health-checks/');
 
   const handleSignOut = async () => {
     try {
@@ -147,6 +150,7 @@ export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
           )}
         </div>
       </div>
+      {isHealthCheckRoute && <HealthCheckHeader />}
     </header>
   );
 }

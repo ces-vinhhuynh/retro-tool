@@ -130,30 +130,24 @@ const SurveyQuestionRow = ({
         </div>
 
         <div className="mb-2 flex w-full flex-col gap-2 sm:hidden">
-          <Carousel className="mx-auto w-full max-w-xs px-1">
-            <CarouselContent>
-              {[firstHalf, secondHalf].map((scoreGroup, index) => (
-                <CarouselItem key={index}>
-                  <div className="p-1">
-                    <div className="flex flex-wrap justify-center gap-3">
-                      {scoreGroup.map((score) => (
-                        <ScoreButton
-                          key={score}
-                          score={score}
-                          value={value ?? 0}
-                          maxScore={maxScore.value}
-                          disabled={!!disabled}
-                          onValueChange={onValueChange}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious variant="ghost" className="-left-3 h-6 w-6" />
-            <CarouselNext variant="ghost" className="-right-3 h-6 w-6" />
-          </Carousel>
+          {[firstHalf, secondHalf].map((scoreGroup, index) => (
+            <div key={index}>
+              <div className="p-1">
+                <div className="flex flex-wrap justify-center gap-3">
+                  {scoreGroup.map((score) => (
+                    <ScoreButton
+                      key={score}
+                      score={score}
+                      value={value ?? 0}
+                      maxScore={maxScore.value}
+                      disabled={!!disabled}
+                      onValueChange={onValueChange}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="text-muted-foreground flex min-w-0 flex-col text-[10px] sm:text-xs">

@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 
 import { useHealthCheckMutations } from '../hooks/use-health-check';
 import { useUpdateResponse } from '../hooks/use-response';
@@ -276,13 +275,6 @@ const SurveyPhase = ({
 
   return (
     <CardContent className="p-3 sm:p-4 md:p-5 lg:p-6">
-      <div className="min-w-0 flex-shrink-0 pb-2 md:w-1/2 lg:w-1/3">
-        <Progress value={progress} className="h-2" />
-        <div className="text-muted-foreground text-right text-sm">
-          {Math.round(progress)}%
-        </div>
-      </div>
-
       {settings.display_mode === DisplayMode.SINGLE && (
         <OneQuestionMode {...sharedProps} questions={questions} />
       )}
