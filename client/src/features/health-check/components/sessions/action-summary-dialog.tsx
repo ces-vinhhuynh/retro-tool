@@ -128,27 +128,22 @@ const ActionSummaryDialog = ({
         {/* Body aligned with title */}
         <div className="mt-4 flex flex-col gap-2">
           {question?.title && (
-            <div className="flex items-center">
-              <span className="text-sm font-medium text-gray-600">
-                INSPIRED BY&nbsp;
-              </span>
+            <div className="text-sm leading-relaxed">
+              <span className="font-medium text-gray-600">INSPIRED BY </span>
               <button
                 onClick={handleNavigateToQuestion}
-                className="font-medium text-blue-600 hover:underline"
+                className="font-medium break-words text-blue-600 hover:underline"
               >
                 {question.title}
               </button>
-              <span>
-                &nbsp;in <em>{healthCheck?.title}</em>
-              </span>
+              <span> in </span>
+              <em className="break-words">{healthCheck?.title}</em>
             </div>
           )}
 
           {action.created_at && (
-            <div className="flex items-center">
-              <span className="text-sm font-medium text-gray-600">
-                ADDED&nbsp;
-              </span>
+            <div className="text-sm leading-relaxed">
+              <span className="font-medium text-gray-600">ADDED </span>
               <button
                 onClick={handleNavigateToHealthCheck}
                 className="font-medium text-blue-600 hover:underline"
