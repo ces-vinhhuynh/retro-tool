@@ -123,7 +123,7 @@ const UserAssignmentPopover = ({
   );
 
   // Popover content
-  const popoverContent = (
+  const popoverContent = isEditable && (
     <div className="w-full">
       <div className="flex border-b border-gray-200 px-3 py-2">
         {assignToNone && assignToAll && (

@@ -167,16 +167,16 @@ const ActionSummaryDialog = ({
             </div>
           )}
 
-          {action.due_date && (
+          {
             <div className="flex items-center">
               <span className="text-sm font-medium text-gray-600">
                 DUE&nbsp;
               </span>
               <DatePopover item={action} isEditable={true} />
             </div>
-          )}
+          }
 
-          {action.action_item_assignees?.length > 0 && (
+          {
             <div className="flex items-center">
               <span className="text-sm font-medium text-gray-600">
                 ASSIGNED TO&nbsp;
@@ -191,7 +191,7 @@ const ActionSummaryDialog = ({
                 setOpenPopovers={setOpenAssigneePopovers}
               />
             </div>
-          )}
+          }
         </div>
 
         {/* Footer */}
