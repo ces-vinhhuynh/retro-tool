@@ -16,6 +16,7 @@ interface StatusPopoverProps {
   getStatusIcon?: (status: ActionStatus) => React.ReactNode;
   setActionStatus?: (id: string, status: ActionStatus) => void;
   isUpdating?: boolean;
+  isEditable?: boolean;
 }
 
 export const StatusPopover = ({
@@ -25,6 +26,7 @@ export const StatusPopover = ({
   getStatusIcon,
   setActionStatus,
   isUpdating,
+  isEditable = true,
 }: StatusPopoverProps) => {
   const triggerButton = (
     <Button variant="ghost" size="icon" className="h-8 min-w-8 p-0">
@@ -42,7 +44,7 @@ export const StatusPopover = ({
             variant="ghost"
             className="h-8 justify-start rounded-none px-2 font-normal"
             onClick={() => setActionStatus?.(item.id, key as ActionStatus)}
-            disabled={isUpdating}
+            disabled={!isEditable || isUpdating}
           >
             <Icon className={cn('mr-2 h-4 w-4', config.className)} />
             {config.label}

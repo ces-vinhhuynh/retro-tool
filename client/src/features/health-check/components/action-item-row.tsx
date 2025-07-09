@@ -308,6 +308,7 @@ export const ActionItemRow = ({
                 getStatusIcon={getStatusIcon}
                 setActionStatus={setActionStatus}
                 isUpdating={isUpdating}
+                isEditable={isEditable}
               />
               <span
                 role="button"

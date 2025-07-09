@@ -494,6 +494,7 @@ export default function HealthCheckPage() {
             onCurrentIndexChange={onCurrentIndexChange}
             healthCheck={healthCheck}
             actionItems={actionItems || []}
+            isFacilitator={isFacilitator}
           />
         )}
       </div>

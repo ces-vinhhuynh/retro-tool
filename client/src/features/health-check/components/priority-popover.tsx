@@ -82,7 +82,7 @@ export const PriorityPopover = ({
             variant="ghost"
             className="h-8 w-full justify-start rounded-none px-2 font-normal"
             onClick={() => setPriority?.(item.id, key as ActionPriority)}
-            disabled={isUpdating}
+            disabled={isUpdating || !isEditable}
           >
             <div className="flex items-center">
               <div className="flex h-4 w-4 items-center justify-center">

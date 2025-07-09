@@ -137,7 +137,7 @@ const UserAssignmentPopover = ({
                   e.stopPropagation();
                   assignToNone?.(item.id);
                 }}
-                disabled={isRemovingAssignee}
+                disabled={!isEditable || isRemovingAssignee}
               >
                 NONE
               </Button>
@@ -148,7 +148,7 @@ const UserAssignmentPopover = ({
                   e.stopPropagation();
                   assignToAll?.(item.id);
                 }}
-                disabled={isCreatingAssignee || isAllAssigned}
+                disabled={!isEditable || isCreatingAssignee || isAllAssigned}
               >
                 ALL
               </Button>
@@ -170,7 +170,7 @@ const UserAssignmentPopover = ({
                 email: member.email ?? '',
               });
             }}
-            disabled={isCreatingAssignee}
+            disabled={!isEditable || isCreatingAssignee}
           >
             <div className="flex h-5 w-5 items-center justify-center">
               {assignees?.includes(member.id) && (

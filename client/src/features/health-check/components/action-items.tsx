@@ -25,6 +25,7 @@ interface ActionItemsProps {
   teamMembers: User[];
   healthChecks?: HealthCheck[];
   isHandlingOpenLink?: boolean;
+  isEditable?: boolean;
 }
 
 const ActionItems = ({
@@ -34,7 +35,8 @@ const ActionItems = ({
   questionId,
   teamMembers,
   healthChecks,
-  isHandlingOpenLink,
+  isHandlingOpenLink = false,
+  isEditable = true,
 }: ActionItemsProps) => {
   const { mutate: createActionItem, isPending: isCreating } =
     useCreateActionItem();
@@ -93,7 +95,8 @@ const ActionItems = ({
                 onDelete={() => deleteActionItem({ actionItemId: item.id })}
                 teamMembers={teamMembers}
                 healthChecks={healthChecks}
-                isHandlingOpenLink={isHandlingOpenLink || false}
+                isHandlingOpenLink={isHandlingOpenLink}
+                isEditable={isEditable}
               />
             ))}
           </div>

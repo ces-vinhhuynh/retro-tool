@@ -74,6 +74,7 @@ export const DatePopover = ({
       selected={item.due_date ? new Date(item.due_date) : undefined}
       onSelect={(date) => setDueDate?.(date)}
       initialFocus
+      disabled={!isEditable}
     />
   );
 
