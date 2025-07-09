@@ -29,7 +29,14 @@ export const StatusPopover = ({
   isEditable = true,
 }: StatusPopoverProps) => {
   const triggerButton = (
-    <Button variant="ghost" size="icon" className="h-8 min-w-8 p-0">
+    <Button
+      variant="ghost"
+      size="icon"
+      className={cn(
+        'h-8 min-w-8 p-0',
+        !isEditable && 'cursor-default hover:bg-transparent',
+      )}
+    >
       {getStatusIcon?.(item.status as ActionStatus)}
     </Button>
   );

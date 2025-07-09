@@ -55,7 +55,7 @@ export const PriorityPopover = ({
         className={cn(
           'cursor-pointer transition-colors',
           getPriorityColor(item.priority || 'LOW'),
-          !isEditable && 'cursor-default',
+          !isEditable && 'hover:cursor-default',
         )}
       >
         {item.priority?.toUpperCase() || 'LOW'}

@@ -2,6 +2,7 @@ import { Check, User as UserIcon } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { getAvatarCharacters } from '@/utils/user';
 
 import { ActionItem, User } from '../types/health-check';
@@ -76,7 +77,12 @@ const UserAssignmentPopover = ({
 
   // Original avatar variant for editable lists
   const triggerButton = (
-    <div className="flex cursor-pointer items-center">
+    <div
+      className={cn(
+        'flex cursor-pointer items-center',
+        !isEditable && assignees?.length === 0 && 'hover:cursor-default',
+      )}
+    >
       <span className="h-auto p-1 text-sm font-normal">
         {showLabel && 'Assigned: '}
       </span>
@@ -123,7 +129,9 @@ const UserAssignmentPopover = ({
   );
 
   // Popover content
-  const popoverContent = isEditable && (
+
+  const popoverContent = (isEditable ||
+    (!isEditable && assignees?.length > 0)) && (
     <div className="w-full">
       <div className="flex border-b border-gray-200 px-3 py-2">
         {assignToNone && assignToAll && (
