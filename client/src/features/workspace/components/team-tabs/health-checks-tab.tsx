@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import ScrumHealthCheck from '@/features/health-check/components/scrum-health-check';
 import SessionTemplateDialog from '@/features/health-check/components/sessions/session-template-dialog';
+import { SCRUM_TEAM_HEALTH_CHECK_TABLE } from '@/features/health-check/constants/health-check-table-config';
 import { useNewSessionModalStore } from '@/features/health-check/stores/new-session-modal-store';
 import {
   HealthCheck,
@@ -37,10 +38,10 @@ const HealthChecksTab = ({
             <div className="flex flex-col justify-end-safe gap-4 md:flex-row md:items-center">
               <Button
                 variant="default"
-                className="bg-primary ml-auto hover:bg-blue-900"
+                className="w-full sm:w-full md:w-auto md:ml-auto bg-primary hover:bg-blue-900"
                 onClick={() => setShowDialog(true)}
               >
-                <Plus />
+                <Plus className="mr-2" />
                 New Health Check
               </Button>
             </div>
@@ -52,7 +53,8 @@ const HealthChecksTab = ({
             <ScrumHealthCheck
               key={key}
               onAddNewSession={() => onAddNewSession(key)}
-              scrumHealthChecks={value as HealthCheckWithTemplate[]}
+              scrumHealthChecks={value.slice(0, 4) as HealthCheckWithTemplate[]}
+              responsiveConfig={SCRUM_TEAM_HEALTH_CHECK_TABLE}
               isShowAddNew={isAdmin}
             />
           );

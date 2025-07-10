@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
+import { HealthCheckTableResponsiveConfig } from '../constants/health-check-table-config';
 import { useHealthCheckTransform } from '../hooks/use-health-check-transform';
 import { useResponseByHealthChecks } from '../hooks/use-response-by-health-checks';
 import { HealthCheckWithTemplate } from '../types/health-check';
@@ -14,6 +15,7 @@ import HealthCheckTableView from './health-check-table-view';
 
 interface ScrumHealthCheckProps {
   scrumHealthChecks: HealthCheckWithTemplate[];
+  responsiveConfig?: HealthCheckTableResponsiveConfig;
   isShowAddNew?: boolean;
   onAddNewSession?: () => void;
   isShowTitle?: boolean;
@@ -21,6 +23,7 @@ interface ScrumHealthCheckProps {
 
 const ScrumHealthCheck = ({
   scrumHealthChecks = [],
+  responsiveConfig,
   isShowAddNew = false,
   onAddNewSession,
   isShowTitle = true,
@@ -45,13 +48,13 @@ const ScrumHealthCheck = ({
   return (
     <div className="rounded-lg bg-white">
       {/* Header with title and toggle */}
-      <div className="flex flex-col gap-3 mb-4 md:flex-row md:items-center md:justify-between md:gap-2">
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-2">
         {isShowTitle && title && (
           <h2 className="text-lg font-bold text-gray-900 md:text-xl lg:text-2xl">
             {title}
           </h2>
         )}
-        
+
         {/* Toggle Switch */}
         <div className="flex items-center gap-2 self-start md:self-auto">
           <Label className="text-xs font-medium text-gray-700 uppercase md:text-sm">
@@ -71,6 +74,7 @@ const ScrumHealthCheck = ({
           <HealthCheckTableView
             healthChecks={healthChecks}
             getHealthCheckRatings={getRatings}
+            responsiveConfig={responsiveConfig}
             isShowAddNew={canStartNewHealthCheck}
             onAddNewSession={onAddNewSession}
           />

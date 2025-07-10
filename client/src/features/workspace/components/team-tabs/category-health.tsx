@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ScrumHealthCheck from '@/features/health-check/components/scrum-health-check';
+import { DATA_TRACK_HEALTH_CHECK_TABLE } from '@/features/health-check/constants/health-check-table-config';
 import {
   HealthCheck,
   HealthCheckWithTemplate,
@@ -15,8 +16,8 @@ interface CategoryHealthProps {
 const CategoryHealth = ({ healthChecks }: CategoryHealthProps) => {
   return (
     <Card className="w-full">
-      <CardHeader className={cn("px-3 py-4 md:px-6 md:py-6")}>
-        <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl md:text-2xl font-semibold text-transparent">
+      <CardHeader className={cn('px-3 py-4 md:px-6 md:py-6')}>
+        <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-semibold text-transparent md:text-2xl">
           Category Health
         </CardTitle>
       </CardHeader>
@@ -26,6 +27,7 @@ const CategoryHealth = ({ healthChecks }: CategoryHealthProps) => {
             scrumHealthChecks={healthChecks as HealthCheckWithTemplate[]}
             isShowAddNew={false}
             isShowTitle={false}
+            responsiveConfig={DATA_TRACK_HEALTH_CHECK_TABLE}
           />
         ) : (
           <div className="flex h-[200px] w-full items-center justify-center text-center">

@@ -50,7 +50,7 @@ const TeamActionsPage = () => {
   );
 
   return (
-    <div className="w-full p-4 md:p-6 lg:p-8">
+    <div className="w-full p-4 md:p-6 lg:p-8 ">
       <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
         <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
         <CardHeader>

@@ -20,7 +20,8 @@ interface HealthCheckColumnProps {
   headerHeight?: string;
   columnWidth?: string;
   questionRowHeight?: string;
-  isFlexWidth?: boolean;
+  titleWidth?: string;
+  showMaxColumns?: boolean;
   showPreviousButton?: boolean;
   showNextButton?: boolean;
   onPrevious?: () => void;
@@ -37,7 +38,8 @@ const HealthCheckColumn = ({
   headerHeight = 'h-24',
   columnWidth = 'min-w-48 max-w-48',
   questionRowHeight = 'h-16',
-  isFlexWidth = false,
+  titleWidth = 'min-w-20 max-w-20',
+  showMaxColumns = false,
   showPreviousButton = false,
   showNextButton = false,
   onPrevious,
@@ -45,20 +47,22 @@ const HealthCheckColumn = ({
   isAnyHeaderHovered = false,
   onHeaderHover,
 }: HealthCheckColumnProps) => {
-  // Calculate flex width based on number of visible columns
-  const getColumnWidth = () => {
-    if (isFlexWidth) {
-      return `flex-1 min-w-0`;
-    }
-    return columnWidth;
-  };
+  const { columnClasses, titleClasses } = showMaxColumns
+    ? {
+        columnClasses: 'flex-1 min-w-0',
+        titleClasses: 'truncate max-w-full',
+      }
+    : {
+        columnClasses: columnWidth,
+        titleClasses: cn('truncate', titleWidth),
+      };
 
   return (
     <div
       key={healthCheck.id}
       className={cn(
-        'relative flex flex-col border transition-transform duration-200',
-        getColumnWidth(),
+        'relative flex h-full flex-col border transition-transform duration-200',
+        columnClasses,
         {
           'cursor-pointer bg-blue-50': isShowAddNew,
         },
@@ -114,10 +118,15 @@ const HealthCheckColumn = ({
             href={`/health-checks/${healthCheck.id}`}
             className="flex h-full w-full flex-col items-center justify-center gap-1 rounded p-1 transition-colors hover:bg-gray-100"
           >
-            <h2 className="max-w-full truncate text-center text-sm leading-tight font-bold md:text-base">
+            <h2
+              className={cn(
+                'text-center text-sm leading-tight font-bold md:text-base',
+                titleClasses,
+              )}
+            >
               {healthCheck.title}
             </h2>
-            <p className="text-xs text-gray-500 md:text-sm">
+            <p className="max-w-full truncate text-xs text-gray-500 md:text-sm">
               {formatDateTime(new Date(String(healthCheck.createdAt)))}
             </p>
             <div className="rounded bg-gray-200 px-2 py-1 text-xs capitalize">

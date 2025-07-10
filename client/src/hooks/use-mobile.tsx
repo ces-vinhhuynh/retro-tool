@@ -1,13 +1,29 @@
 import * as React from 'react';
 
 const BREAKPOINTS = {
-  XS: 640, // <= 640px
-  SM: 768, // 640-768px
-  MD: 1024, // 768-1024px
-  LG: Infinity, // >= 1024px
+  xs: 640, // <= 640px
+  sm: 768, // 640-768px
+  md: 1024, // 768-1024px
+  lg: Infinity, // >= 1024px
+} as const;
+
+// Extended breakpoints example
+const EXTENDED_BREAKPOINTS = {
+  xs400: 400,
+  xs: 640,
+  sm: 768,
+  md828: 828,
+  md: 1024,
+  lg1242: 1242,
+  lg1444: 1444,
+  lg1792: 1792,
+  lg: Infinity,
 } as const;
 
 const MOBILE_BREAKPOINT = 1024;
+
+// Type for custom breakpoints
+export type CustomBreakpoints = Record<string, number>;
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
@@ -27,8 +43,8 @@ export function useIsMobile() {
   return !!isMobile;
 }
 
-// Generic hook for custom breakpoint checking
-export function useIsMobileLessThan(breakpoint: number) {
+// Generic hook for custom breakpoint checking (less than)
+export function useIsBreakpointLessThan(breakpoint: number) {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
     undefined,
   );
@@ -46,50 +62,84 @@ export function useIsMobileLessThan(breakpoint: number) {
   return !!isMobile;
 }
 
-// Specific breakpoint hooks
-export function useIsXsMobile() {
-  return useIsMobileLessThan(BREAKPOINTS.XS);
+// Generic hook for custom breakpoint checking (greater than or equal)
+export function useIsBreakpointGreaterThan(breakpoint: number) {
+  const [isGreater, setIsGreater] = React.useState<boolean | undefined>(
+    undefined,
+  );
+
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    const onChange = () => {
+      setIsGreater(window.innerWidth >= breakpoint);
+    };
+    mql.addEventListener('change', onChange);
+    setIsGreater(window.innerWidth >= breakpoint);
+    return () => mql.removeEventListener('change', onChange);
+  }, [breakpoint]);
+
+  return !!isGreater;
 }
 
-export function useIsSmMobile() {
-  return useIsMobileLessThan(BREAKPOINTS.SM);
+// Specific breakpoint hooks (less than)
+export function useIsXsScreenSize() {
+  return useIsBreakpointLessThan(BREAKPOINTS.xs);
 }
 
-export function useIsMdMobile() {
-  return useIsMobileLessThan(BREAKPOINTS.MD);
+export function useIsSmScreenSize() {
+  return useIsBreakpointLessThan(BREAKPOINTS.sm);
 }
 
-export function useIsLgMobile() {
-  return useIsMobileLessThan(BREAKPOINTS.LG);
+export function useIsMdScreenSize() {
+  return useIsBreakpointLessThan(BREAKPOINTS.md);
+}
+
+export function useIsLgScreenSize() {
+  return useIsBreakpointLessThan(BREAKPOINTS.lg);
 }
 
 // Hook to get current breakpoint name
-export function useCurrentBreakpoint() {
+export function useCurrentBreakpoint(customBreakpoints?: CustomBreakpoints) {
   const [breakpoint, setBreakpoint] = React.useState<string | undefined>(
     undefined,
   );
 
   React.useEffect(() => {
+    const breakpointsToUse = customBreakpoints || BREAKPOINTS;
+
+    // Sort breakpoints by value (ascending) and filter out Infinity
+    const sortedBreakpoints = Object.entries(breakpointsToUse)
+      .filter(([_, value]) => value !== Infinity)
+      .sort(([, a], [, b]) => a - b);
+
+    // Find the largest breakpoint key for values >= largest finite breakpoint
+    const largestBreakpointKey =
+      Object.entries(breakpointsToUse).find(
+        ([_, value]) => value === Infinity,
+      )?.[0] ||
+      sortedBreakpoints[sortedBreakpoints.length - 1]?.[0] ||
+      'lg';
+
     const updateBreakpoint = () => {
       const width = window.innerWidth;
 
-      if (width < BREAKPOINTS.XS) {
-        setBreakpoint('xs');
-      } else if (width < BREAKPOINTS.SM) {
-        setBreakpoint('sm');
-      } else if (width < BREAKPOINTS.MD) {
-        setBreakpoint('md');
-      } else {
-        setBreakpoint('lg');
+      // Find appropriate breakpoint
+      let currentBreakpoint = largestBreakpointKey;
+
+      for (const [key, value] of sortedBreakpoints) {
+        if (width < value) {
+          currentBreakpoint = key;
+          break;
+        }
       }
+
+      setBreakpoint(currentBreakpoint);
     };
 
-    // Create media query listeners for all breakpoints
-    const mediaQueries = [
-      window.matchMedia(`(max-width: ${BREAKPOINTS.XS - 1}px)`),
-      window.matchMedia(`(max-width: ${BREAKPOINTS.SM - 1}px)`),
-      window.matchMedia(`(max-width: ${BREAKPOINTS.MD - 1}px)`),
-    ];
+    // Create media query listeners for all finite breakpoints
+    const mediaQueries = sortedBreakpoints.map(([_, value]) =>
+      window.matchMedia(`(max-width: ${value - 1}px)`),
+    );
 
     // Set initial value
     updateBreakpoint();
@@ -105,7 +155,7 @@ export function useCurrentBreakpoint() {
         mql.removeEventListener('change', updateBreakpoint);
       });
     };
-  }, []);
+  }, [customBreakpoints]);
 
   return breakpoint;
 }
@@ -137,15 +187,36 @@ export function useIsBetweenBreakpoints(minWidth: number, maxWidth: number) {
 }
 
 // Utility functions (non-hooks) for one-time checks
-export const getScreenBreakpoint = (): string => {
+export const getScreenBreakpoint = (
+  customBreakpoints?: CustomBreakpoints,
+): string => {
   if (typeof window === 'undefined') return 'lg'; // SSR fallback
+
+  const breakpointsToUse = customBreakpoints || BREAKPOINTS;
 
   const width = window.innerWidth;
 
-  if (width < BREAKPOINTS.XS) return 'xs';
-  if (width < BREAKPOINTS.SM) return 'sm';
-  if (width < BREAKPOINTS.MD) return 'md';
-  return 'lg';
+  // Sort breakpoints by value (ascending) and filter out Infinity
+  const sortedBreakpoints = Object.entries(breakpointsToUse)
+    .filter(([_, value]) => value !== Infinity)
+    .sort(([, a], [, b]) => a - b);
+
+  // Find the largest breakpoint key for values >= largest finite breakpoint
+  const largestBreakpointKey =
+    Object.entries(breakpointsToUse).find(
+      ([_, value]) => value === Infinity,
+    )?.[0] ||
+    sortedBreakpoints[sortedBreakpoints.length - 1]?.[0] ||
+    'lg';
+
+  // Find appropriate breakpoint
+  for (const [key, value] of sortedBreakpoints) {
+    if (width < value) {
+      return key;
+    }
+  }
+
+  return largestBreakpointKey;
 };
 
 export const isMobileLessThan = (breakpoint: number): boolean => {
@@ -153,10 +224,45 @@ export const isMobileLessThan = (breakpoint: number): boolean => {
   return window.innerWidth < breakpoint;
 };
 
-export const isXsMobile = (): boolean => isMobileLessThan(BREAKPOINTS.XS);
-export const isSmMobile = (): boolean => isMobileLessThan(BREAKPOINTS.SM);
-export const isMdMobile = (): boolean => isMobileLessThan(BREAKPOINTS.MD);
-export const isLgMobile = (): boolean => isMobileLessThan(BREAKPOINTS.LG);
+export const isMobileGreaterThan = (breakpoint: number): boolean => {
+  if (typeof window === 'undefined') return false; // SSR fallback
+  return window.innerWidth >= breakpoint;
+};
+
+export const isXsMobile = (): boolean => isMobileLessThan(BREAKPOINTS.xs);
+export const isSmMobile = (): boolean => isMobileLessThan(BREAKPOINTS.sm);
+export const isMdMobile = (): boolean => isMobileLessThan(BREAKPOINTS.md);
+export const isLgMobile = (): boolean => isMobileLessThan(BREAKPOINTS.lg);
 
 // Export breakpoints for direct usage
-export { BREAKPOINTS };
+export { BREAKPOINTS, EXTENDED_BREAKPOINTS };
+
+// Usage examples:
+/*
+// Using default breakpoints
+const currentBreakpoint = useCurrentBreakpoint(); // returns: "xs" | "sm" | "md" | "lg"
+
+// Using custom breakpoints  
+const customBreakpoint = useCurrentBreakpoint({
+  xs0: 400,
+  xs: 640,
+  sm: 768,
+  md828: 828,
+  md: 1024,
+  lg: Infinity,
+});
+
+// Using extended breakpoints
+const extendedBreakpoint = useCurrentBreakpoint(extendedBreakpoints);
+
+// Direct breakpoint access
+const isMobile = useIsBreakpointLessThan(breakpoints.md);
+const isDesktop = useIsBreakpointGreaterThan(breakpoints.md);
+
+// Utility function with custom breakpoints
+const screenSize = getScreenBreakpoint(extendedBreakpoints);
+
+// Check specific sizes
+const isSmallScreen = useIsSmMobile(); // < 768px
+const isBetweenTablet = useIsBetweenBreakpoints(breakpoints.sm, breakpoints.md); // 768-1023px
+*/
