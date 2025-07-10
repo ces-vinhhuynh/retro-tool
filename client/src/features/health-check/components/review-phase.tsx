@@ -28,6 +28,7 @@ interface ReviewPhaseProps {
   teamId: string;
   teamSize: number;
   teamMembers: User[];
+  isFacilitator: boolean;
 }
 
 interface SummaryItemProps {
@@ -50,6 +51,7 @@ const ReviewPhase = ({
   teamSize = 0,
   teamId,
   teamMembers,
+  isFacilitator,
 }: ReviewPhaseProps) => {
   const currentActionItems = actionItems?.filter(
     (item) =>
@@ -172,7 +174,12 @@ const ReviewPhase = ({
           </EntryWrapper>
         )}
 
-        <EntryWrapper title="Team agreements">
+        <EntryWrapper
+          title="Team agreements"
+          className={cn('sm:block', {
+            hidden: !isFacilitator,
+          })}
+        >
           <EntryList
             items={agreements}
             emptyItemMessage="No agreements yet"

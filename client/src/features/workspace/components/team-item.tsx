@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import ConfirmModal from '@/components/modal/confirm-modal';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -13,6 +14,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
@@ -86,7 +92,7 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
     if (days < 365) return `${Math.floor(days / 30)} months ago`;
     return 'last year';
   }
-
+  console.log('team.users', team.users);
   return (
     <>
       <Card
@@ -126,16 +132,49 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
           </DropdownMenu>
         </div>
         <div className="flex items-center justify-between">
-          <span className="flex items-center gap-1 text-center text-sm font-medium">
-            <Users className="h-4 w-4" />
-            {team.users.length || 0} members
-          </span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                className="hover:text-primary-text text-primary-text flex items-center gap-1 p-0 text-center text-sm font-medium hover:bg-transparent"
+              >
+                <Users className="h-4 w-4" />
+                {team.users.length || 0} members
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-80">
+              <div className="flex flex-col gap-5">
+                <h4 className="leading-none font-medium">Team Members</h4>
+                <ul className="grid grid-cols-2 gap-2">
+                  {team.users.map((user, index) => (
+                    <li
+                      key={`user.id-${index}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Avatar>
+                        <AvatarImage
+                          src={user.avatar_url ?? ''}
+                          alt={user.full_name ?? 'User'}
+                          className="h-8 w-8 bg-gray-300"
+                        />
+                        <AvatarFallback className="bg-rhino-300 text-rhino-800 font-bold">
+                          {user.full_name?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>{user.full_name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </PopoverContent>
+          </Popover>
           <span className="flex items-center gap-2">
             <Heart className="h-4 w-4" />
             <span>
-              {teamScore <= 0.3 && 'At Risk'}
-              {teamScore > 0.3 && teamScore <= 0.7 && 'Needs Attention'}
-              {teamScore > 0.7 && 'Good'}
+              {!!healthChecks?.length &&
+                ((teamScore <= 0.3 && 'At Risk') ||
+                  (teamScore > 0.3 && teamScore <= 0.7 && 'Needs Attention') ||
+                  (teamScore > 0.7 && 'Good'))}
             </span>
           </span>
         </div>

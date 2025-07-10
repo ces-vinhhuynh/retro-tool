@@ -25,7 +25,7 @@ const StatCard = ({
     <Card
       className={cn('rounded-md border shadow-sm md:rounded-xl', className)}
     >
-      <CardHeader className="p-0 md:p-6 md:pb-2">
+      <CardHeader className="mr-4 ml-4 p-2 md:p-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-medium">{title}</CardTitle>
           {headerContent}

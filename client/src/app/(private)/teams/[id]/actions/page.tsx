@@ -45,6 +45,10 @@ const TeamActionsPage = () => {
     }
   }, [error, workspaceUser, router]);
 
+  const openAndInprogressActions = actionItems.filter(
+    ({ status }) => status === 'todo' || status === 'in_progress',
+  );
+
   return (
     <div className="w-full p-4 md:p-6 lg:p-8">
       <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
@@ -53,6 +57,10 @@ const TeamActionsPage = () => {
           <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-2xl font-semibold text-transparent">
             Team Actions
           </CardTitle>
+          <p className="text-secondary-text text-sm">
+            {openAndInprogressActions.length}/{actionItems.length} Todo & In
+            progress from 2 recent sprint
+          </p>
         </CardHeader>
         <CardContent className="space-y-8">
           <ActionItems

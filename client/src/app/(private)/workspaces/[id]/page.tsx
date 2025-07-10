@@ -40,7 +40,7 @@ const WorkspacePage = () => {
   if (isLoading) return <></>;
 
   return (
-    <div className="flex flex-col gap-3 p-3 sm:px-4 md:px-8 md:py-8 lg:px-10">
+    <div className="flex flex-col gap-10 p-3 sm:px-4 md:px-8 md:py-8 lg:px-10">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold">Welcome to {workspace?.name}</h1>
@@ -50,14 +50,13 @@ const WorkspacePage = () => {
         </div>
         {isOwnerOrAdmin && <CreateTeamDialog workspaceId={workspaceId} />}
       </div>
-      <div className="flex flex-col gap-3 py-5">
-        <h2 className="text-lg font-semibold">Your teams</h2>
-        {teams?.length === 0 ? (
+      <div className="flex justify-center">
+        {!teams?.length ? (
           <p className="text-sm text-gray-500">
             You are not a member of any team in this workspace
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-3">
+          <div className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {teams?.map((team) => (
               <TeamItem key={team.id} team={team} isOwnerOrAdmin />
             ))}

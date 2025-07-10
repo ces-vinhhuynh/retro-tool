@@ -144,12 +144,12 @@ const TeamHealthChart = ({
   return (
     <div className="flex w-full flex-col gap-2 overflow-x-auto rounded-lg bg-white p-6">
       <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-      <p className="mb-6 text-gray-500">
+      <p className="mb-6 hidden text-gray-500 sm:block">
         Average scores from all participants for health check sprint
       </p>
 
       <div className="mb-2 flex flex-col items-start gap-4 sm:flex-row">
-        <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-4 sm:block sm:space-y-2">
           <ScoreMetric label="Avg. Score" value={overallAvg} />
           <ScoreMetric label="Avg. Delivery & Execution" value={deliveryAvg} />
           <ScoreMetric label="Avg. Team Collaboration" value={collabAvg} />
@@ -160,16 +160,15 @@ const TeamHealthChart = ({
               value={totalActionItems.length}
             />
           )}
+          <ScoreMetric
+            label="Comments"
+            value={totalComments}
+            unit=""
+            colorClass="text-[#9b87f5]"
+          />
         </div>
-
-        <ScoreMetric
-          label="Comments"
-          value={totalComments}
-          unit=""
-          colorClass="text-[#9b87f5]"
-        />
       </div>
-      <div className="h-[400px] w-full">
+      <div className="hidden h-[400px] w-full sm:block">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
             <PolarGrid stroke="#f0cab6" strokeWidth={1} />

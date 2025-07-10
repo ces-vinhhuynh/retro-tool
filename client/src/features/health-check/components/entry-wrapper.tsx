@@ -1,13 +1,21 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/utils/cn';
 
 const EntryWrapper = ({
   title,
+  className,
   children,
 }: {
   title: string;
+  className?: string;
   children: React.ReactNode;
 }) => (
-  <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg">
+  <Card
+    className={cn(
+      'relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-lg',
+      className,
+    )}
+  >
     <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
     <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-4 md:p-6">
       <div className="space-y-3 sm:space-y-4">

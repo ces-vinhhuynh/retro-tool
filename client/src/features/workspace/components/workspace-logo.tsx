@@ -4,7 +4,7 @@ import { getInitialLetter } from '@/utils/string';
 export default function WorkspaceLogo({ name }: { name: string }) {
   return (
     <Avatar className="h-8 w-8 cursor-pointer">
-      <AvatarFallback className="bg-blue-300">
+      <AvatarFallback className="bg-transparent">
         {getInitialLetter(name)}
       </AvatarFallback>
     </Avatar>

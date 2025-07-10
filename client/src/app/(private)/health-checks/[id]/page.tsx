@@ -427,6 +427,7 @@ export default function HealthCheckPage() {
                   teamSize={participants?.length || 0}
                   //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
+                  isFacilitator={isFacilitator}
                 />
               )}
               {healthCheck.current_step === STEPS['close'].key && (

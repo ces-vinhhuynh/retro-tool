@@ -36,7 +36,7 @@ const ClosePhase = ({
 }: ClosePhaseProps) => {
   return (
     <div className="flex w-full flex-col gap-4">
-      <CardContent className="flex flex-col gap-2 p-2">
+      <CardContent className="hidden flex-col gap-2 p-2 sm:flex">
         <TeamHealthChart
           title="Health radar"
           isClosePhase={true}
@@ -47,7 +47,7 @@ const ClosePhase = ({
           teamMembers={teamMembers}
         />
       </CardContent>
-      <CardContent className="flex w-full flex-col gap-2 p-2">
+      <CardContent className="hidden w-full flex-col gap-2 p-2 sm:flex">
         <ScrumHealthCheck scrumHealthChecks={scrumHealthChecks} />
       </CardContent>
       <CardContent className="flex w-full flex-col gap-2 p-2">
