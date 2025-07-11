@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import { useIsMdMobile } from '@/hooks/use-mobile';
+import { useIsMdScreenSize } from '@/hooks/use-mobile';
 
 import { useHealthCheckWithTemplate } from '../../hooks/use-health-check';
 import {
@@ -83,9 +83,9 @@ const MobileTitlePopup = ({
   if (!isOpen) return null;
 
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black px-4 pt-4 pb-4">
+    <div className="bg-opacity-50 fixed inset-0 z-[9999] -mx-2 flex items-start justify-center overflow-y-auto bg-black/60 px-4 pt-4 pb-4">
       <div className="relative my-auto w-full max-w-xs rounded-lg bg-white shadow-xl">
-        <div className="relative max-h-[70vh] overflow-y-auto p-4">
+        <div className="relative max-h-[70vh] overflow-hidden p-4">
           <button
             onClick={onClose}
             className="absolute top-2 right-2 z-10 rounded-full bg-white p-1 shadow-sm hover:bg-gray-100"
@@ -106,7 +106,7 @@ const TruncatedTitle = ({ title }: { title: string }) => {
   const [showMobilePopup, setShowMobilePopup] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
-  const isMobile = useIsMdMobile();
+  const isMobile = useIsMdScreenSize();
 
   useEffect(() => {
     setIsOverflowing(title.length > 100); // Adjust threshold as needed

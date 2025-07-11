@@ -80,10 +80,10 @@ const UserCard = ({
             </AvatarFallback>
           </Avatar>
           <div className="flex w-full min-w-0 flex-col items-center gap-1">
-            <span className="line-clamp-1 text-xs font-semibold text-gray-900">
+            <span className="line-clamp-1 text-xs font-semibold text-gray-900 no-underline">
               {user.full_name || 'No name'}
             </span>
-            <span className="max-h-8 overflow-hidden text-center text-xs leading-tight break-words break-all text-gray-600">
+            <span className="max-h-8 overflow-hidden text-center text-xs leading-tight break-words break-all text-gray-600 no-underline">
               {user.email || ''}
             </span>
           </div>

@@ -21,7 +21,7 @@ const CategoryHealth = ({ healthChecks }: CategoryHealthProps) => {
           Category Health
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-1 pt-2 md:px-6 md:pt-4">
+      <CardContent className="px-4 pt-0 sm:px-6 sm:pt-6">
         {healthChecks?.length > 0 ? (
           <ScrumHealthCheck
             scrumHealthChecks={healthChecks as HealthCheckWithTemplate[]}

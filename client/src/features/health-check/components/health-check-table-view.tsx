@@ -64,11 +64,8 @@ const HealthCheckTableView = ({
   // Set initial page to show latest columns (last page)
   useEffect(() => {
     if (currentBreakpoint && healthChecks.length > 0) {
-      const totalColumns = healthChecks.length;
-      const actualColumnsToShow =
-        isShowAddNew && currentConfig.columnsToShow > 1
-          ? currentConfig.columnsToShow - 1
-          : currentConfig.columnsToShow;
+      const totalColumns = healthChecks.length + (isShowAddNew ? 1 : 0);
+      const actualColumnsToShow = currentConfig.columnsToShow;
       const shouldUsePagination = totalColumns > actualColumnsToShow;
 
       if (shouldUsePagination) {
@@ -89,34 +86,39 @@ const HealthCheckTableView = ({
   const questions = healthChecks[0]?.questions || [];
 
   // Logic for showing columns
-  const totalColumns = healthChecks.length;
-  const actualColumnsToShow =
-    isShowAddNew && currentConfig.columnsToShow > 1
-      ? currentConfig.columnsToShow - 1
-      : currentConfig.columnsToShow;
+  const healthCheckCount = healthChecks.length;
+  const totalColumns = healthCheckCount + (isShowAddNew ? 1 : 0);
+  const actualColumnsToShow = currentConfig.columnsToShow;
 
   const shouldUsePagination = totalColumns > actualColumnsToShow;
 
   let visibleHealthChecks = healthChecks;
   let totalPages = 1;
-  // Always show Add New column when isShowAddNew is true
-  let canShowAddNew = isShowAddNew;
+  // Will the Start New column appear on the current page?
+  let canShowAddNew = false;
 
   if (shouldUsePagination) {
     // Sliding window pagination: each page moves by 1 column
     totalPages = totalColumns - actualColumnsToShow + 1;
     const startIndex = currentPage;
     const endIndex = startIndex + actualColumnsToShow;
-    visibleHealthChecks = healthChecks.slice(startIndex, endIndex);
-    // Keep Add New column always visible when isShowAddNew is true
+    const healthCheckStartIndex = Math.min(startIndex, healthCheckCount);
+    const healthCheckEndIndex = Math.min(endIndex, healthCheckCount);
+    visibleHealthChecks = healthChecks.slice(
+      healthCheckStartIndex,
+      healthCheckEndIndex,
+    );
+    // Start New is displayed if the sliding window includes its position (after all health checks)
+    canShowAddNew = isShowAddNew && endIndex > healthCheckCount;
+  } else {
+    // No pagination, then display all
     canShowAddNew = isShowAddNew;
   }
 
   // Determine if columns should have equal width (when reaching max columns)
   const totalVisibleColumns =
     visibleHealthChecks.length + (canShowAddNew ? 1 : 0);
-  const maxColumns = currentConfig.columnsToShow;
-  const showMaxColumns = totalVisibleColumns >= maxColumns;
+  const showMaxColumns = totalVisibleColumns >= actualColumnsToShow;
 
   const goToPreviousPage = () => {
     setCurrentPage((prev) => Math.max(0, prev - 1));
@@ -166,9 +168,23 @@ const HealthCheckTableView = ({
 
   // Calculate column range for navigation hint
   const getColumnRange = () => {
-    const startColumn = currentPage + 1;
-    const endColumn = Math.min(currentPage + actualColumnsToShow, totalColumns);
-    return { startColumn, endColumn };
+    if (!shouldUsePagination) {
+      return {
+        startColumn: 1,
+        endColumn: healthCheckCount,
+      };
+    }
+    const startIndex = currentPage;
+    const endIndex = startIndex + actualColumnsToShow;
+
+    // Health check columns
+    const healthCheckStart = Math.min(startIndex, healthCheckCount);
+    const healthCheckEnd = Math.min(endIndex, healthCheckCount);
+
+    return {
+      startColumn: healthCheckStart + 1,
+      endColumn: healthCheckEnd,
+    };
   };
 
   const { startColumn, endColumn } = getColumnRange();
@@ -222,11 +238,12 @@ const HealthCheckTableView = ({
 
               const showPrev =
                 showNavigation && isFirstColumn && currentPage > 0;
+              // Show next on last health check column only if there are more pages and Start New is not visible in current page
               const showNext =
                 showNavigation &&
                 isLastColumn &&
                 currentPage < totalPages - 1 &&
-                !canShowAddNew; // Don't show next on last health check column if Add New is visible
+                !canShowAddNew;
 
               return (
                 <HealthCheckColumn
@@ -257,7 +274,11 @@ const HealthCheckTableView = ({
                 questionRowHeight={currentConfig.questionRowHeight}
                 titleWidth={currentConfig.titleWidth}
                 showMaxColumns={showMaxColumns}
-                showPreviousButton={showNavigation && currentPage > 0}
+                showPreviousButton={
+                  showNavigation &&
+                  visibleHealthChecks.length === 0 &&
+                  currentPage > 0
+                }
                 showNextButton={showNavigation && currentPage < totalPages - 1}
                 onPrevious={goToPreviousPage}
                 onNext={goToNextPage}
@@ -280,8 +301,7 @@ const HealthCheckTableView = ({
             {startColumn === endColumn
               ? startColumn
               : `${startColumn} - ${endColumn}`}{' '}
-            of {totalColumns} columns
-            {canShowAddNew && ' + Add New column'}
+            of {healthCheckCount} columns
           </p>
         </div>
       )}
