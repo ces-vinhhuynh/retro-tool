@@ -24,14 +24,35 @@ import { cn } from '@/utils/cn';
 interface ProjectSwitcherProps {
   teams: Team[];
   currentTeam?: Team;
+  onNavigate?: (navigationFn: () => void) => void;
 }
 
-export function ProjectSwitcher({ teams, currentTeam }: ProjectSwitcherProps) {
+export function ProjectSwitcher({
+  teams,
+  currentTeam,
+  onNavigate,
+}: ProjectSwitcherProps) {
   const router = useRouter();
   const { isMobile } = useSidebar();
 
   const handleProjectChange = (projectId: string) => {
-    router.push(`/teams/${projectId}`);
+    const navigationFn = () => router.push(`/teams/${projectId}`);
+
+    if (onNavigate) {
+      onNavigate(navigationFn);
+    } else {
+      navigationFn();
+    }
+  };
+
+  const handleCreateProject = () => {
+    const navigationFn = () => router.push('/projects/create');
+
+    if (onNavigate) {
+      onNavigate(navigationFn);
+    } else {
+      navigationFn();
+    }
   };
 
   return (
@@ -96,7 +117,7 @@ export function ProjectSwitcher({ teams, currentTeam }: ProjectSwitcherProps) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
-              onClick={() => router.push('/projects/create')}
+              onClick={handleCreateProject}
             >
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />

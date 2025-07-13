@@ -48,17 +48,26 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
 
   // Get current tab from pathname
   const currentTab = pathname.match(/\/teams\/[^/]+\/([^/]+)/)?.[1] || 'home';
 
   const isCollapsed = state === 'collapsed';
 
+  // Helper function to close sidebar on mobile before navigation
+  const handleNavigationWithClose = (navigationFn: () => void) => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+    // Small delay to ensure sidebar starts closing before navigation
+    setTimeout(navigationFn, 0);
+  };
+
   // Project navigation items
   const projectNavItems = [
     {
-      title: 'Health Check',
+      title: 'Health Checks',
       icon: CalendarCheck,
       tab: 'health-checks',
     },
@@ -78,9 +87,9 @@ export function AppSidebar({
       tab: 'long-term-issues',
     },
     {
-      title: 'Team Agreement',
+      title: 'Team Agreements',
       icon: Handshake,
-      tab: 'agreement',
+      tab: 'agreements',
     },
     {
       title: 'Team Members',
@@ -96,8 +105,22 @@ export function AppSidebar({
 
   const handleProjectNavigation = (tab: string) => {
     if (currentTeam) {
-      router.push(`/teams/${currentTeam.id}/${tab}`);
+      handleNavigationWithClose(() => {
+        router.push(`/teams/${currentTeam.id}/${tab}`);
+      });
     }
+  };
+
+  const handleDataInsightNavigation = () => {
+    handleNavigationWithClose(() => {
+      router.push(`/workspaces/${currentWorkspace.workspace_id}/data`);
+    });
+  };
+
+  const handleUsersNavigation = () => {
+    handleNavigationWithClose(() => {
+      router.push(`/workspaces/${currentWorkspace.workspace_id}/users`);
+    });
   };
 
   return (
@@ -182,11 +205,7 @@ export function AppSidebar({
           <SidebarMenu className="px-1">
             <SidebarMenuItem className="w-full overflow-x-hidden">
               <SidebarMenuButton
-                onClick={() =>
-                  router.push(
-                    `/workspaces/${currentWorkspace.workspace_id}/data`,
-                  )
-                }
+                onClick={handleDataInsightNavigation}
                 className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
               >
                 <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
@@ -201,11 +220,7 @@ export function AppSidebar({
           <SidebarMenu className="px-1">
             <SidebarMenuItem className="w-full overflow-x-hidden">
               <SidebarMenuButton
-                onClick={() =>
-                  router.push(
-                    `/workspaces/${currentWorkspace.workspace_id}/users`,
-                  )
-                }
+                onClick={handleUsersNavigation}
                 className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
               >
                 <Users className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />

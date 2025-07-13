@@ -24,6 +24,7 @@ import {
   calcAverage,
   calcSectionAverage,
 } from '@/features/health-check/utils/score';
+import { EXTENDED_BREAKPOINTS, getScreenBreakpoint } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 interface TeamHealthTrendProps {
@@ -146,6 +147,7 @@ const TeamHealthTrend = ({
                   height={36}
                   wrapperStyle={{
                     fontSize: isMobile ? '12px' : '14px',
+                    top: getScreenBreakpoint(EXTENDED_BREAKPOINTS) === 'xs400' ? 5 : 20
                   }}
                 />
                 <Line

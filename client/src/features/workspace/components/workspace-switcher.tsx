@@ -26,17 +26,35 @@ import WorkspaceLogo from './workspace-logo';
 interface WorkspaceSwitcherProps {
   workspaces: WorkspaceUserWithWorkspace[];
   currentWorkspace: WorkspaceUserWithWorkspace;
+  onNavigate?: (navigationFn: () => void) => void;
 }
 
 export function WorkspaceSwitcher({
   workspaces,
   currentWorkspace,
+  onNavigate,
 }: WorkspaceSwitcherProps) {
   const router = useRouter();
   const { isMobile } = useSidebar();
 
   const handleWorkspaceChange = (workspaceId: string) => {
-    router.push(`/workspaces/${workspaceId}`);
+    const navigationFn = () => router.push(`/workspaces/${workspaceId}`);
+
+    if (onNavigate) {
+      onNavigate(navigationFn);
+    } else {
+      navigationFn();
+    }
+  };
+
+  const handleCreateWorkspace = () => {
+    const navigationFn = () => router.push('/workspaces/create');
+
+    if (onNavigate) {
+      onNavigate(navigationFn);
+    } else {
+      navigationFn();
+    }
   };
 
   return (
@@ -100,7 +118,7 @@ export function WorkspaceSwitcher({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
-              onClick={() => router.push('/workspaces/create')}
+              onClick={handleCreateWorkspace}
             >
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />

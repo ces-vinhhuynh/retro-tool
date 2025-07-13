@@ -111,17 +111,23 @@ export const UserCard = ({
           </Select>
         )}
 
-      {/* Teams Section - Optimized for mobile */}
+      {/* Teams Section - Fixed layout for mobile and long team names */}
       {user.teams && user.teams.length > 0 && (
         <div className="flex w-full flex-col items-center gap-1 sm:gap-2">
           <p className="text-xs font-medium text-gray-700 sm:text-sm">Teams</p>
-          <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
+          <div className="flex w-full flex-wrap justify-center gap-1 sm:gap-2">
             {user.teams?.map((team, idx) => (
               <div
                 key={`${user.id}_${team}_${idx}`}
-                className="text-primary-text flex max-w-full items-center truncate rounded-sm bg-gray-100 px-2 py-1 text-xs font-medium sm:px-3 sm:py-2 sm:text-sm sm:font-semibold"
+                className="text-primary-text inline-flex min-w-0 max-w-full flex-shrink-0 items-center break-words rounded-sm bg-gray-100 px-2 py-1 text-xs font-medium leading-relaxed sm:px-3 sm:py-2 sm:text-sm sm:font-semibold"
+                style={{
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  hyphens: 'auto',
+                  maxWidth: 'calc(100% - 0.25rem)', // Account for gap
+                }}
               >
-                {team}
+                <span className="text-center">{team}</span>
               </div>
             ))}
           </div>
