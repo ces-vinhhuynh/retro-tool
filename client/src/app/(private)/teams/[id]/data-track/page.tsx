@@ -6,7 +6,10 @@ import { useEffect } from 'react';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
-import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
+import {
+  useGetActionItemsByTeamId,
+  useGetOpenActionItemsByTeamId,
+} from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { HealthCheck } from '@/features/health-check/types/health-check';
@@ -25,7 +28,7 @@ const DataTrackPage = () => {
   const router = useRouter();
 
   // Data fetching for data track
-  const { data: actionItems = [] } = useGetActionItemsByTeamId(teamId);
+  const { data: actionItems = [] } = useGetOpenActionItemsByTeamId(teamId);
   const { data: agreements = [] } = useAgreementsQuery(teamId);
   const { data: issues = [] } = useIssuesQuery(teamId);
   const { data: scrumHealthChecks = [] } = useGetHealthChecksByTeam(teamId);

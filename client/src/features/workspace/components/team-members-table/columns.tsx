@@ -10,11 +10,14 @@ import { TeamMemberTable } from '../../types/tables';
 import { ActionsCell } from './actions-cell';
 import { RoleCell } from './role-cell';
 
-export const useColumns = (isAdmin: boolean): ColumnDef<TeamMemberTable>[] => {
+export const useColumns = (
+  isAdmin: boolean,
+  count: number,
+): ColumnDef<TeamMemberTable>[] => {
   const columns: ColumnDef<TeamMemberTable>[] = [
     {
       accessorKey: 'full_name',
-      header: 'Name',
+      header: `Members (${count} active)`,
       cell: ({ row }) => {
         const { avatar_url, full_name } = row.original;
 

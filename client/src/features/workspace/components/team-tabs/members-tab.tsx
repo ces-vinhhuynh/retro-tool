@@ -28,7 +28,7 @@ const MembersTab = ({
   const { data: team } = useGetTeam(teamId);
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
 
-  const columns = useColumns(isAdmin);
+  const columns = useColumns(isAdmin, teamMembers.length);
 
   const { mutate: deleteTeamMember } = useDeleteTeamMember();
   const { mutate: updateTeamUser } = useUpdateTeamUser();

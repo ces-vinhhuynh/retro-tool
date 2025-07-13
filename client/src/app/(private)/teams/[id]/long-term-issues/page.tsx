@@ -2,8 +2,9 @@
 
 import { BadgeAlert } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import EntryList from '@/features/health-check/components/entry-list';
@@ -19,8 +20,8 @@ const LongTermIssuesPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
   const router = useRouter();
 
-  // Data fetching for long term issues
   const { data: issues = [] } = useIssuesQuery(teamId);
+  const [showAll, setShowAll] = useState(false);
 
   const {
     createIssue,
@@ -28,7 +29,6 @@ const LongTermIssuesPage = () => {
     isLoading: isLoadingIssues,
   } = useIssuesMutation();
 
-  // User and team data
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
 
@@ -38,7 +38,6 @@ const LongTermIssuesPage = () => {
     currentUser?.id || '',
   );
 
-  // Permission check
   useEffect(() => {
     if (
       error &&
@@ -50,10 +49,7 @@ const LongTermIssuesPage = () => {
   }, [error, workspaceUser, router]);
 
   const handleCreateIssue = (title: string) => {
-    createIssue({
-      title,
-      team_id: teamId,
-    });
+    createIssue({ title, team_id: teamId });
   };
 
   const handleDeleteIssue = (id: string) => {
@@ -61,6 +57,8 @@ const LongTermIssuesPage = () => {
   };
 
   useIssuesSubscription(teamId);
+
+  const visibleIssues = showAll ? issues : issues.slice(0, 5);
 
   return (
     <div className="w-full p-4 md:p-6 lg:p-8">
@@ -73,13 +71,24 @@ const LongTermIssuesPage = () => {
         </CardHeader>
         <CardContent className="space-y-8">
           <EntryList
-            items={issues}
+            items={visibleIssues}
             emptyItemMessage="No issues yet"
             Icon={BadgeAlert}
             handleAddItem={handleCreateIssue}
             handleDeleteItem={handleDeleteIssue}
             isLoading={isLoadingIssues}
           />
+
+          {issues.length > 5 && (
+            <div className="flex justify-center">
+              <Button
+                variant="outline"
+                onClick={() => setShowAll((prev) => !prev)}
+              >
+                {showAll ? 'Show less' : 'Show all'}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -185,7 +185,7 @@ const SurveyQuestionRow = ({
           </span>
           <Textarea
             id={'comment_' + question.id}
-            placeholder="Add comments (one per line)..."
+            placeholder="Press Enter for new line. Each line will be saved as a separate comment."
             className="resize-none pl-10 text-sm sm:pl-12 sm:text-base"
             value={localComment}
             onChange={(e) => handleCommentChange(e.target.value)}
@@ -195,7 +195,7 @@ const SurveyQuestionRow = ({
           />
 
           <div className="flex justify-between gap-2">
-            <p className="text-muted-foreground mt-1 text-[10px] sm:text-xs">
+            <p className="text-muted-foreground mt-1 hidden text-[10px] sm:block sm:text-xs">
               Press Enter for new line. Each line will be saved as a separate
               comment.
             </p>

@@ -1,8 +1,10 @@
 'use client';
 
 import { CheckCircle } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { Button } from '@/components/ui/button';
 import { ActionItemRow } from '@/features/health-check/components/action-item-row';
 import { useCreateActionItem } from '@/features/health-check/hooks/use-create-action-item';
 import { useDeleteActionItem } from '@/features/health-check/hooks/use-delete-action-item';
@@ -38,6 +40,8 @@ const ActionItems = ({
   isHandlingOpenLink = false,
   isEditable = true,
 }: ActionItemsProps) => {
+  const [showAll, setShowAll] = useState(false);
+
   const { mutate: createActionItem, isPending: isCreating } =
     useCreateActionItem();
 
@@ -69,9 +73,11 @@ const ActionItems = ({
     reset();
   });
 
+  const visibleItems = showAll ? actionItems : actionItems.slice(0, 5);
+
   return (
-    <div className="w-full bg-white">
-      <div className="pb-3">
+    <div className="flex w-full flex-col items-center gap-3 bg-white">
+      <div className="w-full pb-3">
         <EntryForm
           register={register}
           onSubmit={onSubmit}
@@ -80,14 +86,14 @@ const ActionItems = ({
           Icon={CheckCircle}
         />
       </div>
-      <div className="max-h-5/6 overflow-auto">
+      <div className="max-h-5/6 w-full overflow-auto">
         {actionItems.length === 0 ? (
           <div className="border py-4 text-center text-sm text-gray-400">
             No actions yet
           </div>
         ) : (
           <div className="w-fit min-w-full">
-            {actionItems.map((item) => (
+            {visibleItems.map((item) => (
               <ActionItemRow
                 key={item.id}
                 item={item}
@@ -102,6 +108,15 @@ const ActionItems = ({
           </div>
         )}
       </div>
+      {actionItems.length > 5 && (
+        <Button
+          className="w-fit"
+          variant="outline"
+          onClick={() => setShowAll((prev) => !prev)}
+        >
+          {showAll ? 'Show less' : 'Show all'}
+        </Button>
+      )}
     </div>
   );
 };

@@ -127,6 +127,42 @@ class ActionItemService {
 
     if (error) throw error;
   }
+
+  async getOpenByTeamId(teamId: string): Promise<ActionItemWithAssignees[]> {
+    const { data, error } = await supabaseClient
+      .from('action_items')
+      .select(`*, action_item_assignees(*, team_users(*, users(*)))`)
+      .eq('team_id', teamId)
+      .in('status', ['todo', 'in_progress'])
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data as ActionItemWithAssignees[];
+  }
+
+  async getDoneByTeamId(teamId: string): Promise<ActionItemWithAssignees[]> {
+    const { data, error } = await supabaseClient
+      .from('action_items')
+      .select(`*, action_item_assignees(*, team_users(*, users(*)))`)
+      .eq('team_id', teamId)
+      .eq('status', 'done')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data as ActionItemWithAssignees[];
+  }
+
+  async getBlockByTeamId(teamId: string): Promise<ActionItemWithAssignees[]> {
+    const { data, error } = await supabaseClient
+      .from('action_items')
+      .select(`*, action_item_assignees(*, team_users(*, users(*)))`)
+      .eq('team_id', teamId)
+      .eq('status', 'blocked')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data as ActionItemWithAssignees[];
+  }
 }
 
 export const actionItemService = new ActionItemService();

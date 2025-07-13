@@ -2,8 +2,9 @@
 
 import { Handshake } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import EntryList from '@/features/health-check/components/entry-list';
@@ -19,8 +20,8 @@ const TeamAgreementPage = () => {
   const { id: teamId } = useParams<{ id: string }>();
   const router = useRouter();
 
-  // Data fetching for team agreements
   const { data: agreements = [] } = useAgreementsQuery(teamId);
+  const [showAll, setShowAll] = useState(false);
 
   const {
     createAgreements,
@@ -28,7 +29,6 @@ const TeamAgreementPage = () => {
     isLoading: isLoadingAgreements,
   } = useAgreementMutation();
 
-  // User and team data
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
 
@@ -38,7 +38,6 @@ const TeamAgreementPage = () => {
     currentUser?.id || '',
   );
 
-  // Permission check
   useEffect(() => {
     if (
       error &&
@@ -50,10 +49,7 @@ const TeamAgreementPage = () => {
   }, [error, workspaceUser, router]);
 
   const handleCreateAgreement = (title: string) => {
-    createAgreements({
-      title,
-      team_id: teamId,
-    });
+    createAgreements({ title, team_id: teamId });
   };
 
   const handleDeleteAgreement = (id: string) => {
@@ -61,6 +57,8 @@ const TeamAgreementPage = () => {
   };
 
   useAgreementsSubscription(teamId);
+
+  const visibleAgreements = showAll ? agreements : agreements.slice(0, 5);
 
   return (
     <div className="w-full p-4 md:p-6 lg:p-8">
@@ -73,13 +71,23 @@ const TeamAgreementPage = () => {
         </CardHeader>
         <CardContent className="space-y-8">
           <EntryList
-            items={agreements}
+            items={visibleAgreements}
             emptyItemMessage="No agreements yet"
             Icon={Handshake}
             handleAddItem={handleCreateAgreement}
             handleDeleteItem={handleDeleteAgreement}
             isLoading={isLoadingAgreements}
           />
+          {agreements.length > 5 && (
+            <div className="flex justify-center">
+              <Button
+                variant="outline"
+                onClick={() => setShowAll((prev) => !prev)}
+              >
+                {showAll ? 'Show less' : 'Show all'}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
