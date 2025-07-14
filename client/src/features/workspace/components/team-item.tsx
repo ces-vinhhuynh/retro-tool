@@ -92,7 +92,7 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
     if (days < 365) return `${Math.floor(days / 30)} months ago`;
     return 'last year';
   }
-  console.log('team.users', team.users);
+
   return (
     <>
       <Card
@@ -101,35 +101,37 @@ export const TeamItem = ({ team, isOwnerOrAdmin }: TeamItemProps) => {
       >
         <div className="flex items-center justify-between">
           <p className="text-2xl font-medium">{team.name}</p>
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                disabled={
-                  !isOwnerOrAdmin && currentUserRole !== TEAM_ROLES.admin
-                }
-                className="h-8 w-8 p-0"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onSelect={() => setDialogOpen(true)}
-                className="hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
-              >
-                <Pencil className="h-4 w-4" />
-                <span>Edit</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => setIsOpenModalConfirm(true)}
-                className="focus:text-primary flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span>Delete</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {isOwnerOrAdmin && (
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  disabled={
+                    !isOwnerOrAdmin && currentUserRole !== TEAM_ROLES.admin
+                  }
+                  className="h-8 w-8 p-0"
+                >
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={() => setDialogOpen(true)}
+                  className="hover:text-primary flex w-full cursor-pointer justify-start gap-4 px-5"
+                >
+                  <Pencil className="h-4 w-4" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => setIsOpenModalConfirm(true)}
+                  className="focus:text-primary flex w-full cursor-pointer justify-start gap-4 px-5 text-red-600 focus:bg-transparent focus-visible:ring-0"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
         <div className="flex items-center justify-between">
           <Popover>

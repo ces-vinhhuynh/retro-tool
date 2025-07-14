@@ -58,7 +58,11 @@ const WorkspacePage = () => {
         ) : (
           <div className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {teams?.map((team) => (
-              <TeamItem key={team.id} team={team} isOwnerOrAdmin />
+              <TeamItem
+                key={team.id}
+                team={team}
+                isOwnerOrAdmin={isOwnerOrAdmin}
+              />
             ))}
           </div>
         )}
