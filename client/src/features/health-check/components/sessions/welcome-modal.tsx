@@ -165,12 +165,15 @@ const WelcomeModal = ({
                   placeholder="Enter emails..."
                   onKeyDown={handleKeyDown}
                 />
+                <span className="text-secondary-text text-xs">
+                  Press Enter to add it to the list
+                </span>
               </div>
 
               <Button
                 className="w-fit self-end"
                 onClick={handleInviteUsers}
-                disabled={isInviting}
+                disabled={isInviting || !inviteIds.length}
               >
                 Invite
               </Button>
