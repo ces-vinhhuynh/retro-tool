@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { cn } from '@/utils/cn';
 import { getAvatarCharacters } from '@/utils/user';
 
 import { useUpdateFacilitators } from '../../hooks/use-update-facilitators';
@@ -103,8 +104,19 @@ export const useColumns = (
         };
 
         return (
-          <Select value={role} onValueChange={handleUpdateUserRole}>
-            <SelectTrigger className="bg-primary w-fit cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0">
+          <Select
+            value={role}
+            onValueChange={handleUpdateUserRole}
+            disabled={facilitatorIds.length === 1 && role === 'facilitator'}
+          >
+            <SelectTrigger
+              className={cn(
+                'bg-primary w-fit cursor-pointer rounded-4xl border border-gray-200 px-3 py-1.5 font-medium text-white capitalize focus:ring-0 focus:ring-offset-0',
+                {
+                  'text-primary-text bg-gray-200': role === 'participant',
+                },
+              )}
+            >
               <SelectValue placeholder={'participant'} />
             </SelectTrigger>
             <SelectContent>

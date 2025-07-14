@@ -15,7 +15,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  HealthCheck,
   HealthCheckWithTeam,
   ParticipantWithUser,
 } from '@/features/health-check/types/health-check';
@@ -135,7 +134,7 @@ const WelcomeModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-h-screen max-w-4xl overflow-y-scroll lg:max-w-screen-lg">
         <DialogHeader>
           <DialogTitle className="max-w-3xl truncate text-2xl font-bold">
             Welcome to {healthCheck.title}

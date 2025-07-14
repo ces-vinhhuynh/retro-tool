@@ -18,6 +18,9 @@ export const useUpdateFacilitators = () => {
       queryClient.invalidateQueries({
         queryKey: ['health-checks', data.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['healthCheck', data.id],
+      });
     },
     onError: (error) => {
       toast.error('Error updating facilitators', {
