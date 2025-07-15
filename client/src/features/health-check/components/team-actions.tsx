@@ -11,6 +11,7 @@ interface TeamActionsProps {
   teamId: string;
   healthCheckId: string;
   teamMembers: User[];
+  isAdmin?: boolean;
 }
 
 const TeamActions = ({
@@ -19,8 +20,8 @@ const TeamActions = ({
   teamId,
   healthCheckId,
   teamMembers,
+  isAdmin = false,
 }: TeamActionsProps) => {
-
   return (
     <SubMenuWrapper
       Icon={CircleCheck}
@@ -32,6 +33,7 @@ const TeamActions = ({
         healthCheckId={healthCheckId}
         teamId={teamId}
         teamMembers={teamMembers}
+        isAdmin={isAdmin}
       />
     </SubMenuWrapper>
   );

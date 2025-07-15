@@ -10,7 +10,10 @@ import ActionItems from '@/features/health-check/components/action-items';
 import { useGetActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
 import { User } from '@/features/health-check/types/health-check';
-import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
+import {
+  TEAM_ROLES,
+  WORKSPACE_ROLES,
+} from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
 import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
@@ -32,11 +35,20 @@ const TeamActionsPage = () => {
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
 
-  const { error } = useGetTeamUser(teamId, currentUser?.id || '');
+  const { data: teamUser, error } = useGetTeamUser(
+    teamId,
+    currentUser?.id || '',
+  );
+
   const { data: workspaceUser } = useGetWorkspaceUser(
     team?.workspace_id || '',
     currentUser?.id || '',
   );
+
+  const isAdmin =
+    teamUser?.role === TEAM_ROLES.admin ||
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
 
   // Permission check
   useEffect(() => {
@@ -100,6 +112,7 @@ const TeamActionsPage = () => {
             teamMembers={teamMembers as unknown as User[]}
             healthChecks={healthChecks}
             isHandlingOpenLink
+            isAdmin={isAdmin}
           />
         </CardContent>
       </Card>

@@ -37,9 +37,16 @@ interface HomeTabProps {
   actionItems: ActionItemWithAssignees[];
   agreements: Agreement[];
   issues: Issue[];
+  isAdmin?: boolean;
 }
 
-const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
+const HomeTab = ({
+  teamId,
+  actionItems,
+  agreements,
+  issues,
+  isAdmin,
+}: HomeTabProps) => {
   const router = useRouter();
   const { data: teamMembers = [] } = useGetTeamMembers(teamId);
   const isMobile = useIsMobile();
@@ -205,6 +212,7 @@ const HomeTab = ({ teamId, actionItems, agreements, issues }: HomeTabProps) => {
                       setShowActionEntryForm(false);
                     }
                   }}
+                  isAdmin={isAdmin}
                 />
               </div>
 

@@ -25,6 +25,7 @@ interface DetailCardProps {
   healthCheck: HealthCheck;
   teamMembers: User[];
   isFacilitator?: boolean;
+  isAdmin?: boolean;
 }
 
 const DetailCard = ({
@@ -33,6 +34,7 @@ const DetailCard = ({
   healthCheck,
   teamMembers,
   isFacilitator = true,
+  isAdmin = false,
 }: DetailCardProps) => {
   const roundedValue = Math.max(0, Math.min(10, Math.round(item.value)));
   const { bg, circle } = scoreColorMap[roundedValue] || scoreColorMap[0];
@@ -81,6 +83,7 @@ const DetailCard = ({
           teamId={String(healthCheck.team_id)}
           teamMembers={teamMembers}
           isEditable={isFacilitator}
+          isAdmin={isAdmin}
         />
         <SurveyResponses
           comments={comments}

@@ -28,6 +28,7 @@ interface ActionItemsProps {
   healthChecks?: HealthCheck[];
   isHandlingOpenLink?: boolean;
   isEditable?: boolean;
+  isAdmin?: boolean;
 }
 
 const ActionItems = ({
@@ -39,6 +40,7 @@ const ActionItems = ({
   healthChecks,
   isHandlingOpenLink = false,
   isEditable = true,
+  isAdmin = false,
 }: ActionItemsProps) => {
   const [showAll, setShowAll] = useState(false);
 
@@ -103,6 +105,7 @@ const ActionItems = ({
                 healthChecks={healthChecks}
                 isHandlingOpenLink={isHandlingOpenLink}
                 isEditable={isEditable}
+                isAdmin={isAdmin}
               />
             ))}
           </div>

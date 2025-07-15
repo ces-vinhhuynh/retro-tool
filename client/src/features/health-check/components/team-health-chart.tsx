@@ -32,6 +32,7 @@ interface TeamHealthChartProps {
   responses: Response[];
   actionItems: ActionItemWithAssignees[];
   isClosePhase?: boolean;
+  isAdmin?: boolean;
   teamMembers: User[];
 }
 
@@ -42,6 +43,7 @@ const TeamHealthChart = ({
   actionItems,
   title,
   isClosePhase = false,
+  isAdmin = false,
   teamMembers,
 }: TeamHealthChartProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -199,6 +201,7 @@ const TeamHealthChart = ({
             onCurrentIndexChange={setSelectedIndex}
             actionItems={actionItems}
             teamMembers={teamMembers}
+            isAdmin={isAdmin}
           />
         )}
       </div>

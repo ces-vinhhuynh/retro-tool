@@ -147,7 +147,7 @@ const TeamHealthTrend = ({
                   height={36}
                   wrapperStyle={{
                     fontSize: isMobile ? '12px' : '14px',
-                    top: getScreenBreakpoint(EXTENDED_BREAKPOINTS) === 'xs400' ? 5 : 20
+                    top: getScreenBreakpoint(EXTENDED_BREAKPOINTS) === 'xs' ? 5 : 20
                   }}
                 />
                 <Line

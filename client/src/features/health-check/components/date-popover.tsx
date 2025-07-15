@@ -16,7 +16,7 @@ interface DatePopoverProps {
   setDueDate?: (date?: Date) => void;
   isUpdating?: boolean;
   isEditable?: boolean;
-  variant?: 'icon' | 'text';
+  variant?: 'icon' | 'text' | 'text-no-lable';
 }
 
 export const DatePopover = ({
@@ -38,9 +38,14 @@ export const DatePopover = ({
 
   // Create trigger button based on variant
   const triggerButton =
-    variant === 'text' ? (
+    variant === 'text' || variant === 'text-no-lable' ? (
       <div>
-        <span className="h-auto p-1 text-sm font-normal">Date:</span>
+        <span
+          className="h-auto p-1 text-sm font-normal"
+          hidden={variant === 'text-no-lable'}
+        >
+          Date:
+        </span>
         <Button
           variant="ghost"
           size="sm"

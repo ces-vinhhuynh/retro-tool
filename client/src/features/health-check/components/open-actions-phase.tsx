@@ -24,6 +24,7 @@ interface OpenActionsPhaseProps {
   healthCheck: HealthCheck;
   teamId: string;
   teamMembers: User[];
+  isAdmin?: boolean;
 }
 
 const OpenActionsPhase = ({
@@ -33,6 +34,7 @@ const OpenActionsPhase = ({
   healthCheck,
   teamId,
   teamMembers,
+  isAdmin = false,
 }: OpenActionsPhaseProps) => {
   const { previousActions, completedActions } = (actionItems ?? []).reduce(
     (acc, item) => {
@@ -98,6 +100,7 @@ const OpenActionsPhase = ({
             item={item}
             isEditable={false}
             teamMembers={teamMembers}
+            isAdmin={isAdmin}
           />
         ))}
       </EntryWrapper>
@@ -109,6 +112,7 @@ const OpenActionsPhase = ({
             item={item}
             isEditable={false}
             teamMembers={teamMembers}
+            isAdmin={isAdmin}
           />
         ))}
       </EntryWrapper>

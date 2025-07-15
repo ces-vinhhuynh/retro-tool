@@ -151,6 +151,7 @@ export function AppSidebar({
             <WorkspaceSwitcher
               workspaces={workspaces}
               currentWorkspace={currentWorkspace}
+              onNavigate={handleNavigationWithClose}
             />
           </div>
         </SidebarGroup>
@@ -162,7 +163,11 @@ export function AppSidebar({
           </SidebarGroupLabel>
           <SidebarMenu className="px-1">
             {/* Project Switcher - Only render when currentTeam exists */}
-            <ProjectSwitcher teams={teams} currentTeam={currentTeam} />
+            <ProjectSwitcher
+              teams={teams}
+              currentTeam={currentTeam}
+              onNavigate={handleNavigationWithClose}
+            />
 
             {/* Project Navigation Items - Only show when currentTeam exists */}
             {currentTeam && (

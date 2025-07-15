@@ -22,6 +22,7 @@ interface ClosePhaseProps {
   teamSize: number;
   currentUser: User;
   teamMembers: User[];
+  isAdmin?: boolean;
 }
 
 const ClosePhase = ({
@@ -33,6 +34,7 @@ const ClosePhase = ({
   teamSize,
   currentUser,
   teamMembers,
+  isAdmin = false,
 }: ClosePhaseProps) => {
   return (
     <div className="flex w-full flex-col gap-4">
@@ -40,6 +42,7 @@ const ClosePhase = ({
         <TeamHealthChart
           title="Health radar"
           isClosePhase={true}
+          isAdmin={isAdmin}
           responses={responses}
           healthCheck={healthCheck}
           questions={questions}

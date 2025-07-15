@@ -60,7 +60,14 @@ import {
   STEPS,
 } from '@/features/health-check/utils/constants';
 import { getRatings } from '@/features/health-check/utils/rating';
+import {
+  TEAM_ROLES,
+  WORKSPACE_ROLES,
+} from '@/features/workspace/constants/user';
+import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamMembers } from '@/features/workspace/hooks/use-get-team-member';
+import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
+import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 import { cn } from '@/utils/cn';
 
 export type GroupedQuestions = {
@@ -118,6 +125,23 @@ export default function HealthCheckPage() {
   const { data: teamMembers = [] } = useGetTeamMembers(
     healthCheck?.team_id ?? '',
   );
+
+  const { data: team } = useGetTeam(healthCheck?.team_id || '');
+
+  const { data: teamUser } = useGetTeamUser(
+    healthCheck?.team_id ?? '',
+    currentUser?.id || '',
+  );
+
+  const { data: workspaceUser } = useGetWorkspaceUser(
+    team?.workspace_id || '',
+    currentUser?.id || '',
+  );
+
+  const isAdmin =
+    teamUser?.role === TEAM_ROLES.admin ||
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
 
   const { mutate: inviteUserToHealthCheck, isPending: isInviting } =
     useInviteUserToHealthCheck();
@@ -404,6 +428,7 @@ export default function HealthCheckPage() {
                   teamId={healthCheck?.team_id || ''}
                   //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
+                  isAdmin={isAdmin}
                 />
               )}
               {healthCheck.current_step === STEPS['discuss'].key && (
@@ -415,6 +440,7 @@ export default function HealthCheckPage() {
                   //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
                   handleQuestionClick={handleQuestionClick}
+                  isAdmin={isAdmin}
                 />
               )}
               {healthCheck.current_step === STEPS['review'].key && (
@@ -428,6 +454,7 @@ export default function HealthCheckPage() {
                   //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
                   isFacilitator={isFacilitator}
+                  isAdmin={isAdmin}
                 />
               )}
               {healthCheck.current_step === STEPS['close'].key && (
@@ -444,6 +471,7 @@ export default function HealthCheckPage() {
                   teamSize={participants?.length || 0}
                   //TODO: remove cast type as unknown as User[] when we have exact the type for currentUser
                   currentUser={currentUser as unknown as User}
+                  isAdmin={isAdmin}
                 />
               )}
             </Card>
@@ -496,6 +524,7 @@ export default function HealthCheckPage() {
             healthCheck={healthCheck}
             actionItems={actionItems || []}
             isFacilitator={isFacilitator}
+            isAdmin={isAdmin}
           />
         )}
       </div>

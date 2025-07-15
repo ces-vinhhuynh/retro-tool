@@ -29,6 +29,7 @@ interface ReviewPhaseProps {
   teamSize: number;
   teamMembers: User[];
   isFacilitator: boolean;
+  isAdmin?: boolean;
 }
 
 interface SummaryItemProps {
@@ -52,6 +53,7 @@ const ReviewPhase = ({
   teamId,
   teamMembers,
   isFacilitator,
+  isAdmin = false,
 }: ReviewPhaseProps) => {
   const currentActionItems = actionItems?.filter(
     (item) =>
@@ -152,6 +154,7 @@ const ReviewPhase = ({
             teamId={teamId}
             teamMembers={teamMembers}
             isHandlingOpenLink={false}
+            isAdmin={isAdmin}
           />
         </EntryWrapper>
 

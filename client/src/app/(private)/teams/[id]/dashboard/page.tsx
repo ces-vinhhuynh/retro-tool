@@ -8,7 +8,10 @@ import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
 import { useGetActionItemsByTeamIdFromRecentHealthChecks } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import HomeTab from '@/features/workspace/components/team-tabs/home-tab';
-import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
+import {
+  TEAM_ROLES,
+  WORKSPACE_ROLES,
+} from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
@@ -18,7 +21,8 @@ const DashboardPage = () => {
   const router = useRouter();
 
   // Data fetching for dashboard
-  const { data: actionItems = [] } = useGetActionItemsByTeamIdFromRecentHealthChecks(teamId, 2);
+  const { data: actionItems = [] } =
+    useGetActionItemsByTeamIdFromRecentHealthChecks(teamId, 2);
   const { data: agreements = [] } = useAgreementsQuery(teamId);
   const { data: issues = [] } = useIssuesQuery(teamId);
 
@@ -31,6 +35,13 @@ const DashboardPage = () => {
     team?.workspace_id || '',
     currentUser?.id || '',
   );
+
+  const { data: teamUser } = useGetTeamUser(teamId, currentUser?.id || '');
+
+  const isAdmin =
+    teamUser?.role === TEAM_ROLES.admin ||
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
 
   // Permission check
   useEffect(() => {
@@ -50,6 +61,7 @@ const DashboardPage = () => {
         actionItems={actionItems}
         agreements={agreements}
         issues={issues}
+        isAdmin={isAdmin}
       />
     </div>
   );

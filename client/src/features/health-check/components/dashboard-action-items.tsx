@@ -23,6 +23,7 @@ interface DashboardActionItemsProps {
   teamMembers: User[];
   healthChecks: HealthCheck[];
   showEntryForm?: boolean;
+  isAdmin?: boolean;
   onEntryFormToggle?: () => void;
 }
 
@@ -32,6 +33,7 @@ const DashboardActionItems = ({
   teamMembers,
   healthChecks,
   showEntryForm = false,
+  isAdmin = false,
   onEntryFormToggle,
 }: DashboardActionItemsProps) => {
   const { mutate: createActionItem, isPending: isCreating } =
@@ -110,6 +112,7 @@ const DashboardActionItems = ({
                   teamMembers={teamMembers}
                   healthChecks={healthChecks}
                   isHandlingOpenLink
+                  isAdmin={isAdmin}
                 />
               ))}
             </div>

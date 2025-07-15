@@ -34,6 +34,7 @@ interface ChartDialogProps {
   onCurrentIndexChange: (index: number) => void;
   open: boolean;
   isFacilitator?: boolean;
+  isAdmin?: boolean;
   healthCheck: HealthCheck;
   teamMembers: User[];
 }
@@ -45,6 +46,7 @@ const ChartDialog = ({
   onCurrentIndexChange,
   open,
   isFacilitator = true,
+  isAdmin = false,
   actionItems,
   healthCheck,
   teamMembers,
@@ -107,6 +109,7 @@ const ChartDialog = ({
                     )}
                     teamMembers={teamMembers}
                     isFacilitator={isFacilitator}
+                    isAdmin={isAdmin}
                   />
                 )}
               </CarouselItem>

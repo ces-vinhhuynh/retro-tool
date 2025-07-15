@@ -246,7 +246,7 @@ const ActionSummaryDialog = ({
         {/* Body aligned with title */}
         <div className="mt-4 flex flex-col gap-2">
           {question?.title && (
-            <div className="text-sm leading-relaxed">
+            <div className="h-6 text-sm leading-relaxed">
               <span className="font-medium text-gray-600">INSPIRED BY </span>
               <button
                 onClick={
@@ -268,7 +268,7 @@ const ActionSummaryDialog = ({
           )}
 
           {action.created_at && (
-            <div className="text-sm leading-relaxed">
+            <div className="h-6 text-sm leading-relaxed">
               <span className="font-medium text-gray-600">ADDED </span>
               <button
                 onClick={
@@ -288,7 +288,7 @@ const ActionSummaryDialog = ({
           )}
 
           {action.priority && (
-            <div className="flex items-center">
+            <div className="flex h-6 items-center">
               <span className="text-sm font-medium text-gray-600">
                 PRIORITY&nbsp;
               </span>
@@ -302,16 +302,20 @@ const ActionSummaryDialog = ({
           )}
 
           {
-            <div className="flex items-center">
+            <div className="flex h-6 items-center">
               <span className="text-sm font-medium text-gray-600">
                 DUE&nbsp;
               </span>
-              <DatePopover item={action} isEditable={false} variant="text" />
+              <DatePopover
+                item={action}
+                isEditable={false}
+                variant="text-no-lable"
+              />
             </div>
           }
 
           {
-            <div className="flex items-center">
+            <div className="flex h-6 items-center">
               <span className="text-sm font-medium text-gray-600">
                 ASSIGNED TO&nbsp;
               </span>

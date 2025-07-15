@@ -25,6 +25,8 @@ interface SubMenuStore {
   setTeamMembers: (members: User[]) => void;
   isFacilitator: boolean;
   setIsFacilitator: (isFacilitator: boolean) => void;
+  isAdmin: boolean;
+  setIsAdmin: (isAdmin: boolean) => void;
 }
 
 export const useSubMenuStore = create<SubMenuStore>((set) => ({
@@ -44,4 +46,6 @@ export const useSubMenuStore = create<SubMenuStore>((set) => ({
   setTeamMembers: (members) => set({ teamMembers: members }),
   isFacilitator: false,
   setIsFacilitator: (isFacilitator) => set({ isFacilitator }),
+  isAdmin: false,
+  setIsAdmin: (isAdmin) => set({ isAdmin }),
 }));

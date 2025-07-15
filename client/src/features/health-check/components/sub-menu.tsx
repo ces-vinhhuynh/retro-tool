@@ -32,6 +32,7 @@ const SubMenu = () => {
     actionItems,
     healthCheck,
     isFacilitator,
+    isAdmin,
   } = useSubMenuStore();
 
   const {
@@ -101,6 +102,7 @@ const SubMenu = () => {
             teamId={healthCheck.team_id ?? ''}
             healthCheckId={healthCheck.id}
             teamMembers={teamMembers}
+            isAdmin={isAdmin}
           />
         )}
         {selectedSubmenu === SUBMENU_ITEMS.AGREEMENT && (

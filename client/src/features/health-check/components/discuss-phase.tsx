@@ -21,6 +21,7 @@ interface DiscussPhaseProps {
   responses: Response[];
   actionItems: ActionItemWithAssignees[];
   teamMembers: User[];
+  isAdmin?: boolean;
   handleQuestionClick: (index: number) => void;
 }
 
@@ -30,6 +31,7 @@ const DiscussPhase = ({
   responses,
   actionItems,
   teamMembers,
+  isAdmin = false,
   handleQuestionClick,
 }: DiscussPhaseProps) => {
   const [allOpen, setAllOpen] = useState(false);
@@ -88,6 +90,7 @@ const DiscussPhase = ({
           healthCheck={healthCheck}
           actionItems={actionItems}
           teamMembers={teamMembers}
+          isAdmin={isAdmin}
         />
       </div>
     </>

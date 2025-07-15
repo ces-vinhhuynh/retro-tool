@@ -9,9 +9,14 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import SubMenu from '@/features/health-check/components/sub-menu';
 import { useHealthCheck } from '@/features/health-check/hooks/use-health-check';
+import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { HealthCheckWithTeam } from '@/features/health-check/types/health-check';
-import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
+import {
+  TEAM_ROLES,
+  WORKSPACE_ROLES,
+} from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
+import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
 import { useGetTeamsByWorkspaceAndUser } from '@/features/workspace/hooks/use-get-teams-by-workspace-and-user';
 import { useGetUserWorkspaces } from '@/features/workspace/hooks/use-get-user-workspaces';
@@ -30,6 +35,7 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   const params = useParams<{ id: string }>();
   const { currentWorkspace, setCurrentWorkspace, currentTeam, setCurrentTeam } =
     useWorkspaceStore();
+  const { setIsAdmin } = useSubMenuStore();
   const { data: currentUser } = useCurrentUser();
   const isMobile = useIsMobile();
 
@@ -38,6 +44,11 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   const isHealthCheckRoute = pathname.startsWith('/health-checks/');
   const isWorkspaceRoute = pathname.startsWith('/workspaces/');
   const isCreateWorkspaceRoute = pathname.startsWith('/workspaces/create');
+
+  const { data: teamUser } = useGetTeamUser(
+    currentTeam?.id || '',
+    currentUser?.id || '',
+  );
 
   const { data: workspaces, isLoading: isLoadingWorkspaces } =
     useGetUserWorkspaces(currentUser?.id || '');
@@ -76,9 +87,16 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
     workspaceUser?.role === WORKSPACE_ROLES.admin;
   const teams = isOwnerOrAdmin ? teamsByAdmin : teamsByMember;
 
+  const isAdmin =
+    teamUser?.role === TEAM_ROLES.admin ||
+    workspaceUser?.role === WORKSPACE_ROLES.owner ||
+    workspaceUser?.role === WORKSPACE_ROLES.admin;
+
   // Update workspace/team context based on route
   useEffect(() => {
     if (isLoadingWorkspaces || !workspaces) return;
+
+    setIsAdmin(isAdmin);
 
     const updateContext = () => {
       if (isWorkspaceRoute) {
@@ -122,8 +140,10 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
     healthCheckData,
     params.id,
     isLoadingWorkspaces,
+    isAdmin,
     setCurrentWorkspace,
     setCurrentTeam,
+    setIsAdmin,
   ]);
 
   const isLoading =

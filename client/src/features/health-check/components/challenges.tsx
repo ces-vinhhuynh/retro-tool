@@ -30,6 +30,7 @@ interface TopChallengesProps {
   healthCheck: HealthCheck;
   actionItems: ActionItemWithAssignees[];
   teamMembers: User[];
+  isAdmin?: boolean;
 }
 
 const TopChallenges = ({
@@ -38,6 +39,7 @@ const TopChallenges = ({
   healthCheck,
   actionItems,
   teamMembers,
+  isAdmin = false,
 }: TopChallengesProps) => {
   const [selectedTags, setSelectedTags] = useState<Record<string, string>>({});
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
@@ -168,6 +170,7 @@ const TopChallenges = ({
           onCurrentIndexChange={() => {}}
           healthCheck={healthCheck}
           teamMembers={teamMembers}
+          isAdmin={isAdmin}
         />
       )}
     </div>
