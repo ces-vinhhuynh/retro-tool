@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import { useIsMdScreenSize } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { useHealthCheckWithTemplate } from '../../hooks/use-health-check';
 import {
@@ -106,7 +106,7 @@ const TruncatedTitle = ({ title }: { title: string }) => {
   const [showMobilePopup, setShowMobilePopup] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
-  const isMobile = useIsMdScreenSize();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setIsOverflowing(title.length > 100); // Adjust threshold as needed
