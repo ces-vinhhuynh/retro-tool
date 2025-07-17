@@ -5,6 +5,7 @@ import { useGetHealthChecksByWorkspace } from '@/features/health-check/hooks/use
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { Template } from '@/features/health-check/types/templates';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Team } from '@/types/team';
 
 import {
@@ -41,6 +42,8 @@ const WorkspaceDataDashboard = ({
     total: actionItemsTotal,
   } = calcWorkspaceActionItemsMetrics(allActionItems);
 
+  const isMobile = useIsMobile();
+
   const teamsCount = teams.length;
 
   return (
@@ -57,6 +60,7 @@ const WorkspaceDataDashboard = ({
         healthChecks={allHealthChecks}
         templates={templates as Template[]}
         teams={teams as unknown as Team[]}
+        isMobile={isMobile}
       />
     </div>
   );
