@@ -14,7 +14,18 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   currentWorkspace: null,
   currentTeam: null,
-  setCurrentWorkspace: (workspace) => set({ currentWorkspace: workspace }),
-  setCurrentTeam: (team) => set({ currentTeam: team }),
+
+  setCurrentWorkspace: (workspace) =>
+    set((state) =>
+      state.currentWorkspace?.workspace?.id === workspace?.workspace?.id
+        ? state
+        : { currentWorkspace: workspace },
+    ),
+
+  setCurrentTeam: (team) =>
+    set((state) =>
+      state.currentTeam?.id === team?.id ? state : { currentTeam: team },
+    ),
+
   reset: () => set({ currentWorkspace: null, currentTeam: null }),
 }));

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import useUserStore from '@/stores/user-store';
 
 import { healthCheckService } from '../api/health-check';
-import { useSubMenuStore } from '../stores/sub-menu-store';
 import {
   HealthCheck,
   HealthCheckInsert,
@@ -29,12 +28,9 @@ export function useHealthCheck(id: string) {
 }
 
 export function useHealthCheckWithTemplate(id: string) {
-  const { setHealthCheck, setIsFacilitator } = useSubMenuStore();
-  const { user } = useUserStore();
   const getHealthCheck = async () => {
     const response = await healthCheckService.getWithTemplateById(id);
-    setIsFacilitator(!!response.facilitator_ids?.includes(String(user?.id)));
-    setHealthCheck(response);
+
     return response;
   };
 

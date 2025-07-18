@@ -7,9 +7,7 @@ import { AppSidebar } from '@/components/layout/app-sidebar';
 import { Header } from '@/components/layout/header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import SubMenu from '@/features/health-check/components/sub-menu';
 import { useHealthCheck } from '@/features/health-check/hooks/use-health-check';
-import { useSubMenuStore } from '@/features/health-check/stores/sub-menu-store';
 import { HealthCheckWithTeam } from '@/features/health-check/types/health-check';
 import {
   TEAM_ROLES,
@@ -23,7 +21,6 @@ import { useGetUserWorkspaces } from '@/features/workspace/hooks/use-get-user-wo
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace-store';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { Team } from '@/types/team';
 
 interface PrivateLayoutProps {
@@ -35,9 +32,7 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   const params = useParams<{ id: string }>();
   const { currentWorkspace, setCurrentWorkspace, currentTeam, setCurrentTeam } =
     useWorkspaceStore();
-  const { setIsAdmin } = useSubMenuStore();
   const { data: currentUser } = useCurrentUser();
-  const isMobile = useIsMobile();
 
   // Route-based data fetching
   const isTeamRoute = pathname.startsWith('/teams/');
@@ -96,8 +91,6 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   useEffect(() => {
     if (isLoadingWorkspaces || !workspaces) return;
 
-    setIsAdmin(isAdmin);
-
     const updateContext = () => {
       if (isWorkspaceRoute) {
         const workspace = workspaces.find((w) => w.workspace?.id === params.id);
@@ -143,7 +136,6 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
     isAdmin,
     setCurrentWorkspace,
     setCurrentTeam,
-    setIsAdmin,
   ]);
 
   const isLoading =
@@ -172,7 +164,6 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
         )}
         <main className="w-full">{children}</main>
       </SidebarInset>
-      {!isMobile && isHealthCheckRoute && <SubMenu />}
     </SidebarProvider>
   );
 };

@@ -56,7 +56,6 @@ export function WorkspaceSwitcher({
       navigationFn();
     }
   };
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>

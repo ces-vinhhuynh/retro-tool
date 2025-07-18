@@ -127,14 +127,6 @@ export const RATING_OPTIONS = [
   },
 ] as const;
 
-export const SUBMENU_ITEMS = {
-  PROGRESS_BAR: 'progress-bar',
-  ACTIONS: 'actions',
-  AGREEMENT: 'agreement',
-  ISSUES: 'issues',
-  CUSTOMIZE: 'customize',
-} as const;
-
 export type HealthCheckTab = 'general' | 'options';
 
 export const HEALTH_CHECK_TABS = [
