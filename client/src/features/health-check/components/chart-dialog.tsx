@@ -88,7 +88,10 @@ const ChartDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          'h-auto max-h-none max-w-sm overflow-hidden rounded-lg p-0 sm:max-w-xl md:max-w-3xl',
+          'h-auto max-h-none overflow-hidden rounded-lg',
+          // Mobile: full width with minimal padding, Desktop: constrained width
+          'w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] p-0',
+          'sm:w-auto sm:max-w-xl md:max-w-3xl',
           bg,
         )}
       >
@@ -98,7 +101,7 @@ const ChartDialog = ({
             {data.map((item, index) => (
               <CarouselItem
                 key={item.id}
-                className="no-scrollbar max-h-[50vh] min-h-[35vh] w-full overflow-auto"
+                className="no-scrollbar max-h-[50vh] min-h-[35vh] w-full overflow-auto pl-0"
               >
                 {index === currentIndex && (
                   <DetailCard
@@ -117,7 +120,7 @@ const ChartDialog = ({
           </CarouselContent>
         </Carousel>
 
-        <div className="flex items-center justify-center gap-2.5 bg-transparent pb-3">
+        <div className="flex items-center justify-center gap-2.5 bg-transparent px-2 pb-3">
           {data.map((item, index) => {
             const roundedValue = Math.max(
               0,
@@ -129,10 +132,11 @@ const ChartDialog = ({
                 key={index}
                 onClick={() => scrollToIndex(index)}
                 className={cn(
-                  'size-4 cursor-pointer rounded-full px-0 py-0 transition-all duration-200 ease-in-out',
+                  'cursor-pointer rounded-full px-0 py-0 transition-all duration-200 ease-in-out',
+                  'size-3 sm:size-4',
                   circle,
                   {
-                    'size-[1.6rem]': currentIndex === index,
+                    'size-5 sm:size-[1.6rem]': currentIndex === index,
                   },
                 )}
               />
