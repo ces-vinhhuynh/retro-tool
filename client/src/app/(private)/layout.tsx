@@ -9,12 +9,8 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useHealthCheck } from '@/features/health-check/hooks/use-health-check';
 import { HealthCheckWithTeam } from '@/features/health-check/types/health-check';
-import {
-  TEAM_ROLES,
-  WORKSPACE_ROLES,
-} from '@/features/workspace/constants/user';
+import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
-import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';
 import { useGetTeamsByWorkspaceAndUser } from '@/features/workspace/hooks/use-get-teams-by-workspace-and-user';
 import { useGetUserWorkspaces } from '@/features/workspace/hooks/use-get-user-workspaces';
@@ -22,6 +18,8 @@ import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-us
 import { useWorkspaceStore } from '@/features/workspace/stores/workspace-store';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { Team } from '@/types/team';
+
+import AccessDenied from '../auth/error/access-denied';
 
 interface PrivateLayoutProps {
   children: ReactNode;
@@ -39,11 +37,6 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   const isHealthCheckRoute = pathname.startsWith('/health-checks/');
   const isWorkspaceRoute = pathname.startsWith('/workspaces/');
   const isCreateWorkspaceRoute = pathname.startsWith('/workspaces/create');
-
-  const { data: teamUser } = useGetTeamUser(
-    currentTeam?.id || '',
-    currentUser?.id || '',
-  );
 
   const { data: workspaces, isLoading: isLoadingWorkspaces } =
     useGetUserWorkspaces(currentUser?.id || '');
@@ -81,11 +74,6 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
     workspaceUser?.role === WORKSPACE_ROLES.owner ||
     workspaceUser?.role === WORKSPACE_ROLES.admin;
   const teams = isOwnerOrAdmin ? teamsByAdmin : teamsByMember;
-
-  const isAdmin =
-    teamUser?.role === TEAM_ROLES.admin ||
-    workspaceUser?.role === WORKSPACE_ROLES.owner ||
-    workspaceUser?.role === WORKSPACE_ROLES.admin;
 
   // Update workspace/team context based on route
   useEffect(() => {
@@ -133,7 +121,6 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
     healthCheckData,
     params.id,
     isLoadingWorkspaces,
-    isAdmin,
     setCurrentWorkspace,
     setCurrentTeam,
   ]);
@@ -144,6 +131,27 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
     (isHealthCheckRoute && isLoadingHealthCheck);
 
   if (isLoading) return <div>Loading...</div>;
+
+  if (isTeamRoute && teamsByMember.length === 0) {
+    return (
+      <AccessDenied
+        message="You don't have permission to view this team data. Only workspace owners and admins can access this page."
+        redirectUrl="/"
+        linkText="Go to Workspace"
+      />
+    );
+  }
+
+  if (isHealthCheckRoute && !workspaceUser) {
+    return (
+      <AccessDenied
+        message={`You don't have permission to view this healthy check data.
+            Please contact your admin(s) or your workspace owner(s) to request access.`}
+        redirectUrl="/"
+        linkText="Go to Workspace"
+      />
+    );
+  }
 
   return (
     <SidebarProvider>
