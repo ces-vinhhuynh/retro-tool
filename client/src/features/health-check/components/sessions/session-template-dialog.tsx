@@ -1,10 +1,20 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Card } from '@/components/ui/card';
 import {
   Dialog,
@@ -32,11 +42,15 @@ import TemplateSelectionStep from './template-selection-step';
 interface SessionTemplateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  hasInProgressHealthCheck: (templateId: string) => boolean;
+  initialTemplateId?: string;
 }
 
 const SessionTemplateDialog = ({
   open,
   onOpenChange,
+  hasInProgressHealthCheck,
+  initialTemplateId = '',
 }: SessionTemplateDialogProps) => {
   const { id: teamId } = useParams<{ id: string }>();
   const { templateId, setTemplateId } = useNewSessionModalStore();
@@ -48,6 +62,7 @@ const SessionTemplateDialog = ({
     open: boolean;
     template: Template | null;
   }>({ open: false, template: null });
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
   const { data: templates, isLoading: isLoadingTemplates } = useTemplates();
@@ -57,6 +72,12 @@ const SessionTemplateDialog = ({
   const validTemplates = useMemo(() => {
     return templates?.filter((template) => !template.deleted_at) || [];
   }, [templates]);
+
+  // Check if selected template has IN_PROGRESS health checks
+  const hasInProgressForSelectedTemplate = useMemo(() => {
+    if (!selectedTemplate) return false;
+    return hasInProgressHealthCheck(selectedTemplate.id);
+  }, [selectedTemplate, hasInProgressHealthCheck]);
 
   const methods = useForm<HealthCheckFormData>({
     defaultValues: {
@@ -68,18 +89,50 @@ const SessionTemplateDialog = ({
   });
 
   useEffect(() => {
+    setShowWarningDialog(false);
+
+    const findTemplate = (id: string) =>
+      validTemplates?.find((tpl) => tpl.id === id) || null;
+
+    const getDefaultTemplate = () =>
+      validTemplates?.filter((template) => !template.is_custom)[0] ||
+      validTemplates?.[0] ||
+      null;
+
+    // Case 1: Direct templateId (go to 'form' step)
     if (templateId) {
-      const template =
-        validTemplates?.find((tpl) => tpl.id === templateId) || null;
-      setSelectedTemplate(template);
+      setSelectedTemplate(findTemplate(templateId));
       setStep('form');
-    } else if (validTemplates?.length) {
-      setSelectedTemplate(
-        validTemplates.filter((template) => !template.is_custom)[0] ||
-          validTemplates[0],
-      );
+      return;
     }
-  }, [validTemplates, templateId]);
+
+    // Case 2: Initial templateId (check for IN_PROGRESS)
+    if (initialTemplateId) {
+      const template = findTemplate(initialTemplateId);
+      setSelectedTemplate(template);
+
+      if (template && hasInProgressHealthCheck(template.id)) {
+        setShowWarningDialog(true);
+      }
+
+      setStep('form');
+      return;
+    }
+
+    // Case 3: Default template selection
+    if (validTemplates?.length) {
+      setSelectedTemplate(getDefaultTemplate());
+      setStep('choose');
+    }
+  }, [validTemplates, templateId, initialTemplateId, hasInProgressHealthCheck]);
+
+  // Reset states when dialog opens/closes
+  useEffect(() => {
+    if (!open) {
+      setShowWarningDialog(false);
+      setStep('choose');
+    }
+  }, [open]);
 
   // Accept form data from react-hook-form
   const handleCreate = async (formData: HealthCheckFormData) => {
@@ -108,14 +161,22 @@ const SessionTemplateDialog = ({
     onOpenChange(false);
   };
 
+  const handleContinue = () => {
+    if (hasInProgressForSelectedTemplate) {
+      return; // Don't allow continue if there's an IN_PROGRESS health check
+    }
+    setStep('form');
+  };
+
   return (
     <>
       <Dialog
-        open={open}
+        open={open && !showWarningDialog}
         onOpenChange={() => {
           onOpenChange(false);
           setTemplateId('');
           setStep('choose');
+          setShowWarningDialog(false);
         }}
       >
         <DialogContent className="h-auto max-h-[calc(100vh-2rem)] w-[calc(100vw-1rem)] overflow-y-auto p-4 sm:mx-auto sm:my-auto sm:h-auto sm:max-h-[80vh] sm:w-full sm:max-w-2xl sm:p-6">
@@ -135,12 +196,13 @@ const SessionTemplateDialog = ({
               <TemplateSelectionStep
                 templates={validTemplates}
                 selectedTemplate={selectedTemplate}
-                onTemplateSelect={setSelectedTemplate}
+                onTemplateSelect={(template) => setSelectedTemplate(template)}
                 onPreview={(template) =>
                   setPreviewState({ open: true, template })
                 }
-                onContinue={() => setStep('form')}
+                onContinue={handleContinue}
                 teamId={teamId}
+                hasInProgressHealthCheck={hasInProgressForSelectedTemplate}
               />
             ))}
 
@@ -161,6 +223,34 @@ const SessionTemplateDialog = ({
         onOpenChange={(open) => setPreviewState((prev) => ({ ...prev, open }))}
         template={previewState.template}
       />
+
+      {/* Warning AlertDialog for IN_PROGRESS health check */}
+      <AlertDialog
+        open={showWarningDialog}
+        onOpenChange={(open) => {
+          setShowWarningDialog(open);
+          // Close main dialog when warning is dismissed
+          if (!open) {
+            onOpenChange(false);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="h-5 w-5" />
+              Cannot create Health Check
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-700">
+              There is an In Progress health check using this template. Please
+              close it before creating a new one.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

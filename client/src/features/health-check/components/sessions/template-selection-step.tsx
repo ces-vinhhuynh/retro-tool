@@ -1,5 +1,7 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,9 +19,10 @@ interface TemplateSelectionStepProps {
   teamId: string;
   templates: Template[] | undefined;
   selectedTemplate: Template | null;
-  onTemplateSelect: (template: Template) => void;
+  onTemplateSelect: (template: Template | null) => void;
   onPreview: (template: Template) => void;
   onContinue: () => void;
+  hasInProgressHealthCheck: boolean;
 }
 
 const TemplateSelectionStep = ({
@@ -29,6 +32,7 @@ const TemplateSelectionStep = ({
   onTemplateSelect,
   onPreview,
   onContinue,
+  hasInProgressHealthCheck,
 }: TemplateSelectionStepProps) => {
   const customTemplates =
     templates?.filter(
@@ -49,9 +53,12 @@ const TemplateSelectionStep = ({
   ];
 
   const handleTabChange = (value: string) => {
-    const currentTab = templateTabs.find((tab) => tab.label === value);
-    if (currentTab?.data.length) {
-      onTemplateSelect(currentTab.data[0]);
+    const newTab = templateTabs.find((tab) => tab.label === value);
+
+    if (newTab?.data.length) {
+      onTemplateSelect(newTab.data[0]);
+    } else {
+      onTemplateSelect(null);
     }
   };
 
@@ -94,10 +101,26 @@ const TemplateSelectionStep = ({
           </TabsContent>
         ))}
       </Tabs>
+
+      {/* Inline warning message when there's an IN_PROGRESS health check */}
+      {hasInProgressHealthCheck && selectedTemplate && (
+        <div className="flex items-center gap-3 rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/10">
+          <AlertTriangle className="h-10 w-10 sm:h-5 sm:w-5 text-red-600 dark:text-red-400" />
+          <p className="text-sm text-red-700 dark:text-red-400">
+            There is an In Progress health check using this template. Please
+            close it before creating a new one.
+          </p>
+        </div>
+      )}
+
       <DialogFooter>
         <Button
-          className="w-full"
-          disabled={!selectedTemplate || templates?.length === 0}
+          className={`w-full ${hasInProgressHealthCheck ? 'cursor-not-allowed opacity-50' : ''}`}
+          disabled={
+            !selectedTemplate ||
+            templates?.length === 0 ||
+            hasInProgressHealthCheck
+          }
           onClick={onContinue}
         >
           Continue

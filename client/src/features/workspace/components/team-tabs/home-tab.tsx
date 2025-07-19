@@ -19,6 +19,7 @@ import {
   ActionItemWithAssignees,
   ActionStatus,
   HealthCheck,
+  HealthCheckStatus,
   User,
 } from '@/features/health-check/types/health-check';
 import { Issue } from '@/features/health-check/types/issues';
@@ -56,6 +57,14 @@ const HomeTab = ({
   const [showIssueEntryForm, setShowIssueEntryForm] = useState(isMobile);
   const [showAgreementEntryForm, setShowAgreementEntryForm] =
     useState(isMobile);
+
+  // Shared function to check if template has IN_PROGRESS health check
+  const hasInProgressHealthCheck = (templateId: string): boolean => {
+    const healthChecksForTemplate = healthChecksGrouped[templateId] || [];
+    return healthChecksForTemplate.some(
+      (healthCheck) => healthCheck.status === HealthCheckStatus.IN_PROGRESS,
+    );
+  };
 
   // Update mobile entry forms when isMobile changes
   useEffect(() => {
@@ -422,7 +431,8 @@ const HomeTab = ({
 
       <SessionTemplateDialog
         open={showDialog}
-        onOpenChange={() => setShowDialog(!showDialog)}
+        onOpenChange={setShowDialog}
+        hasInProgressHealthCheck={hasInProgressHealthCheck}
       />
     </div>
   );
