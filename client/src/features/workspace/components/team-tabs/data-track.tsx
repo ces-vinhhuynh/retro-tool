@@ -1,15 +1,7 @@
 'use client';
 
 import { BadgeAlert, Calendar, Handshake, SquareCheckBig } from 'lucide-react';
-import { useState } from 'react';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Agreement } from '@/features/health-check/types/agreements';
 import {
   ActionItem,
@@ -44,14 +36,9 @@ const DataTrackTab = ({
   teamId,
   isMobile = false,
 }: DataTrackTabProps) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<string>(
-    templates[0]?.id || '',
-  );
-
   const filteredTemplates = templates.filter(
     (template) => template.team_id === teamId || template.team_id === null,
   );
-  const healthChecks = healthChecksGrouped[selectedTemplate];
 
   const stats = [
     {
@@ -101,24 +88,24 @@ const DataTrackTab = ({
         ))}
       </div>
 
-      {/* Template Selector */}
-      <div className="w-64">
-        <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-          <SelectTrigger className="w-full bg-white">
-            <SelectValue placeholder="Select template" />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredTemplates.map((template) => (
-              <SelectItem key={template.id} value={template.id}>
-                {template.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Render TeamHealthTrend and CategoryHealth for each template */}
+      {filteredTemplates.map((template) => {
+        const healthChecks = healthChecksGrouped[template.id];
 
-      <TeamHealthTrend healthChecks={healthChecks} isMobile={isMobile} />
-      <CategoryHealth healthChecks={healthChecks} />
+        return (
+          <div key={template.id} className="flex flex-col gap-4">
+            {/* Template Header */}
+            <div className="border-b pt-6 pb-3 md:pt-8">
+              <h3 className="text-center text-lg font-bold text-gray-900 md:text-left md:text-2xl dark:text-gray-100">
+                {template.name}
+              </h3>
+            </div>
+
+            <TeamHealthTrend healthChecks={healthChecks} isMobile={isMobile} />
+            <CategoryHealth healthChecks={healthChecks} />
+          </div>
+        );
+      })}
     </div>
   );
 };
