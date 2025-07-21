@@ -1,7 +1,7 @@
 import { Check, Edit3, Trash2, X } from 'lucide-react';
 import { useEffect, useReducer, useRef, useState } from 'react';
 
-import ConfirmModal from '@/components/modal/confirm-modal';
+import { ConfirmModal } from '@/components/modal/confirm-modal';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -31,8 +31,8 @@ import { useRemoveActionItemAssignee } from '../hooks/use-remove-action-item-ass
 import { useUpdateActionItem } from '../hooks/use-update-action-item';
 import { PRIORITY_CONFIG, STATUS_CONFIG } from '../utils/constants';
 
-import ActionSummaryDialog from './sessions/action-summary-dialog';
-import UserAssignmentPopover from './user-assignment-popover';
+import { ActionSummaryDialog } from './sessions/action-summary-dialog';
+import { UserAssignmentPopover } from './user-assignment-popover';
 
 interface ActionItemRowProps {
   item: ActionItemWithAssignees;
@@ -662,5 +662,3 @@ export const ActionItemRow = ({
     </>
   );
 };
-
-export default ActionItemRow;

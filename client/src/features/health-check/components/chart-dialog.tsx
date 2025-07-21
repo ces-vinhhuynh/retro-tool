@@ -10,7 +10,7 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import DetailCard from '@/features/health-check/components/detail-card';
+import { DetailCard } from '@/features/health-check/components/detail-card';
 import {
   ActionItemWithAssignees,
   HealthCheck,
@@ -39,7 +39,7 @@ interface ChartDialogProps {
   teamMembers: User[];
 }
 
-const ChartDialog = ({
+export const ChartDialog = ({
   onOpenChange,
   data,
   currentIndex,
@@ -147,5 +147,3 @@ const ChartDialog = ({
     </Dialog>
   );
 };
-
-export default ChartDialog;

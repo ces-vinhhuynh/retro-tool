@@ -3,8 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-import useUserStore from '@/stores/user-store';
-
 import { healthCheckService } from '../api/health-check';
 import {
   HealthCheck,

@@ -17,7 +17,7 @@ interface CommentItemProps {
   onClickCreateIssue: (comment: string) => void;
 }
 
-const CommentItem = ({
+export const CommentItem = ({
   comment,
   shouldClamp,
   isExpanded,
@@ -71,5 +71,3 @@ const CommentItem = ({
     </div>
   );
 };
-
-export default CommentItem;

@@ -21,8 +21,8 @@ import {
 import { useMoveTagAdditionalAnswer } from '../hooks/use-response';
 import { generateTagColors } from '../utils/color';
 
-import ChartDialog from './chart-dialog';
-import TagDropdown from './tag-dropdown';
+import { ChartDialog } from './chart-dialog';
+import { TagDropdown } from './tag-dropdown';
 
 interface TopChallengesProps {
   responses: Response[];
@@ -33,7 +33,7 @@ interface TopChallengesProps {
   isAdmin?: boolean;
 }
 
-const TopChallenges = ({
+export const TopChallenges = ({
   responses,
   questions,
   healthCheck,
@@ -176,5 +176,3 @@ const TopChallenges = ({
     </div>
   );
 };
-
-export default TopChallenges;

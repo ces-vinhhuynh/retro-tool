@@ -35,9 +35,9 @@ import {
 } from '../../types/health-check';
 import { Template } from '../../types/templates';
 
-import SessionFormStep from './session-form-step';
-import TemplatePreviewDialog from './template-preview-dialog';
-import TemplateSelectionStep from './template-selection-step';
+import { SessionFormStep } from './session-form-step';
+import { TemplatePreviewDialog } from './template-preview-dialog';
+import { TemplateSelectionStep } from './template-selection-step';
 
 interface SessionTemplateDialogProps {
   open: boolean;
@@ -46,7 +46,7 @@ interface SessionTemplateDialogProps {
   initialTemplateId?: string;
 }
 
-const SessionTemplateDialog = ({
+export const SessionTemplateDialog = ({
   open,
   onOpenChange,
   hasInProgressHealthCheck,
@@ -254,5 +254,3 @@ const SessionTemplateDialog = ({
     </>
   );
 };
-
-export default SessionTemplateDialog;

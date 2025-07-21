@@ -15,7 +15,7 @@ interface HealthCheckBreakdownHeaderProps {
   onAddNewSession?: () => void;
 }
 
-const HealthCheckBreakdownHeader = ({
+export const HealthCheckBreakdownHeader = ({
   healthChecks,
   isShowAddNew = false,
   onAddNewSession,
@@ -78,5 +78,3 @@ const HealthCheckBreakdownHeader = ({
     </div>
   );
 };
-
-export default HealthCheckBreakdownHeader;

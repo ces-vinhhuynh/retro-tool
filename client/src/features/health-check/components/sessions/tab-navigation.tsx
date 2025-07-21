@@ -9,7 +9,7 @@ interface TabNavigationProps {
   tabs: { id: string; label: string }[];
 }
 
-const TabNavigation = ({
+export const TabNavigation = ({
   activeTab,
   onTabChange,
   tabs,
@@ -31,5 +31,3 @@ const TabNavigation = ({
     </div>
   );
 };
-
-export default TabNavigation;

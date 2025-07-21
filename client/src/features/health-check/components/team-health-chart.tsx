@@ -22,8 +22,8 @@ import {
 } from '../utils/comment';
 import { calcAverage, calcSectionAverage } from '../utils/score';
 
-import ChartDialog from './chart-dialog';
-import ScoreMetric from './score-metric';
+import { ChartDialog } from './chart-dialog';
+import { ScoreMetric } from './score-metric';
 
 interface TeamHealthChartProps {
   title: string;
@@ -36,7 +36,7 @@ interface TeamHealthChartProps {
   teamMembers: User[];
 }
 
-const TeamHealthChart = ({
+export const TeamHealthChart = ({
   healthCheck,
   questions,
   responses,
@@ -208,5 +208,3 @@ const TeamHealthChart = ({
     </div>
   );
 };
-
-export default TeamHealthChart;

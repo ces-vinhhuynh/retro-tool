@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
-import InviteModal from '@/components/modal/invite-modal';
+import { InviteModal } from '@/components/modal/invite-modal';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { DataTable } from '@/features/workspace/components/data-table';

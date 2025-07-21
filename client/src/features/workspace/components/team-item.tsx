@@ -4,7 +4,7 @@ import { Heart, MoreHorizontal, Pencil, Trash2, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import ConfirmModal from '@/components/modal/confirm-modal';
+import { ConfirmModal } from '@/components/modal/confirm-modal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -30,7 +30,7 @@ import { TEAM_ROLES } from '../constants/user';
 import { useDeleteTeam } from '../hooks/use-delete-team';
 import { calculateTeamAverage } from '../utils/workspace-metrics';
 
-import EditTeamDialog from './edit-team-dialog';
+import { EditTeamDialog } from './edit-team-dialog';
 
 interface TeamItemProps {
   team: {

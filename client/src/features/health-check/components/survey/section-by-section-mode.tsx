@@ -7,9 +7,9 @@ import {
   Score,
   Section,
 } from '../../types/health-check';
-import AdditionalQuestion from '../additional-question';
+import { AdditionalQuestion } from '../additional-question';
 import { SectionWrapper } from '../section-wrapper';
-import SurveyQuestionRow from '../survey-question-row';
+import { SurveyQuestionRow } from '../survey-question-row';
 
 import { SurveyNavigation } from './survey-navigation';
 
@@ -34,7 +34,7 @@ interface SectionBySectionModeProps {
   currentGroupIndex: number;
 }
 
-const SectionBySectionMode = ({
+export const SectionBySectionMode = ({
   sections,
   groupedQuestions,
   minScore,
@@ -98,5 +98,3 @@ const SectionBySectionMode = ({
     </div>
   );
 };
-
-export default SectionBySectionMode;

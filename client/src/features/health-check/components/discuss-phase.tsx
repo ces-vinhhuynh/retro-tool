@@ -4,9 +4,9 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import TopChallenges from '@/features/health-check/components/challenges';
-import HealthCheckQuestions from '@/features/health-check/components/health-check-questions';
-import TeamHealthChart from '@/features/health-check/components/team-health-chart';
+import { TopChallenges } from '@/features/health-check/components/challenges';
+import { HealthCheckQuestions } from '@/features/health-check/components/health-check-questions';
+import { TeamHealthChart } from '@/features/health-check/components/team-health-chart';
 import {
   ActionItemWithAssignees,
   HealthCheckWithTemplate,
@@ -25,7 +25,7 @@ interface DiscussPhaseProps {
   handleQuestionClick: (index: number) => void;
 }
 
-const DiscussPhase = ({
+export const DiscussPhase = ({
   healthCheck,
   questions,
   responses,
@@ -96,5 +96,3 @@ const DiscussPhase = ({
     </>
   );
 };
-
-export default DiscussPhase;

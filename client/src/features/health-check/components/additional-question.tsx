@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { splitAndCleanLines } from '../utils/comment';
 import { LONG_TEXT_INPUT_MAX_LENGTH } from '../utils/constants';
 
-import AdditionalItemRow from './addtional-item-row';
+import { AdditionalItemRow } from './additional-item-row';
 
 interface AdditionalQuestionProps {
   id: string;
@@ -25,7 +25,7 @@ interface AdditionalQuestionProps {
   handleDeleteAnswer: (questionId: string, index: number) => void;
 }
 
-const AdditionalQuestion = ({
+export const AdditionalQuestion = ({
   id,
   title,
   description,
@@ -99,5 +99,3 @@ const AdditionalQuestion = ({
     </div>
   );
 };
-
-export default AdditionalQuestion;

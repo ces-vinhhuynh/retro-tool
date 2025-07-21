@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import EditTeamDialog from '@/features/workspace/components/edit-team-dialog';
+import { EditTeamDialog } from '@/features/workspace/components/edit-team-dialog';
 import { MAX_MEMBERS_AMOUNT } from '@/features/workspace/components/team-table/columns';
 import { TEAM_ROLES, TeamRole } from '@/features/workspace/constants/user';
 import { cn } from '@/lib/utils';
@@ -29,7 +29,7 @@ interface TeamCardProps {
   onDelete: (teamId: string) => void;
 }
 
-const TeamCard = ({
+export const TeamCard = ({
   team,
   currentUserRole,
   isOwnerOrAdmin,
@@ -117,5 +117,3 @@ const TeamCard = ({
     </div>
   );
 };
-
-export default TeamCard;

@@ -3,9 +3,9 @@
 import { useParams } from 'next/navigation';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import CreateTeamDialog from '@/features/workspace/components/create-team-dialog';
+import { CreateTeamDialog } from '@/features/workspace/components/create-team-dialog';
 import { DataTable } from '@/features/workspace/components/data-table';
-import TeamCard from '@/features/workspace/components/team-card';
+import { TeamCard } from '@/features/workspace/components/team-card';
 import { useColumns } from '@/features/workspace/components/team-table/columns';
 import {
   TEAM_ROLES,

@@ -16,8 +16,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import TeamForm from '@/features/workspace/components/team-form';
-import WorkspaceForm from '@/features/workspace/components/workspace-form';
+import { TeamForm } from '@/features/workspace/components/team-form';
+import { WorkspaceForm } from '@/features/workspace/components/workspace-form';
 import { useCreateWorkspaceTeam } from '@/features/workspace/hooks/use-create-workspace-team';
 import {
   workspaceTeamSchema,

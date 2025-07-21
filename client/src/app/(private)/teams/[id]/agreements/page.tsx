@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import EntryList from '@/features/health-check/components/entry-list';
+import { EntryList } from '@/features/health-check/components/entry-list';
 import { useAgreementMutation } from '@/features/health-check/hooks/agreements/use-agreements-mutation';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';

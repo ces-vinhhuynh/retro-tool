@@ -33,7 +33,7 @@ interface UserAssignmentPopoverProps {
   showLabel?: boolean;
 }
 
-const UserAssignmentPopover = ({
+export const UserAssignmentPopover = ({
   item,
   isEditable,
   assignees,
@@ -215,5 +215,3 @@ const UserAssignmentPopover = ({
     />
   );
 };
-
-export default UserAssignmentPopover;

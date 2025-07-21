@@ -10,9 +10,9 @@ import {
   HealthCheckTab,
 } from '@/features/health-check/utils/constants';
 
-import GeneralTab from './general-tab';
-import OptionsTab from './option-tab';
-import TabNavigation from './tab-navigation';
+import { GeneralTab } from './general-tab';
+import { OptionsTab } from './option-tab';
+import { TabNavigation } from './tab-navigation';
 
 interface SessionFormStepProps {
   onSubmit: () => void;
@@ -20,7 +20,7 @@ interface SessionFormStepProps {
   isSubmitting: boolean;
 }
 
-const SessionFormStep = ({
+export const SessionFormStep = ({
   onSubmit,
   onBack,
   isSubmitting,
@@ -62,5 +62,3 @@ const SessionFormStep = ({
     </div>
   );
 };
-
-export default SessionFormStep;

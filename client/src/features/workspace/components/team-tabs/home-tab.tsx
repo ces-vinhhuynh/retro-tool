@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import DashboardActionItems from '@/features/health-check/components/dashboard-action-items';
-import EntryForm from '@/features/health-check/components/entry-form';
-import SessionTemplateDialog from '@/features/health-check/components/sessions/session-template-dialog';
+import { DashboardActionItems } from '@/features/health-check/components/dashboard-action-items';
+import { EntryForm } from '@/features/health-check/components/entry-form';
+import { SessionTemplateDialog } from '@/features/health-check/components/sessions/session-template-dialog';
 import { useAgreementMutation } from '@/features/health-check/hooks/agreements/use-agreements-mutation';
 import { useAgreementsSubscription } from '@/features/health-check/hooks/agreements/use-agreements-subscription';
 import { useIssuesMutation } from '@/features/health-check/hooks/issues/use-issues-mutation';
@@ -31,7 +31,7 @@ import { cn } from '@/lib/utils';
 
 import { useGetTeamMembers } from '../../hooks/use-get-team-member';
 
-import TeamHealthTrend from './team-health-trend';
+import { TeamHealthTrend } from './team-health-trend';
 
 interface HomeTabProps {
   teamId: string;
@@ -41,7 +41,7 @@ interface HomeTabProps {
   isAdmin?: boolean;
 }
 
-const HomeTab = ({
+export const HomeTab = ({
   teamId,
   actionItems,
   agreements,
@@ -437,5 +437,3 @@ const HomeTab = ({
     </div>
   );
 };
-
-export default HomeTab;

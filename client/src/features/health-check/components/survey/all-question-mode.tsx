@@ -1,6 +1,6 @@
 'use client';
 
-import SurveyQuestionRow from '@/features/health-check/components/survey-question-row';
+import { SurveyQuestionRow } from '@/features/health-check/components/survey-question-row';
 import {
   AnswerSurvey,
   GroupedQuestions,
@@ -9,7 +9,7 @@ import {
   Section,
 } from '@/features/health-check/types/health-check';
 
-import AdditionalQuestion from '../additional-question';
+import { AdditionalQuestion } from '../additional-question';
 import { SectionWrapper } from '../section-wrapper';
 
 interface AllQuestionModeProps {
@@ -29,7 +29,7 @@ interface AllQuestionModeProps {
   handleDeleteAdditionalComment: (questionId: string, index: number) => void;
 }
 
-export default function AllQuestionMode({
+export const AllQuestionMode = ({
   sections,
   groupedQuestions,
   minScore,
@@ -40,7 +40,7 @@ export default function AllQuestionMode({
   handleAddAdditionalComment,
   handleChangeAdditionalComment,
   handleDeleteAdditionalComment,
-}: AllQuestionModeProps) {
+}: AllQuestionModeProps) => {
   return (
     <div className="flex min-w-0 flex-col gap-6">
       {sections.map((section) => (
@@ -79,4 +79,4 @@ export default function AllQuestionMode({
       ))}
     </div>
   );
-}
+};

@@ -1,7 +1,7 @@
 'use client';
 
 import { Accordion } from '@/components/ui/accordion';
-import QuestionAccordionItem from '@/features/health-check/components/question-accordion-item';
+import { QuestionAccordionItem } from '@/features/health-check/components/question-accordion-item';
 import {
   ActionItemWithAssignees,
   HealthCheck,
@@ -21,13 +21,12 @@ interface HealthCheckQuestionsProps {
   handleQuestionClick: (index: number) => void;
 }
 
-const HealthCheckQuestions = ({
+export const HealthCheckQuestions = ({
   responses,
   questions,
   allOpen,
   handleQuestionClick,
 }: HealthCheckQuestionsProps) => {
-
   const visibleQuestions = questions.filter(
     (q) => q.section !== Section.AdditionalQuestions,
   );
@@ -53,5 +52,3 @@ const HealthCheckQuestions = ({
     </div>
   );
 };
-
-export default HealthCheckQuestions;

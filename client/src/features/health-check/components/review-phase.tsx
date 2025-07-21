@@ -16,9 +16,9 @@ import { Issue } from '../types/issues';
 import { formatDateTime } from '../utils/time-format';
 
 import { ActionItemRow } from './action-item-row';
-import ActionItems from './action-items';
-import EntryList from './entry-list';
-import EntryWrapper from './entry-wrapper';
+import { ActionItems } from './action-items';
+import { EntryList } from './entry-list';
+import { EntryWrapper } from './entry-wrapper';
 
 interface ReviewPhaseProps {
   agreements: Agreement[];
@@ -44,7 +44,7 @@ const SummaryItem = ({ title, content }: SummaryItemProps) => (
   </div>
 );
 
-const ReviewPhase = ({
+export const ReviewPhase = ({
   agreements,
   issues,
   actionItems,
@@ -207,5 +207,3 @@ const ReviewPhase = ({
     </>
   );
 };
-
-export default ReviewPhase;

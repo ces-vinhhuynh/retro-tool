@@ -4,7 +4,7 @@ import { cn } from '@/utils/cn';
 
 import { getScoreColors } from '../utils/color';
 
-import ScoreTooltip from './rating-tooltip';
+import { ScoreTooltip } from './rating-tooltip';
 
 type Rating = {
   score: number;
@@ -20,7 +20,7 @@ interface RatingDisplayProps {
   height?: string;
 }
 
-const RatingDisplay = ({
+export const RatingDisplay = ({
   questionId,
   healthCheckId,
   averageScore,
@@ -67,5 +67,3 @@ const RatingDisplay = ({
     </div>
   );
 };
-
-export default RatingDisplay;

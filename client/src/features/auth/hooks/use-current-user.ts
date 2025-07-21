@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { User } from '@/features/health-check/types/health-check';
-import useUserStore from '@/stores/user-store';
+import { useUserStore } from '@/stores/user-store';
 
 import { authService } from '../api/auth';
 

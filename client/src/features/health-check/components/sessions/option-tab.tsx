@@ -4,11 +4,11 @@ import { useFormContext } from 'react-hook-form';
 
 import { HealthCheckFormData } from '@/features/health-check/types/health-check';
 
-import DisplayModeSelector from './display-mode-selector';
-import DisplayModeOption from './setting-mode-option';
-import ToggleOption from './toggle-option';
+import { DisplayModeSelector } from './display-mode-selector';
+import { SettingModeOption } from './setting-mode-option';
+import { ToggleOption } from './toggle-option';
 
-const OptionsTab = () => {
+export const OptionsTab = () => {
   const { watch, setValue } = useFormContext<HealthCheckFormData>();
   const displayMode = watch('displayMode');
   const allowNavigation = watch('allowNavigation');
@@ -25,7 +25,7 @@ const OptionsTab = () => {
           tooltip="Choose if participants can navigate to previous or next questions"
         >
           <div className="flex flex-col gap-2 py-3">
-            <DisplayModeOption
+            <SettingModeOption
               id="allow-navigation-option"
               label="Allow participants to move to next question"
               isSelected={allowNavigation}
@@ -37,5 +37,3 @@ const OptionsTab = () => {
     </div>
   );
 };
-
-export default OptionsTab;

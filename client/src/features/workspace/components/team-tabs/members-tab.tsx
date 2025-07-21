@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import InviteModal from '@/components/modal/invite-modal';
+import { InviteModal } from '@/components/modal/invite-modal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { MESSAGE } from '@/utils/messages';
@@ -13,9 +13,9 @@ import { useInviteUserToTeam } from '../../hooks/use-invite-user-to-team';
 import { useUpdateTeamUser } from '../../hooks/use-update-team-user';
 import { DataTable } from '../data-table';
 import { useColumns } from '../team-members-table/columns';
-import UserCard from '../user-card';
+import { UserCard } from '../user-card';
 
-const MembersTab = ({
+export const MembersTab = ({
   teamId,
   isAdmin,
   currentUserRole,
@@ -96,5 +96,3 @@ const MembersTab = ({
     </Card>
   );
 };
-
-export default MembersTab;

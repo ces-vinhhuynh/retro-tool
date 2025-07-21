@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 
-import EntryForm from './entry-form';
+import { EntryForm } from './entry-form';
 
 interface EntryListProps {
   items: { id: string; title: string }[];
@@ -15,7 +15,7 @@ interface EntryListProps {
   isLoading?: boolean;
 }
 
-const EntryList = ({
+export const EntryList = ({
   items,
   handleAddItem,
   handleDeleteItem,
@@ -76,5 +76,3 @@ const EntryList = ({
     </div>
   );
 };
-
-export default EntryList;

@@ -14,7 +14,7 @@ interface StatCardProps {
   isMobile?: boolean;
 }
 
-const StatCard = ({
+export const StatCard = ({
   title,
   description,
   children,
@@ -40,5 +40,3 @@ const StatCard = ({
     </Card>
   );
 };
-
-export default StatCard;

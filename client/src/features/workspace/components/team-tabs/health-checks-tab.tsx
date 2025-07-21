@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import ScrumHealthCheck from '@/features/health-check/components/scrum-health-check';
-import SessionTemplateDialog from '@/features/health-check/components/sessions/session-template-dialog';
+import { ScrumHealthCheck } from '@/features/health-check/components/scrum-health-check';
+import { SessionTemplateDialog } from '@/features/health-check/components/sessions/session-template-dialog';
 import { SCRUM_TEAM_HEALTH_CHECK_TABLE } from '@/features/health-check/constants/health-check-table-config';
 import { useNewSessionModalStore } from '@/features/health-check/stores/new-session-modal-store';
 import {
@@ -18,7 +18,7 @@ interface HealthChecksTabProps {
   isAdmin: boolean;
 }
 
-const HealthChecksTab = ({
+export const HealthChecksTab = ({
   healthChecksGrouped,
   isAdmin,
 }: HealthChecksTabProps) => {
@@ -88,5 +88,3 @@ const HealthChecksTab = ({
     </>
   );
 };
-
-export default HealthChecksTab;

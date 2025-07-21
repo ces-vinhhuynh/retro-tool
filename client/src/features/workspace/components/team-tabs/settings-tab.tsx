@@ -3,16 +3,16 @@
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
-import ConfirmModal from '@/components/modal/confirm-modal';
+import { ConfirmModal } from '@/components/modal/confirm-modal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import TemplatePreviewDialog from '@/features/health-check/components/sessions/template-preview-dialog';
+import { TemplatePreviewDialog } from '@/features/health-check/components/sessions/template-preview-dialog';
 import { useDeleteTemplate } from '@/features/health-check/hooks/use-health-check-templates';
 import { useTeamTemplates } from '@/features/health-check/hooks/use-team-templates';
 import { Template } from '@/features/health-check/types/templates';
 import { MESSAGE } from '@/utils/messages';
 
-import ManageCustomTemplateModal from '../manage-custom-template-modal';
+import { ManageCustomTemplateModal } from '../manage-custom-template-modal';
 import { CustomTemplateModalType, TemplateCard } from '../template-card';
 
 interface SettingsTab {

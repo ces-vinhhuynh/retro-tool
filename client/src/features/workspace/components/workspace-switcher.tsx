@@ -21,7 +21,7 @@ import { cn } from '@/utils/cn';
 
 import { WorkspaceUserWithWorkspace } from '../types/workspace-users';
 
-import WorkspaceLogo from './workspace-logo';
+import { WorkspaceLogo } from './workspace-logo';
 
 interface WorkspaceSwitcherProps {
   workspaces: WorkspaceUserWithWorkspace[];

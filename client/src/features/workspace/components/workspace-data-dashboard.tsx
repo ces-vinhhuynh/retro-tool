@@ -13,14 +13,14 @@ import {
   calcWorkspaceActionItemsMetrics,
 } from '../utils/workspace-metrics';
 
-import WorkspaceHealthTrend from './workspace-health-trend';
-import WorkspaceStatCard from './workspace-stat-card';
+import { WorkspaceHealthTrend } from './workspace-health-trend';
+import { WorkspaceStatCard } from './workspace-stat-card';
 
 interface WorkspaceDataDashboardProps {
   workspaceId: string;
 }
 
-const WorkspaceDataDashboard = ({
+export const WorkspaceDataDashboard = ({
   workspaceId,
 }: WorkspaceDataDashboardProps) => {
   const { data: teams = [] } = useGetTeamsByWorkspace(workspaceId);
@@ -65,5 +65,3 @@ const WorkspaceDataDashboard = ({
     </div>
   );
 };
-
-export default WorkspaceDataDashboard;

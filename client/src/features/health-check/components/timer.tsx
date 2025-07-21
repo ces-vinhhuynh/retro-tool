@@ -17,7 +17,7 @@ interface TimerProps {
   endTime: string;
 }
 
-const Timer = ({
+export const Timer = ({
   className,
   isFacilitator,
   healthCheckId,
@@ -160,5 +160,3 @@ const Timer = ({
     </div>
   );
 };
-
-export default Timer;

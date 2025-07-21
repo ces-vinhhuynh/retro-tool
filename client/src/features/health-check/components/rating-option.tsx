@@ -13,11 +13,11 @@ interface RatingOptionProps {
   onSelect: (value: number) => void;
 }
 
-export default function RatingOption({
+export const RatingOption = ({
   option,
   isSelected,
   onSelect,
-}: RatingOptionProps) {
+}: RatingOptionProps) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -52,4 +52,4 @@ export default function RatingOption({
       </TooltipContent>
     </Tooltip>
   );
-}
+};

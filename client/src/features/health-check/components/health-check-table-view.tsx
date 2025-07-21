@@ -16,8 +16,8 @@ import {
 import { HealthCheckRatingFunction } from '../types/chart';
 import { FormattedHealthCheck } from '../types/health-check';
 
-import HealthCheckColumn from './health-check-column';
-import QuestionRow from './question-row';
+import { HealthCheckColumn } from './health-check-column';
+import { QuestionRow } from './question-row';
 
 interface HealthCheckTableViewProps {
   healthChecks: FormattedHealthCheck[];
@@ -27,7 +27,7 @@ interface HealthCheckTableViewProps {
   onAddNewSession?: () => void;
 }
 
-const HealthCheckTableView = ({
+export const HealthCheckTableView = ({
   healthChecks,
   responsiveConfig = DATA_TRACK_HEALTH_CHECK_TABLE,
   getHealthCheckRatings,
@@ -308,5 +308,3 @@ const HealthCheckTableView = ({
     </div>
   );
 };
-
-export default HealthCheckTableView;

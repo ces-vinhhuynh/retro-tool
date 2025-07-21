@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import EntryList from '@/features/health-check/components/entry-list';
+import { EntryList } from '@/features/health-check/components/entry-list';
 import { useIssuesMutation } from '@/features/health-check/hooks/issues/use-issues-mutation';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
 import { useIssuesSubscription } from '@/features/health-check/hooks/issues/use-issues-subscription';

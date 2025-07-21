@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/utils/cn';
 
-import ToggleSwitch from './toggle-switch';
+import { ToggleSwitch } from './toggle-switch';
 
 interface ToggleOptionProps {
   id: string;
@@ -20,7 +20,7 @@ interface ToggleOptionProps {
   children?: React.ReactNode;
 }
 
-const ToggleOption = ({
+export const ToggleOption = ({
   id,
   label,
   tooltip,
@@ -65,5 +65,3 @@ const ToggleOption = ({
     </div>
   );
 };
-
-export default ToggleOption;

@@ -2,7 +2,7 @@
 
 import { Label } from '@/components/ui/label';
 
-import ToggleSwitch from './toggle-switch';
+import { ToggleSwitch } from './toggle-switch';
 
 interface SettingModeOptionProps {
   id: string;
@@ -11,7 +11,7 @@ interface SettingModeOptionProps {
   onChange: () => void;
 }
 
-const SettingModeOption = ({
+export const SettingModeOption = ({
   id,
   label,
   isSelected,
@@ -26,5 +26,3 @@ const SettingModeOption = ({
     </div>
   );
 };
-
-export default SettingModeOption;

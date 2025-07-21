@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import ActionItems from '@/features/health-check/components/action-items';
-import SurveyResponses from '@/features/health-check/components/survey-responses';
+import { ActionItems } from '@/features/health-check/components/action-items';
+import { SurveyResponses } from '@/features/health-check/components/survey-responses';
 import {
   ActionItemWithAssignees,
   HealthCheck,
@@ -31,7 +31,7 @@ interface DetailCardProps {
   isAdmin?: boolean;
 }
 
-const DetailCard = ({
+export const DetailCard = ({
   item,
   actionItems,
   healthCheck,
@@ -68,7 +68,7 @@ const DetailCard = ({
         item.value > 0 && bg,
       )}
     >
-      <CardHeader className="sticky top-0 z-10 shrink-0 bg-inherit px-2 pt-2 pb-2 sm:px-6 sm:p-6">
+      <CardHeader className="sticky top-0 z-10 shrink-0 bg-inherit px-2 pt-2 pb-2 sm:p-6 sm:px-6">
         {item.value > 0 ? (
           <div className="flex items-start gap-3">
             <div
@@ -136,5 +136,3 @@ const DetailCard = ({
     </Card>
   );
 };
-
-export default DetailCard;

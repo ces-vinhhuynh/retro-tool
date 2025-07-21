@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 
-import ConfirmModal from '@/components/modal/confirm-modal';
+import { ConfirmModal } from '@/components/modal/confirm-modal';
 import { MESSAGE } from '@/utils/messages';
 
 import { useIssuesMutation } from '../hooks/issues/use-issues-mutation';
 
-import CommentItem from './comment-item';
+import { CommentItem } from './comment-item';
 
 const MAX_COMMENT_CHARS = 200;
 
@@ -17,7 +17,7 @@ interface SurveyResponsesProps {
   healthCheckId: string;
 }
 
-const SurveyResponses = ({
+export const SurveyResponses = ({
   comments,
   teamId,
   healthCheckId,
@@ -87,5 +87,3 @@ const SurveyResponses = ({
     </div>
   );
 };
-
-export default SurveyResponses;

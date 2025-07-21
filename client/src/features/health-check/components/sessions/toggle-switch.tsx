@@ -8,7 +8,11 @@ interface ToggleSwitchProps {
   onCheckedChange: (checked: boolean) => void;
 }
 
-const ToggleSwitch = ({ id, checked, onCheckedChange }: ToggleSwitchProps) => {
+export const ToggleSwitch = ({
+  id,
+  checked,
+  onCheckedChange,
+}: ToggleSwitchProps) => {
   return (
     <button
       type="button"
@@ -36,5 +40,3 @@ const ToggleSwitch = ({ id, checked, onCheckedChange }: ToggleSwitchProps) => {
     </button>
   );
 };
-
-export default ToggleSwitch;

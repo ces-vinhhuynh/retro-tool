@@ -21,13 +21,13 @@ interface RevealModalProps {
   teamSize: number;
 }
 
-export default function RevealModal({
+export const RevealModal = ({
   open,
   onOpenChange,
   responses,
   respondedCount,
   teamSize,
-}: RevealModalProps) {
+}: RevealModalProps) => {
   const getUsersByRating = (rating: number) => {
     return responses
       .filter((response) => response.health_check_rating === rating)
@@ -103,4 +103,4 @@ export default function RevealModal({
       </DialogContent>
     </Dialog>
   );
-}
+};

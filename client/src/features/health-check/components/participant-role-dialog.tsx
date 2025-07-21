@@ -24,7 +24,7 @@ interface ParticipantRoleDialogProps {
   participant: ParticipantWithUser;
 }
 
-const ParticipantRoleDialog = ({
+export const ParticipantRoleDialog = ({
   open,
   onOpenChange,
   participant,
@@ -146,5 +146,3 @@ const ParticipantRoleDialog = ({
     </Dialog>
   );
 };
-
-export default ParticipantRoleDialog;

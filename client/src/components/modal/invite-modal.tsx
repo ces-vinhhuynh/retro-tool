@@ -26,7 +26,7 @@ interface InviteModalProps {
   isLoading: boolean;
 }
 
-const InviteModal = ({
+export const InviteModal = ({
   open,
   onClose,
   onSubmit,
@@ -99,5 +99,3 @@ const InviteModal = ({
     </Dialog>
   );
 };
-
-export default InviteModal;

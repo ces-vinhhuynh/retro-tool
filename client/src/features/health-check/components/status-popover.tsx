@@ -74,5 +74,3 @@ export const StatusPopover = ({
     />
   );
 };
-
-export default StatusPopover;

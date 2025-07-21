@@ -143,6 +143,19 @@ export default tseslint.config(
       ],
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
+      'import/no-default-export': 'error',
+    },
+  },
+  {
+    files: [
+      'src/app/**/page.@(ts|tsx)',
+      'src/app/**/layout.@(ts|tsx)',
+      'src/app/**/error.@(ts|tsx)',
+      'src/app/**/loading.@(ts|tsx)',
+      'src/app/**/not-found.@(ts|tsx)',
+    ],
+    rules: {
+      'import/no-default-export': 'off',
     },
   },
   {

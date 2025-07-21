@@ -6,7 +6,7 @@ interface AccessDeniedProps {
   linkText: string;
 }
 
-const AccessDenied = ({
+export const AccessDenied = ({
   message,
   redirectUrl,
   linkText,
@@ -26,5 +26,3 @@ const AccessDenied = ({
     </div>
   );
 };
-
-export default AccessDenied;

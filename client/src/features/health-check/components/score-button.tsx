@@ -13,7 +13,7 @@ interface ScoreButtonProps {
   onValueChange: (score: number) => void;
 }
 
-const ScoreButton = ({
+export const ScoreButton = ({
   score,
   value,
   maxScore,
@@ -42,5 +42,3 @@ const ScoreButton = ({
     </Button>
   );
 };
-
-export default ScoreButton;

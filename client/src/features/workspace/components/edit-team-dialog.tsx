@@ -26,12 +26,12 @@ interface EditTeamDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function EditTeamDialog({
+export const EditTeamDialog = ({
   teamId,
   children,
   open,
   onOpenChange,
-}: EditTeamDialogProps) {
+}: EditTeamDialogProps) => {
   const { mutate: updateTeam, isPending } = useUpdateTeam();
 
   const methods = useForm<TeamFormValues>({
@@ -107,4 +107,4 @@ export default function EditTeamDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};

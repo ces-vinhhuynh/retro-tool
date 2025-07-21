@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import ProjectLogo from '@/features/workspace/components/project-logo';
+import { ProjectLogo } from '@/features/workspace/components/project-logo';
 import { Team } from '@/types/team';
 import { cn } from '@/utils/cn';
 

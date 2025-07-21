@@ -19,7 +19,7 @@ import { useWorkspaceStore } from '@/features/workspace/stores/workspace-store';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { Team } from '@/types/team';
 
-import AccessDenied from '../auth/error/access-denied';
+import { AccessDenied } from '../auth/error/access-denied';
 
 interface PrivateLayoutProps {
   children: ReactNode;

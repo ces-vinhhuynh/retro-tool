@@ -9,9 +9,9 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import HealthCheckRating from './health-check-rating';
-import ScrumHealthCheck from './scrum-health-check';
-import TeamHealthChart from './team-health-chart';
+import { HealthCheckRating } from './health-check-rating';
+import { ScrumHealthCheck } from './scrum-health-check';
+import { TeamHealthChart } from './team-health-chart';
 
 interface ClosePhaseProps {
   healthCheck: HealthCheckWithTemplate;
@@ -25,7 +25,7 @@ interface ClosePhaseProps {
   isAdmin?: boolean;
 }
 
-const ClosePhase = ({
+export const ClosePhase = ({
   healthCheck,
   questions,
   responses,
@@ -63,5 +63,3 @@ const ClosePhase = ({
     </div>
   );
 };
-
-export default ClosePhase;

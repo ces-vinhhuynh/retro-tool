@@ -6,17 +6,14 @@ import { useEffect } from 'react';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
-import {
-  useGetActionItemsByTeamId,
-  useGetOpenActionItemsByTeamId,
-} from '@/features/health-check/hooks/use-get-action-items-by-team-id';
+import { useGetOpenActionItemsByTeamId } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
 import { useGetHealthChecksByTeam } from '@/features/health-check/hooks/use-get-healt-checks-by-team';
 import { useTemplates } from '@/features/health-check/hooks/use-health-check-templates';
 import { HealthCheck } from '@/features/health-check/types/health-check';
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
 import { sortTemplatesByLatestHealthCheck } from '@/features/health-check/utils/template';
-import DataTrackTab from '@/features/workspace/components/team-tabs/data-track';
+import { DataTrackTab } from '@/features/workspace/components/team-tabs/data-track';
 import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeam } from '@/features/workspace/hooks/use-get-team';
 import { useGetTeamUser } from '@/features/workspace/hooks/use-get-team-user';

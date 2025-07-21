@@ -20,7 +20,7 @@ interface TemplateCardProps {
   onPreview: (template: Template) => void;
 }
 
-const TemplateCard = ({
+export const TemplateCard = ({
   template,
   isSelected,
   onSelect,
@@ -56,5 +56,3 @@ const TemplateCard = ({
     </Card>
   );
 };
-
-export default TemplateCard;

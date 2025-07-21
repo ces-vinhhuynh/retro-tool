@@ -10,7 +10,7 @@ interface EntryFormProps {
   Icon: React.ComponentType<{ size: number; className?: string }>;
 }
 
-const EntryForm = ({
+export const EntryForm = ({
   register,
   onSubmit,
   isDisabled,
@@ -33,5 +33,3 @@ const EntryForm = ({
     </form>
   );
 };
-
-export default EntryForm;

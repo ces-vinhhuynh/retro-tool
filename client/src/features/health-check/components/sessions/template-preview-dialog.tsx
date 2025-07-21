@@ -20,7 +20,7 @@ interface TemplatePreviewDialogProps {
   template: Template | null;
 }
 
-const TemplatePreviewDialog = ({
+export const TemplatePreviewDialog = ({
   open,
   onOpenChange,
   template,
@@ -66,5 +66,3 @@ const TemplatePreviewDialog = ({
     </Dialog>
   );
 };
-
-export default TemplatePreviewDialog;

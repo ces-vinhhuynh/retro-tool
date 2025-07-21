@@ -6,7 +6,7 @@ interface ScoreTooltipProps {
   ratings: Array<{ score: number; count: number }>;
 }
 
-export default function ScoreTooltip({ ratings }: ScoreTooltipProps) {
+export const ScoreTooltip = ({ ratings }: ScoreTooltipProps) => {
   return (
     <div className="absolute bottom-full left-1/2 w-auto -translate-x-1/2">
       <div className="flex rounded-lg border bg-white p-3 shadow-lg">
@@ -28,4 +28,4 @@ export default function ScoreTooltip({ ratings }: ScoreTooltipProps) {
       </div>
     </div>
   );
-}
+};

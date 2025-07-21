@@ -30,7 +30,7 @@ interface TeamHealthTrendProps {
   isMobile: boolean;
 }
 
-const TeamHealthTrend = ({
+export const TeamHealthTrend = ({
   healthChecks = [],
   isMobile = false,
 }: TeamHealthTrendProps) => {
@@ -105,7 +105,7 @@ const TeamHealthTrend = ({
   // Calculate legend height based on number of lines and mobile/desktop
   const calculateLegendHeight = () => {
     const lineCount = lineConfigs.length;
-    
+
     if (isMobile) {
       // On mobile, more likely to wrap to multiple lines
       return Math.max(45, lineCount * 22 + 16);
@@ -127,9 +127,9 @@ const TeamHealthTrend = ({
     if (!payload || payload.length === 0) return null;
 
     return (
-      <div 
+      <div
         className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-2 md:px-4"
-        style={{ 
+        style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -137,7 +137,7 @@ const TeamHealthTrend = ({
           height: `${legendHeight}px`,
           display: 'flex',
           alignItems: 'center',
-          paddingBottom: '4px'
+          paddingBottom: '4px',
         }}
       >
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
@@ -147,9 +147,9 @@ const TeamHealthTrend = ({
               className="h-2 w-4 rounded-sm"
               style={{ backgroundColor: entry.color }}
             />
-            <span 
-              className="text-xs font-medium sm:text-sm leading-tight"
-              style={{ 
+            <span
+              className="text-xs leading-tight font-medium sm:text-sm"
+              style={{
                 color: entry.color,
               }}
             >
@@ -163,23 +163,23 @@ const TeamHealthTrend = ({
 
   return (
     <Card className="w-full">
-      <CardHeader className={cn("p-6 pt-3 pb-0 md:p-6")}>
+      <CardHeader className={cn('p-6 pt-3 pb-0 md:p-6')}>
         <CardTitle className="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-2xl font-semibold text-transparent">
           Team Health Trend
         </CardTitle>
       </CardHeader>
       <CardContent className="px-1 pt-3 pb-3 md:px-6 md:pt-6">
         {chartData.length > 0 ? (
-          <div 
-            className="w-full relative"
+          <div
+            className="relative w-full"
             style={{ height: `${totalHeight}px` }}
           >
             {/* Custom Legend Container */}
-            <div 
+            <div
               className="relative w-full"
               style={{ height: `${legendHeight}px` }}
             >
-              <CustomLegend 
+              <CustomLegend
                 payload={lineConfigs.map((config) => ({
                   value: config.name,
                   color: config.color,
@@ -188,10 +188,7 @@ const TeamHealthTrend = ({
             </div>
 
             {/* Chart Container */}
-            <div 
-              className="w-full"
-              style={{ height: `${chartHeight}px` }}
-            >
+            <div className="w-full" style={{ height: `${chartHeight}px` }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   accessibilityLayer
@@ -269,5 +266,3 @@ const TeamHealthTrend = ({
     </Card>
   );
 };
-
-export default TeamHealthTrend;

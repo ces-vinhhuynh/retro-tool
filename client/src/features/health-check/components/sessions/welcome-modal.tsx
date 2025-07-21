@@ -39,7 +39,7 @@ interface WelcomeModalProps {
 
 const emailSchema = z.string().email();
 
-const WelcomeModal = ({
+export const WelcomeModal = ({
   isOpen,
   onClose,
   healthCheck,
@@ -228,5 +228,3 @@ const WelcomeModal = ({
     </Dialog>
   );
 };
-
-export default WelcomeModal;

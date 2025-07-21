@@ -14,8 +14,8 @@ import {
 import { Issue } from '../types/issues';
 
 import { ActionItemRow } from './action-item-row';
-import EntryList from './entry-list';
-import EntryWrapper from './entry-wrapper';
+import { EntryList } from './entry-list';
+import { EntryWrapper } from './entry-wrapper';
 
 interface OpenActionsPhaseProps {
   agreements: Agreement[];
@@ -27,7 +27,7 @@ interface OpenActionsPhaseProps {
   isAdmin?: boolean;
 }
 
-const OpenActionsPhase = ({
+export const OpenActionsPhase = ({
   agreements,
   issues,
   actionItems,
@@ -141,5 +141,3 @@ const OpenActionsPhase = ({
     </div>
   );
 };
-
-export default OpenActionsPhase;

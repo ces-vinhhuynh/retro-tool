@@ -76,7 +76,7 @@ type DraggableQuestionListProps = {
   renderQuestionItem: (index: number) => React.ReactNode;
 };
 
-const DraggableQuestionList = ({
+export const DraggableQuestionList = ({
   questions,
   move,
   remove,
@@ -117,5 +117,3 @@ const DraggableQuestionList = ({
     </DndContext>
   );
 };
-
-export default DraggableQuestionList;

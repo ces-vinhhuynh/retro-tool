@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import InviteHandler from '@/features/workspace/components/invite-handler';
+import { InviteHandler } from '@/features/workspace/components/invite-handler';
 import { useGetWorkspaceUserByToken } from '@/features/workspace/hooks/use-get-workspace-user-by-token';
 import { useUpdateWorkspaceUser } from '@/features/workspace/hooks/use-update-workspace-user';
 import { INVITATION_STATUS } from '@/features/workspace/utils/constant';

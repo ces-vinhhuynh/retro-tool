@@ -15,7 +15,7 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import EntryForm from './entry-form';
+import { EntryForm } from './entry-form';
 
 interface DashboardActionItemsProps {
   actionItems: ActionItemWithAssignees[];
@@ -27,7 +27,7 @@ interface DashboardActionItemsProps {
   onEntryFormToggle?: () => void;
 }
 
-const DashboardActionItems = ({
+export const DashboardActionItems = ({
   actionItems,
   teamId,
   teamMembers,
@@ -122,5 +122,3 @@ const DashboardActionItems = ({
     </div>
   );
 };
-
-export default DashboardActionItems;

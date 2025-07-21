@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { Template } from '../../types/templates';
 
-import TemplateCard from './template-card';
+import { TemplateCard } from './template-card';
 
 export enum TEMPLATE_TAB_LABELS {
   STANDARD = 'Standard',
@@ -25,7 +25,7 @@ interface TemplateSelectionStepProps {
   hasInProgressHealthCheck: boolean;
 }
 
-const TemplateSelectionStep = ({
+export const TemplateSelectionStep = ({
   teamId,
   templates,
   selectedTemplate,
@@ -105,7 +105,7 @@ const TemplateSelectionStep = ({
       {/* Inline warning message when there's an IN_PROGRESS health check */}
       {hasInProgressHealthCheck && selectedTemplate && (
         <div className="flex items-center gap-3 rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/10">
-          <AlertTriangle className="h-10 w-10 sm:h-5 sm:w-5 text-red-600 dark:text-red-400" />
+          <AlertTriangle className="h-10 w-10 text-red-600 sm:h-5 sm:w-5 dark:text-red-400" />
           <p className="text-sm text-red-700 dark:text-red-400">
             There is an In Progress health check using this template. Please
             close it before creating a new one.
@@ -129,5 +129,3 @@ const TemplateSelectionStep = ({
     </div>
   );
 };
-
-export default TemplateSelectionStep;

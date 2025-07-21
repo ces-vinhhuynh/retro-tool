@@ -10,8 +10,8 @@ import { useHealthCheckTransform } from '../hooks/use-health-check-transform';
 import { useResponseByHealthChecks } from '../hooks/use-response-by-health-checks';
 import { HealthCheckWithTemplate } from '../types/health-check';
 
-import HealthCheckBreakdownView from './health-check-breakdown-view';
-import HealthCheckTableView from './health-check-table-view';
+import { HealthCheckBreakdownView } from './health-check-breakdown-view';
+import { HealthCheckTableView } from './health-check-table-view';
 
 interface ScrumHealthCheckProps {
   scrumHealthChecks: HealthCheckWithTemplate[];
@@ -21,7 +21,7 @@ interface ScrumHealthCheckProps {
   isShowTitle?: boolean;
 }
 
-const ScrumHealthCheck = ({
+export const ScrumHealthCheck = ({
   scrumHealthChecks = [],
   responsiveConfig,
   isShowAddNew = false,
@@ -92,5 +92,3 @@ const ScrumHealthCheck = ({
     </div>
   );
 };
-
-export default ScrumHealthCheck;

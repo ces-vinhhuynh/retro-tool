@@ -19,7 +19,11 @@ interface InviteHandlerProps {
   children?: React.ReactNode;
 }
 
-const InviteHandler = ({ isLoading, error, children }: InviteHandlerProps) => {
+export const InviteHandler = ({
+  isLoading,
+  error,
+  children,
+}: InviteHandlerProps) => {
   const router = useRouter();
 
   if (isLoading) {
@@ -55,5 +59,3 @@ const InviteHandler = ({ isLoading, error, children }: InviteHandlerProps) => {
 
   return <>{children}</>;
 };
-
-export default InviteHandler;

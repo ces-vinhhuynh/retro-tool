@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/utils/cn';
 
-const EntryWrapper = ({
+export const EntryWrapper = ({
   title,
   className,
   children,
@@ -27,5 +27,3 @@ const EntryWrapper = ({
     </CardContent>
   </Card>
 );
-
-export default EntryWrapper;

@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import MembersTab from '@/features/workspace/components/team-tabs/members-tab';
+import { MembersTab } from '@/features/workspace/components/team-tabs/members-tab';
 import {
   TEAM_ROLES,
   WORKSPACE_ROLES,

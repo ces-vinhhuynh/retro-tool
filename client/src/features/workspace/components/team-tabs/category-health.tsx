@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import ScrumHealthCheck from '@/features/health-check/components/scrum-health-check';
+import { ScrumHealthCheck } from '@/features/health-check/components/scrum-health-check';
 import { DATA_TRACK_HEALTH_CHECK_TABLE } from '@/features/health-check/constants/health-check-table-config';
 import {
   HealthCheck,
@@ -13,7 +13,7 @@ interface CategoryHealthProps {
   healthChecks: HealthCheck[];
 }
 
-const CategoryHealth = ({ healthChecks }: CategoryHealthProps) => {
+export const CategoryHealth = ({ healthChecks }: CategoryHealthProps) => {
   return (
     <Card className="w-full">
       <CardHeader className={cn('px-3 py-4 md:px-6 md:py-6')}>
@@ -40,5 +40,3 @@ const CategoryHealth = ({ healthChecks }: CategoryHealthProps) => {
     </Card>
   );
 };
-
-export default CategoryHealth;

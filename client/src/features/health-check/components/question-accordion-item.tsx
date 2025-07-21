@@ -14,11 +14,11 @@ interface QuestionAccordionItemProps {
   handleQuestionClick: (questionId: string) => void;
 }
 
-export default function QuestionAccordionItem({
+export const QuestionAccordionItem = ({
   question,
   responses,
   handleQuestionClick,
-}: QuestionAccordionItemProps) {
+}: QuestionAccordionItemProps) => {
   const ratings = getRatings(responses, question.id);
   const commentCount = getCommentCount(responses, question.id);
   const hasScore = ratings.length > 0;
@@ -92,4 +92,4 @@ export default function QuestionAccordionItem({
       </AccordionContent>
     </AccordionItem>
   );
-}
+};

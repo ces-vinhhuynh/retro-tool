@@ -18,7 +18,8 @@ interface CircularProgressProps {
   labelClassName?: string;
   showLabel?: boolean;
 }
-const CircularProgress = ({
+
+export const CircularProgress = ({
   value,
   renderLabel,
   className,
@@ -56,5 +57,3 @@ const CircularProgress = ({
     </div>
   );
 };
-
-export default CircularProgress;

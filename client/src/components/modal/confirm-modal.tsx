@@ -21,7 +21,7 @@ interface ConfirmModalProps {
   className?: string;
 }
 
-const ConfirmModal = ({
+export const ConfirmModal = ({
   variant = 'confirm',
   isOpen,
   title,
@@ -62,5 +62,3 @@ const ConfirmModal = ({
     </Dialog>
   );
 };
-
-export default ConfirmModal;

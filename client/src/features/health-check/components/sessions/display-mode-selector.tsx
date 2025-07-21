@@ -1,8 +1,8 @@
 import { DisplayMode } from '@/features/health-check/types/health-check';
 import { cn } from '@/lib/utils';
 
-import DisplayModeOption from './setting-mode-option';
-import ToggleOption from './toggle-option';
+import { SettingModeOption } from './setting-mode-option';
+import { ToggleOption } from './toggle-option';
 
 interface DisplayModeSelectorProps {
   currentMode: DisplayMode;
@@ -16,7 +16,7 @@ const DISPLAY_MODES = [
   { value: DisplayMode.ALL, label: 'All on one page' },
 ];
 
-const DisplayModeSelector = ({
+export const DisplayModeSelector = ({
   currentMode,
   onChange,
   className = '',
@@ -30,7 +30,7 @@ const DisplayModeSelector = ({
       <div className="py-3">
         <div className={cn('flex flex-col gap-2', className)}>
           {DISPLAY_MODES.map((mode) => (
-            <DisplayModeOption
+            <SettingModeOption
               key={mode.value}
               id={mode.value}
               label={mode.label}
@@ -43,5 +43,3 @@ const DisplayModeSelector = ({
     </ToggleOption>
   );
 };
-
-export default DisplayModeSelector;

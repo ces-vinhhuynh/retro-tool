@@ -18,7 +18,7 @@ interface NavTeamsProps {
   teams: Team[];
 }
 
-const NavTeams = ({ teams }: NavTeamsProps) => {
+export const NavTeams = ({ teams }: NavTeamsProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -59,5 +59,3 @@ const NavTeams = ({ teams }: NavTeamsProps) => {
     </SidebarGroup>
   );
 };
-
-export default NavTeams;

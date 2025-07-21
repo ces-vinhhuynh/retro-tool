@@ -49,7 +49,7 @@ interface UserCardProps {
   isCompact?: boolean;
 }
 
-const UserCard = ({
+export const UserCard = ({
   user,
   onDelete,
   onUpdateRole,
@@ -324,5 +324,3 @@ const UserCard = ({
     </div>
   );
 };
-
-export default UserCard;

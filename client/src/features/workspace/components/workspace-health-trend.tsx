@@ -26,7 +26,7 @@ interface WorkspaceHealthTrendProps {
   isMobile: boolean;
 }
 
-const WorkspaceHealthTrend = ({
+export const WorkspaceHealthTrend = ({
   healthChecks = [],
   templates = [],
   teams = [],
@@ -44,18 +44,22 @@ const WorkspaceHealthTrend = ({
   const calculateLegendHeight = (teamCount: number) => {
     // Assume each legend item takes about 120px width on average
     const itemWidth = 120;
-    const containerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const containerWidth =
+      typeof window !== 'undefined' ? window.innerWidth : 1200;
     const availableWidth = containerWidth - 100;
-    
+
     const itemsPerRow = Math.max(1, Math.floor(availableWidth / itemWidth));
     const rows = Math.ceil(teamCount / itemsPerRow);
-    
+
     return Math.max(40, rows * 24 + 16); // Min 40px, each row ~24px + padding
   };
 
   // Calculate dynamic heights
   const legendHeight = calculateLegendHeight(teams.length);
-  const chartHeight = Math.max(400, 500 + (teams.length > 10 ? (teams.length - 10) * 5 : 0));
+  const chartHeight = Math.max(
+    400,
+    500 + (teams.length > 10 ? (teams.length - 10) * 5 : 0),
+  );
 
   // Custom Legend Component
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,9 +68,9 @@ const WorkspaceHealthTrend = ({
     if (!payload || payload.length === 0) return null;
 
     return (
-      <div 
+      <div
         className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4"
-        style={{ 
+        style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -74,7 +78,7 @@ const WorkspaceHealthTrend = ({
           height: `${legendHeight}px`,
           display: 'flex',
           alignItems: 'center',
-          paddingBottom: '20px'
+          paddingBottom: '20px',
         }}
       >
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -84,11 +88,13 @@ const WorkspaceHealthTrend = ({
               className="h-2 w-4 rounded-sm"
               style={{ backgroundColor: entry.color }}
             />
-            <span 
+            <span
               className="text-xs font-medium sm:text-sm"
-              style={{ color: entry.color ,
+              style={{
+                color: entry.color,
                 fontSize: isMobile ? '12px' : '14px',
-                lineHeight: isMobile ? '14px' : '16px'}}
+                lineHeight: isMobile ? '14px' : '16px',
+              }}
             >
               {entry.value}
             </span>
@@ -107,16 +113,16 @@ const WorkspaceHealthTrend = ({
       </CardHeader>
       <CardContent className="px-2 sm:px-6 sm:pt-6">
         {chartData.length > 0 ? (
-          <div 
-            className="w-full relative"
+          <div
+            className="relative w-full"
             style={{ height: `${chartHeight}px` }}
           >
             {/* Custom Legend Container */}
-            <div 
+            <div
               className="relative w-full"
               style={{ height: `${legendHeight}px` }}
             >
-              <CustomLegend 
+              <CustomLegend
                 payload={teams.map((team, index) => ({
                   value: team.name,
                   color: getTeamColor(index),
@@ -125,7 +131,7 @@ const WorkspaceHealthTrend = ({
             </div>
 
             {/* Chart Container */}
-            <div 
+            <div
               className="w-full"
               style={{ height: `${chartHeight - legendHeight}px` }}
             >
@@ -133,11 +139,11 @@ const WorkspaceHealthTrend = ({
                 <LineChart
                   accessibilityLayer
                   data={chartData}
-                  margin={{ 
-                    top: 20, 
-                    right: 30, 
-                    left: 20, 
-                    bottom: 60 
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 60,
                   }}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -190,5 +196,3 @@ const WorkspaceHealthTrend = ({
     </Card>
   );
 };
-
-export default WorkspaceHealthTrend;

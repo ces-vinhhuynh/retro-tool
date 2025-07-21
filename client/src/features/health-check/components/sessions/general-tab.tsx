@@ -17,7 +17,7 @@ import { cn } from '@/utils/cn';
 
 import { LONG_TEXT_INPUT_MAX_LENGTH } from '../../utils/constants';
 
-const GeneralTab = () => {
+export const GeneralTab = () => {
   const { register, control, watch } = useFormContext<HealthCheckFormData>();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
@@ -94,5 +94,3 @@ const GeneralTab = () => {
     </div>
   );
 };
-
-export default GeneralTab;

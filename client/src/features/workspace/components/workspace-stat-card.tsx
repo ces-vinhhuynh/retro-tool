@@ -2,10 +2,10 @@
 
 import { Users } from 'lucide-react';
 
-import CircularProgress from '@/components/progress/circular-progress';
+import { CircularProgress } from '@/components/progress/circular-progress';
 import { Progress } from '@/components/ui/progress';
 
-import StatCard from './stat-card';
+import { StatCard } from './stat-card';
 
 interface WorkspaceStatCardProps {
   currentAverage: number;
@@ -16,7 +16,7 @@ interface WorkspaceStatCardProps {
   actionItemsTotal: number;
 }
 
-const WorkspaceStatCard = ({
+export const WorkspaceStatCard = ({
   currentAverage,
   percentageChange,
   teamsCount,
@@ -100,5 +100,3 @@ const WorkspaceStatCard = ({
     </div>
   );
 };
-
-export default WorkspaceStatCard;

@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import CreateTeamDialog from '@/features/workspace/components/create-team-dialog';
+import { CreateTeamDialog } from '@/features/workspace/components/create-team-dialog';
 import { TeamItem } from '@/features/workspace/components/team-item';
 import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetTeamsByWorkspace } from '@/features/workspace/hooks/use-get-teams-by-workspace';

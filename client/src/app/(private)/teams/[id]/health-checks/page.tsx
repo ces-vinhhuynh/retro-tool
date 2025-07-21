@@ -9,7 +9,7 @@ import { useTemplates } from '@/features/health-check/hooks/use-health-check-tem
 import { HealthCheck } from '@/features/health-check/types/health-check';
 import { Template } from '@/features/health-check/types/templates';
 import { splitHealthChecksByTemplateId } from '@/features/health-check/utils/health-checks';
-import HealthChecksTab from '@/features/workspace/components/team-tabs/health-checks-tab';
+import { HealthChecksTab } from '@/features/workspace/components/team-tabs/health-checks-tab';
 import {
   TEAM_ROLES,
   WORKSPACE_ROLES,

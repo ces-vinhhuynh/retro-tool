@@ -36,7 +36,7 @@ import {
   CustomTemplateSchemaType,
 } from '@/features/workspace/schema/custom-template.schema';
 
-import DraggableQuestionList from './draggable-question-list';
+import { DraggableQuestionList } from './draggable-question-list';
 import { FormField } from './form-field';
 
 const DEFAULT_MAX_VALUE = {
@@ -56,7 +56,7 @@ interface ManageCustomTemplateModalProps {
   onClose: () => void;
 }
 
-const ManageCustomTemplateModal = ({
+export const ManageCustomTemplateModal = ({
   open,
   teamId,
   template,
@@ -297,5 +297,3 @@ const ManageCustomTemplateModal = ({
     </Dialog>
   );
 };
-
-export default ManageCustomTemplateModal;

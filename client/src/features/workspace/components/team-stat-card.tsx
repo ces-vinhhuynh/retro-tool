@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 
-import StatCard from './stat-card';
+import { StatCard } from './stat-card';
 
 interface TeamStatCardProps {
   title: string;
@@ -12,7 +12,7 @@ interface TeamStatCardProps {
   isMobile?: boolean;
 }
 
-const TeamStatCard = ({
+export const TeamStatCard = ({
   title,
   value,
   icon,
@@ -37,5 +37,3 @@ const TeamStatCard = ({
     </StatCard>
   );
 };
-
-export default TeamStatCard;

@@ -12,9 +12,9 @@ import { ResponseWithUser, User } from '../types/health-check';
 import { getScoreColors } from '../utils/color';
 import { RATING_OPTIONS } from '../utils/constants';
 
-import RatingOption from './rating-option';
+import { RatingOption } from './rating-option';
 import { ResponseStatus } from './response-status';
-import RevealModal from './reveal-modal';
+import { RevealModal } from './reveal-modal';
 
 interface SessionReviewProps {
   teamSize: number;
@@ -22,7 +22,7 @@ interface SessionReviewProps {
   currentUser: User;
 }
 
-const HealthCheckRating = ({
+export const HealthCheckRating = ({
   teamSize,
   responses,
   currentUser,
@@ -79,7 +79,7 @@ const HealthCheckRating = ({
             </TooltipProvider>
           </div>
         </div>
-        <div className="pb-2 flex w-full flex-col gap-2 sm:block md:hidden">
+        <div className="flex w-full flex-col gap-2 pb-2 sm:block md:hidden">
           <Slider
             min={RATING_OPTIONS[0].value}
             max={RATING_OPTIONS.at(-1)?.value ?? 0}
@@ -128,5 +128,3 @@ const HealthCheckRating = ({
     </div>
   );
 };
-
-export default HealthCheckRating;

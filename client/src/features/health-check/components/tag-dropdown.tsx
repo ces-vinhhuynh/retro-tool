@@ -22,11 +22,11 @@ interface TagDropdownProps {
   selectedTag: Tag;
 }
 
-export default function TagDropdown({
+export const TagDropdown = ({
   tags,
   onTagChange,
   selectedTag,
-}: TagDropdownProps) {
+}: TagDropdownProps) => {
   return (
     <Select
       onValueChange={(value) => onTagChange(selectedTag.id, value)}
@@ -66,4 +66,4 @@ export default function TagDropdown({
       </SelectContent>
     </Select>
   );
-}
+};

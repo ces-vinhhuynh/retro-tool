@@ -15,7 +15,7 @@ import { TEAM_ROLES } from '../../constants/user';
 import { useDeleteTeam } from '../../hooks/use-delete-team';
 import { useGetTeamUser } from '../../hooks/use-get-team-user';
 import { TeamTable } from '../../types/tables';
-import EditTeamDialog from '../edit-team-dialog';
+import { EditTeamDialog } from '../edit-team-dialog';
 
 interface RoleCellProps {
   row: Row<TeamTable>;

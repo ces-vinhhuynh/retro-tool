@@ -1,7 +1,7 @@
 'use client';
 
 import { Info } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import {
   Popover,
@@ -19,7 +19,7 @@ interface QuestionRowProps {
   width?: string;
 }
 
-const QuestionRow = ({
+export const QuestionRow = ({
   title,
   description,
   height = 'h-16',
@@ -81,5 +81,3 @@ const QuestionRow = ({
     </div>
   );
 };
-
-export default QuestionRow;

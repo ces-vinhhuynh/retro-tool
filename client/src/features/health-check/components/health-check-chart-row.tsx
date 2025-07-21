@@ -9,8 +9,8 @@ import { QuestionData, ScoreRange } from '../types/chart';
 import { getScoreColors } from '../utils/color';
 import { getScorePercentage } from '../utils/score';
 
-import QuestionRow from './question-row';
-import ScoreTooltip from './rating-tooltip';
+import { QuestionRow } from './question-row';
+import { ScoreTooltip } from './rating-tooltip';
 
 interface HealthCheckChartRowProps {
   question: QuestionData;
@@ -23,7 +23,7 @@ interface HealthCheckChartRowProps {
   ) => Array<{ score: number; count: number }>;
 }
 
-const HealthCheckChartRow = ({
+export const HealthCheckChartRow = ({
   question,
   scoreRange,
   healthCheckCount: _healthCheckCount,
@@ -178,5 +178,3 @@ const HealthCheckChartRow = ({
     </div>
   );
 };
-
-export default HealthCheckChartRow;

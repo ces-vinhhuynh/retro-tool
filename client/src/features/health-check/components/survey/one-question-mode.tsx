@@ -7,9 +7,9 @@ import {
   Score,
   Section,
 } from '../../types/health-check';
-import AdditionalQuestion from '../additional-question';
+import { AdditionalQuestion } from '../additional-question';
 import { SectionWrapper } from '../section-wrapper';
-import SurveyQuestionRow from '../survey-question-row';
+import { SurveyQuestionRow } from '../survey-question-row';
 
 import { SurveyNavigation } from './survey-navigation';
 
@@ -35,7 +35,7 @@ interface OneQuestionModeProps {
   questions: Question[];
 }
 
-const OneQuestionMode = ({
+export const OneQuestionMode = ({
   minScore,
   maxScore,
   answers,
@@ -98,5 +98,3 @@ const OneQuestionMode = ({
     </>
   );
 };
-
-export default OneQuestionMode;

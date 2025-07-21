@@ -2,9 +2,9 @@
 
 import { useParams } from 'next/navigation';
 
-import Loading from '@/components/loading/loading';
+import { Loading } from '@/components/loading/loading';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import WorkspaceDataDashboard from '@/features/workspace/components/workspace-data-dashboard';
+import { WorkspaceDataDashboard } from '@/features/workspace/components/workspace-data-dashboard';
 import { WORKSPACE_ROLES } from '@/features/workspace/constants/user';
 import { useGetWorkspaceUser } from '@/features/workspace/hooks/use-workspace-user';
 

@@ -48,5 +48,3 @@ export const GenericPopover = ({
     </Popover>
   );
 };
-
-export default GenericPopover;

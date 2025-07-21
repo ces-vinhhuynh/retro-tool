@@ -17,7 +17,7 @@ import {
   User,
 } from '@/features/health-check/types/health-check';
 
-import EntryForm from './entry-form';
+import { EntryForm } from './entry-form';
 
 interface ActionItemsProps {
   actionItems: ActionItemWithAssignees[];
@@ -31,7 +31,7 @@ interface ActionItemsProps {
   isAdmin?: boolean;
 }
 
-const ActionItems = ({
+export const ActionItems = ({
   actionItems,
   healthCheckId,
   teamId,
@@ -123,5 +123,3 @@ const ActionItems = ({
     </div>
   );
 };
-
-export default ActionItems;

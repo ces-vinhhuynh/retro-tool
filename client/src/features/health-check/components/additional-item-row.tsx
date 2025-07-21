@@ -9,7 +9,7 @@ interface AdditionalItemRowProps {
   onDelete: () => void;
 }
 
-const AdditionalItemRow = ({
+export const AdditionalItemRow = ({
   value,
   onChange,
   onDelete,
@@ -32,5 +32,3 @@ const AdditionalItemRow = ({
     </Button>
   </div>
 );
-
-export default AdditionalItemRow;

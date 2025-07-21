@@ -10,7 +10,7 @@ import { HealthCheckRatingFunction } from '../types/chart';
 import { FormattedHealthCheck } from '../types/health-check';
 import { formatDateTime } from '../utils/time-format';
 
-import RatingDisplay from './rating-display';
+import { RatingDisplay } from './rating-display';
 
 interface HealthCheckColumnProps {
   healthCheck: FormattedHealthCheck;
@@ -30,7 +30,7 @@ interface HealthCheckColumnProps {
   onHeaderHover?: (isHovered: boolean) => void;
 }
 
-const HealthCheckColumn = ({
+export const HealthCheckColumn = ({
   healthCheck,
   getHealthCheckRatings,
   isShowAddNew = false,
@@ -153,5 +153,3 @@ const HealthCheckColumn = ({
     </div>
   );
 };
-
-export default HealthCheckColumn;

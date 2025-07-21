@@ -20,9 +20,9 @@ import {
   User,
 } from '../types/health-check';
 
-import AllQuestionMode from './survey/all-question-mode';
-import OneQuestionMode from './survey/one-question-mode';
-import SectionBySectionMode from './survey/section-by-section-mode';
+import { AllQuestionMode } from './survey/all-question-mode';
+import { OneQuestionMode } from './survey/one-question-mode';
+import { SectionBySectionMode } from './survey/section-by-section-mode';
 
 interface QuestionAnswer {
   rating: number | null;
@@ -44,7 +44,7 @@ type SurveyPhaseProps = {
   questions: Question[];
 };
 
-const SurveyPhase = ({
+export const SurveyPhase = ({
   sections,
   currentUser,
   groupedQuestions,
@@ -287,5 +287,3 @@ const SurveyPhase = ({
     </CardContent>
   );
 };
-
-export default SurveyPhase;

@@ -27,7 +27,7 @@ import { formatLocalizedDate } from '../../utils/time-format';
 import { DatePopover } from '../date-popover';
 import { PriorityPopover } from '../priority-popover';
 import { StatusPopover } from '../status-popover';
-import UserAssignmentPopover from '../user-assignment-popover';
+import { UserAssignmentPopover } from '../user-assignment-popover';
 
 interface ActionSummaryDialogProps {
   open: boolean;
@@ -149,7 +149,7 @@ const TruncatedTitle = ({ title }: { title: string }) => {
   return truncatedContent;
 };
 
-const ActionSummaryDialog = ({
+export const ActionSummaryDialog = ({
   open,
   onOpenChange,
   action,
@@ -342,5 +342,3 @@ const ActionSummaryDialog = ({
     </Dialog>
   );
 };
-
-export default ActionSummaryDialog;

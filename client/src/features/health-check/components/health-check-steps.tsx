@@ -10,7 +10,7 @@ interface HealthCheckStepsProps {
   handleChangeStep: (step: keyof typeof STEPS) => void;
 }
 
-const HealthCheckSteps = ({
+export const HealthCheckSteps = ({
   currentStep,
   isFacilitator,
   handleChangeStep,
@@ -65,5 +65,3 @@ const HealthCheckSteps = ({
     </div>
   );
 };
-
-export default HealthCheckSteps;

@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 
 import { WorkspaceTeamFormValues } from '../schema/workspace-team.schema';
 
-export default function TeamForm() {
+export const TeamForm = () => {
   const {
     register,
     formState: { errors },
@@ -30,4 +30,4 @@ export default function TeamForm() {
       </div>
     </div>
   );
-}
+};

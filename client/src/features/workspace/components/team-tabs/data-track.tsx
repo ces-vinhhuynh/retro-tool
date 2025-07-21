@@ -10,10 +10,10 @@ import {
 import { Issue } from '@/features/health-check/types/issues';
 import { Template } from '@/features/health-check/types/templates';
 
-import TeamStatCard from '../team-stat-card';
+import { TeamStatCard } from '../team-stat-card';
 
-import CategoryHealth from './category-health';
-import TeamHealthTrend from './team-health-trend';
+import { CategoryHealth } from './category-health';
+import { TeamHealthTrend } from './team-health-trend';
 
 interface DataTrackTabProps {
   agreements: Agreement[];
@@ -26,7 +26,7 @@ interface DataTrackTabProps {
   isMobile: boolean;
 }
 
-const DataTrackTab = ({
+export const DataTrackTab = ({
   agreements,
   issues,
   actionItems,
@@ -109,5 +109,3 @@ const DataTrackTab = ({
     </div>
   );
 };
-
-export default DataTrackTab;

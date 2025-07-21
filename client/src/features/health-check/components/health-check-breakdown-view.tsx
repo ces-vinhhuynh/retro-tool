@@ -7,8 +7,8 @@ import {
 } from '../types/chart';
 import { FormattedHealthCheck } from '../types/health-check';
 
-import HealthCheckBreakdownHeader from './health-check-breakdown-header';
-import HealthCheckChartRow from './health-check-chart-row';
+import { HealthCheckBreakdownHeader } from './health-check-breakdown-header';
+import { HealthCheckChartRow } from './health-check-chart-row';
 
 interface HealthCheckBreakdownViewProps {
   healthChecks: FormattedHealthCheck[];
@@ -19,7 +19,7 @@ interface HealthCheckBreakdownViewProps {
   getRatings?: HealthCheckRatingFunction;
 }
 
-const HealthCheckBreakdownView = ({
+export const HealthCheckBreakdownView = ({
   healthChecks,
   questionData,
   scoreRange,
@@ -69,5 +69,3 @@ const HealthCheckBreakdownView = ({
     </div>
   );
 };
-
-export default HealthCheckBreakdownView;

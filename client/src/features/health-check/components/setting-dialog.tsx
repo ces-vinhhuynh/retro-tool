@@ -9,9 +9,9 @@ import {
 } from '@/components/ui/dialog';
 import { HealthCheckSettings } from '@/features/health-check/types/health-check';
 
-import DisplayModeSelector from './sessions/display-mode-selector';
-import SettingModeOption from './sessions/setting-mode-option';
-import ToggleOption from './sessions/toggle-option';
+import { DisplayModeSelector } from './sessions/display-mode-selector';
+import { SettingModeOption } from './sessions/setting-mode-option';
+import { ToggleOption } from './sessions/toggle-option';
 
 interface SettingDialogProps {
   settings: HealthCheckSettings;
@@ -19,7 +19,11 @@ interface SettingDialogProps {
   trigger: React.ReactNode;
 }
 
-const SettingDialog = ({ settings, onChange, trigger }: SettingDialogProps) => {
+export const SettingDialog = ({
+  settings,
+  onChange,
+  trigger,
+}: SettingDialogProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -55,5 +59,3 @@ const SettingDialog = ({ settings, onChange, trigger }: SettingDialogProps) => {
     </Dialog>
   );
 };
-
-export default SettingDialog;

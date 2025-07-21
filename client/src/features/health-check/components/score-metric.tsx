@@ -9,7 +9,7 @@ interface ScoreMetricProps {
   colorClass?: string;
 }
 
-const ScoreMetric = ({
+export const ScoreMetric = ({
   label,
   value,
   unit = '/10',
@@ -29,5 +29,3 @@ const ScoreMetric = ({
     </div>
   );
 };
-
-export default ScoreMetric;

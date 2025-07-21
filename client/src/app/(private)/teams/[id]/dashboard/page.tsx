@@ -7,7 +7,7 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { useAgreementsQuery } from '@/features/health-check/hooks/agreements/use-agreements-query';
 import { useIssuesQuery } from '@/features/health-check/hooks/issues/use-issues-query';
 import { useGetActionItemsByTeamIdFromRecentHealthChecks } from '@/features/health-check/hooks/use-get-action-items-by-team-id';
-import HomeTab from '@/features/workspace/components/team-tabs/home-tab';
+import { HomeTab } from '@/features/workspace/components/team-tabs/home-tab';
 import {
   TEAM_ROLES,
   WORKSPACE_ROLES,

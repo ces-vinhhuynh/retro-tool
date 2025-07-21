@@ -21,9 +21,7 @@ interface CreateTeamDialogProps {
   workspaceId: string;
 }
 
-export default function CreateTeamDialog({
-  workspaceId,
-}: CreateTeamDialogProps) {
+export const CreateTeamDialog = ({ workspaceId }: CreateTeamDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const { mutate: createTeam, isPending } = useCreateTeam();
@@ -103,4 +101,4 @@ export default function CreateTeamDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};

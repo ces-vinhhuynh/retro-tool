@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import Timer from '@/features/health-check/components/timer';
+import { Timer } from '@/features/health-check/components/timer';
 import { useGetParticipants } from '@/features/health-check/hooks/use-get-participants';
 import {
   useHealthCheckMutations,

@@ -3,13 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
@@ -19,7 +12,7 @@ import { Score } from '../types/health-check';
 import { splitAndCleanLines } from '../utils/comment';
 import { COMMENT_MAX_LENGTH } from '../utils/constants';
 
-import ScoreButton from './score-button';
+import { ScoreButton } from './score-button';
 
 const SAVE_DELAY = 2000;
 
@@ -41,7 +34,7 @@ export interface SurveyQuestionRowProps {
   maxScore: Score;
 }
 
-const SurveyQuestionRow = ({
+export const SurveyQuestionRow = ({
   question,
   value,
   comment,
@@ -210,5 +203,3 @@ const SurveyQuestionRow = ({
     </div>
   );
 };
-
-export default SurveyQuestionRow;
