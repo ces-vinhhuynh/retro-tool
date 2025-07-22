@@ -99,7 +99,7 @@ export const DATA_TRACK_HEALTH_CHECK_TABLE: HealthCheckTableResponsiveConfig = {
 export const SCRUM_TEAM_HEALTH_CHECK_TABLE: HealthCheckTableResponsiveConfig = {
   xs400: {
     // < 400px
-    columnsToShow: 1,
+    columnsToShow: 2,
     questionColumnWidthClass: 'w-20',
     questionRowHeight: 'h-12',
     healthCheckColumnWidth: 'min-w-48 max-w-48',
@@ -153,7 +153,7 @@ export const SCRUM_TEAM_HEALTH_CHECK_TABLE: HealthCheckTableResponsiveConfig = {
   },
   lg1444: {
     // 1242-1444px
-    columnsToShow: 5,
+    columnsToShow: 4,
     questionColumnWidthClass: 'w-48',
     questionRowHeight: 'h-16',
     healthCheckColumnWidth: 'min-w-36 max-w-36',
@@ -162,7 +162,7 @@ export const SCRUM_TEAM_HEALTH_CHECK_TABLE: HealthCheckTableResponsiveConfig = {
   },
   lg1792: {
     // 1444-1792px
-    columnsToShow: 5,
+    columnsToShow: 6,
     questionColumnWidthClass: 'w-48',
     questionRowHeight: 'h-16',
     healthCheckColumnWidth: 'min-w-38 max-w-38',
@@ -171,7 +171,7 @@ export const SCRUM_TEAM_HEALTH_CHECK_TABLE: HealthCheckTableResponsiveConfig = {
   },
   lg: {
     // >= 1792px
-    columnsToShow: 5,
+    columnsToShow: 8,
     questionColumnWidthClass: 'w-48',
     questionRowHeight: 'h-16',
     healthCheckColumnWidth: 'min-w-48 max-w-48',

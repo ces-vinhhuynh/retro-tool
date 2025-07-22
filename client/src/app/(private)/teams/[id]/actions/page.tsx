@@ -78,7 +78,7 @@ const TeamActionsPage = () => {
             </CardTitle>
             <p className="text-secondary-text text-sm">
               {openAndInprogressActions.length}/{actionItems.length} Todo & In
-              progress from 2 recent sprint
+              progress from all sprints
             </p>
           </div>
           {mode === 'open' && (

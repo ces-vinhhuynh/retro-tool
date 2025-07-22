@@ -47,7 +47,7 @@ export const DiscussPhase = ({
         actionItems={actionItems}
         teamMembers={teamMembers}
       />
-      <div className="flex flex-col gap-3 rounded-lg bg-white p-6">
+      <div className="flex flex-col gap-3 rounded-lg bg-white p-2 sm:p-6">
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex flex-col gap-1">
             <h2 className="mt-2 text-2xl font-bold text-gray-900">

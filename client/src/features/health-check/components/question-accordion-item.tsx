@@ -47,7 +47,7 @@ export const QuestionAccordionItem = ({
             {hasScore && colors ? (
               <div
                 className={cn(
-                  'flex h-14 w-14 items-center justify-center rounded-full',
+                  'flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full',
                   colors.circle,
                 )}
               >

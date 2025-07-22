@@ -70,7 +70,7 @@ export const DetailCard = ({
     >
       <CardHeader className="sticky top-0 z-10 shrink-0 bg-inherit px-2 pt-2 pb-2 sm:p-6 sm:px-6">
         {item.value > 0 ? (
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-2 md:gap-5">
             <div
               className={cn(
                 'flex shrink-0 items-center justify-center rounded-full',
@@ -116,7 +116,7 @@ export const DetailCard = ({
       </CardHeader>
       <CardContent
         ref={contentRef}
-        className="ml-2 w-full flex-1 overflow-y-auto border-t px-2 py-5 sm:ml-2 sm:px-0"
+        className="ml-2 w-full flex-1 overflow-y-auto border-t px-1 py-2 sm:px-6 sm:py-5"
       >
         <ActionItems
           actionItems={actionItems}

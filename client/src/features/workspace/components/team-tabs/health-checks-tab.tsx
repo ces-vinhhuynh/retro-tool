@@ -71,7 +71,7 @@ export const HealthChecksTab = ({
             <ScrumHealthCheck
               key={key}
               onAddNewSession={() => onAddNewSession(key)}
-              scrumHealthChecks={value.slice(0, 4) as HealthCheckWithTemplate[]}
+              scrumHealthChecks={value as HealthCheckWithTemplate[]}
               responsiveConfig={SCRUM_TEAM_HEALTH_CHECK_TABLE}
               isShowAddNew={isAdmin}
             />

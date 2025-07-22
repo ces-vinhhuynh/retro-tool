@@ -91,7 +91,7 @@ export const ChartDialog = ({
           'h-auto max-h-none overflow-hidden rounded-lg',
           // Mobile: full width with minimal padding, Desktop: constrained width
           'w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] p-0',
-          'sm:w-auto sm:max-w-xl md:max-w-3xl',
+          'md:max-w-3xl',
           bg,
         )}
       >

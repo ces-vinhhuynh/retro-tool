@@ -47,7 +47,7 @@ const DataTrackPage = () => {
   const { data: team } = useGetTeam(teamId);
   const { data: currentUser } = useCurrentUser();
 
-  const { data: error } = useGetTeamUser(teamId, currentUser?.id || '');
+  const { error } = useGetTeamUser(teamId, currentUser?.id || '');
   const { data: workspaceUser } = useGetWorkspaceUser(
     team?.workspace_id || '',
     currentUser?.id || '',

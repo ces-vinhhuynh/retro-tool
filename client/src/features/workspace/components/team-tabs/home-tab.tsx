@@ -1,6 +1,6 @@
 import { BadgeAlert, Handshake, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -114,7 +114,10 @@ export const HomeTab = ({
     scrumHealthChecks as HealthCheck[],
   );
 
-  const [selectedTemplate] = useState<string>(sortedTemplates[0]?.id || '');
+  const selectedTemplate = useMemo(() => {
+    return sortedTemplates[0]?.id || '';
+  }, [sortedTemplates]);
+
   const [showDialog, setShowDialog] = useState(false);
 
   const healthChecks = healthChecksGrouped[selectedTemplate];
