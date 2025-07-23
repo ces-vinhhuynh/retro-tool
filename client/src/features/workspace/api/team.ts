@@ -24,6 +24,7 @@ class TeamService {
       logo_url,
       team_users (
         role,
+        status,
         users (
           id,
           full_name,
@@ -41,12 +42,14 @@ class TeamService {
       id,
       name,
       logo_url,
-      users: team_users.map((user) => ({
-        id: user.users?.id || '',
-        full_name: user.users?.full_name || '',
-        avatar_url: user.users?.avatar_url || '',
-        role: user.role,
-      })),
+      users: team_users
+        .filter(({ status }) => status === 'accepted')
+        .map((user) => ({
+          id: user.users?.id || '',
+          full_name: user.users?.full_name || '',
+          avatar_url: user.users?.avatar_url || '',
+          role: user.role,
+        })),
     }));
   }
 
@@ -90,7 +93,8 @@ class TeamService {
     const { data: userTeams } = await supabaseClient
       .from('team_users')
       .select('team_id')
-      .eq('user_id', userId);
+      .eq('user_id', userId)
+      .eq('status', 'accepted');
 
     const teamIds = userTeams?.map((t) => t.team_id) ?? [];
 

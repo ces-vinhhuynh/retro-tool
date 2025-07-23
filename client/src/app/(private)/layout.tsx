@@ -130,6 +130,16 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
 
   if (isLoading) return <div>Loading...</div>;
 
+  if (isWorkspaceRoute && !workspaceUser) {
+    return (
+      <AccessDenied
+        message="You don't have permission to view this workspace. Please contact your admin(s) or your workspace owner(s) to request access."
+        redirectUrl="/"
+        linkText="Go to Workspace"
+      />
+    );
+  }
+
   if (isTeamRoute && teamsByMember.length === 0) {
     return (
       <AccessDenied

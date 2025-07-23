@@ -22,6 +22,7 @@ class WorkspaceUsersService {
       `,
       )
       .eq('user_id', userId)
+      .eq('status', 'accepted')
       .order('created_at', { ascending: false });
     if (error) throw error;
     return data ?? [];
@@ -96,6 +97,7 @@ class WorkspaceUsersService {
       .select(`*`)
       .eq('workspace_id', workspaceId)
       .eq('user_id', userId)
+      .eq('status', 'accepted')
       .single();
 
     if (error) throw error;
