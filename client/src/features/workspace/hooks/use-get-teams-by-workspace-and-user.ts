@@ -9,7 +9,6 @@ export function useGetTeamsByWorkspaceAndUser(
   const { data, isLoading } = useQuery({
     queryKey: ['workspace-teams', workspaceId, userId],
     queryFn: () => teamService.getByWorkspaceIdAndUserId(workspaceId, userId),
-    placeholderData: [],
     enabled: !!workspaceId && !!userId,
   });
 

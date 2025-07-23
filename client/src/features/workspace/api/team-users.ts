@@ -85,6 +85,7 @@ class TeamUsersService {
       .select(`*`)
       .eq('team_id', teamId)
       .eq('user_id', userId)
+      .eq('status', 'accepted')
       .single();
 
     if (error) throw error;

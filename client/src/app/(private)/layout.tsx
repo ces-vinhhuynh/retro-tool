@@ -58,17 +58,12 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   })();
 
   // Fetch teams for current workspace
-  const { data: teamsByMember = [] } = useGetTeamsByWorkspaceAndUser(
-    String(workspaceId),
-    currentUser?.id || '',
-  );
-  const { data: teamsByAdmin = [] } = useGetTeamsByWorkspace(
-    String(workspaceId),
-  );
-  const { data: workspaceUser } = useGetWorkspaceUser(
-    String(workspaceId),
-    currentUser?.id || '',
-  );
+  const { data: teamsByMember = [], isLoading: isLoadingTeamsByMember } =
+    useGetTeamsByWorkspaceAndUser(String(workspaceId), currentUser?.id || '');
+  const { data: teamsByAdmin = [], isLoading: isLoadingTeamsByAdmin } =
+    useGetTeamsByWorkspace(String(workspaceId));
+  const { data: workspaceUser, isLoading: isLoadingWorkspaceUser } =
+    useGetWorkspaceUser(String(workspaceId), currentUser?.id || '');
 
   const isOwnerOrAdmin =
     workspaceUser?.role === WORKSPACE_ROLES.owner ||
@@ -127,8 +122,11 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
 
   const isLoading =
     isLoadingWorkspaces ||
-    (isTeamRoute && isLoadingTeam) ||
-    (isHealthCheckRoute && isLoadingHealthCheck);
+    isLoadingTeam ||
+    isLoadingTeamsByMember ||
+    isLoadingHealthCheck ||
+    isLoadingTeamsByAdmin ||
+    isLoadingWorkspaceUser;
 
   if (isLoading) return <div>Loading...</div>;
 
