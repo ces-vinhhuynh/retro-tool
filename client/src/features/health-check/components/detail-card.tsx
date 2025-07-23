@@ -52,14 +52,40 @@ export const DetailCard = ({
     const contentElement = contentRef.current;
     if (!contentElement || !isMobile) return;
 
+    let scrollTimeout: NodeJS.Timeout;
+
     const handleScroll = () => {
-      const scrollTop = contentElement.scrollTop;
-      setIsScrolled(scrollTop > 50); // Threshold 50px
+      // Clear previous timeout to debounce
+      clearTimeout(scrollTimeout);
+
+      scrollTimeout = setTimeout(() => {
+        const scrollTop = contentElement.scrollTop;
+        const scrollHeight = contentElement.scrollHeight;
+        const clientHeight = contentElement.clientHeight;
+
+        // Only apply scroll effect if there's meaningful scrollable content
+        const hasSignificantScroll = scrollHeight - clientHeight > 100;
+
+        if (hasSignificantScroll) {
+          // Use hysteresis: different thresholds for show/hide to prevent oscillation
+          const showThreshold = 30;
+          const hideThreshold = 60;
+
+          if (!isScrolled && scrollTop > hideThreshold) {
+            setIsScrolled(true);
+          } else if (isScrolled && scrollTop < showThreshold) {
+            setIsScrolled(false);
+          }
+        }
+      }, 50); // 50ms debounce
     };
 
     contentElement.addEventListener('scroll', handleScroll);
-    return () => contentElement.removeEventListener('scroll', handleScroll);
-  }, [isMobile]);
+    return () => {
+      contentElement.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [isMobile, isScrolled]);
 
   return (
     <Card
