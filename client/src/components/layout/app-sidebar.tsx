@@ -3,6 +3,7 @@
 import {
   BadgeAlert,
   BarChart3,
+  CalendarArrowUp,
   CalendarCheck,
   Handshake,
   LineChart,
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import type * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Sidebar,
@@ -26,11 +28,15 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import { getLatestHealthCheck } from '@/features/health-check/stores/latest-health-check-storage';
 import { ProjectSwitcher } from '@/features/workspace/components/project-switcher';
 import { WorkspaceSwitcher } from '@/features/workspace/components/workspace-switcher';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { Team } from '@/types/team';
 import { cn } from '@/utils/cn';
+
+import { FloatingButton } from '../ui/floating-button';
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   workspaces: WorkspaceUserWithWorkspace[];
@@ -49,6 +55,7 @@ export function AppSidebar({
   const router = useRouter();
   const pathname = usePathname();
   const { state, isMobile, setOpenMobile } = useSidebar();
+  const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
 
   // Get current tab from pathname
   const currentTab = pathname.match(/\/teams\/[^/]+\/([^/]+)/)?.[1] || 'home';
@@ -63,6 +70,10 @@ export function AppSidebar({
     // Small delay to ensure sidebar starts closing before navigation
     setTimeout(navigationFn, 0);
   };
+
+  const [latestHealthCheckId, setLatestHealthCheckId] = useState<string | null>(
+    null,
+  );
 
   // Project navigation items
   const projectNavItems = [
@@ -98,6 +109,40 @@ export function AppSidebar({
     },
   ];
 
+  useEffect(() => {
+    if (isLoadingUser) return;
+
+    // Check if should show based on currentTab
+    const projectTabs = projectNavItems.map((item) => item.tab);
+    const shouldShowBasedOnTab =
+      currentTab === 'dashboard' || projectTabs.includes(currentTab);
+
+    if (!shouldShowBasedOnTab) {
+      setLatestHealthCheckId(null);
+      return;
+    }
+
+    // Check if there's a latest health check
+    const checkLatestHealthCheck = () => {
+      const latest = getLatestHealthCheck();
+
+      if (latest && latest.userId === currentUser?.id) {
+        setLatestHealthCheckId(latest.healthCheckId);
+      } else {
+        setLatestHealthCheckId(null);
+      }
+    };
+
+    checkLatestHealthCheck();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.id, pathname, currentTab]);
+
+  const onClickFloatingHealthCheckBtn = () => {
+    if (latestHealthCheckId) {
+      router.push(`/health-checks/${latestHealthCheckId}`);
+    }
+  };
   // Check if current route is active
   const isProjectItemActive = (tab: string) => {
     return currentTab === tab;
@@ -124,134 +169,147 @@ export function AppSidebar({
   };
 
   return (
-    <Sidebar
-      collapsible="icon"
-      {...props}
-      className="overflow-x-hidden md:max-lg:hidden"
-    >
-      <SidebarHeader className="overflow-x-hidden p-3">
-        {/* Logo */}
-        <div className="flex min-w-0 items-center gap-2 px-2 py-1">
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-white font-semibold text-blue-600">
-            R
-          </div>
-          {!isCollapsed && (
-            <span className="truncate font-semibold text-white">Retro App</span>
-          )}
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent className="overflow-x-hidden px-2 py-3">
-        {/* Workspace Section */}
-        <SidebarGroup className="mb-4 overflow-x-hidden p-0">
-          <SidebarGroupLabel className="truncate px-1 font-medium text-blue-200">
-            Workspace
-          </SidebarGroupLabel>
-          <div className="px-1">
-            <WorkspaceSwitcher
-              workspaces={workspaces}
-              currentWorkspace={currentWorkspace}
-              onNavigate={handleNavigationWithClose}
-            />
-          </div>
-        </SidebarGroup>
-
-        {/* Project Section */}
-        <SidebarGroup className="mb-4 overflow-x-hidden p-0">
-          <SidebarGroupLabel className="truncate px-1 font-medium text-blue-200">
-            Project
-          </SidebarGroupLabel>
-          <SidebarMenu className="px-1">
-            {/* Project Switcher - Only render when currentTeam exists */}
-            <ProjectSwitcher
-              teams={teams}
-              currentTeam={currentTeam}
-              onNavigate={handleNavigationWithClose}
-            />
-
-            {/* Project Navigation Items - Only show when currentTeam exists */}
-            {currentTeam && (
-              <>
-                {projectNavItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = isProjectItemActive(item.tab);
-
-                  return (
-                    <SidebarMenuItem
-                      key={item.title}
-                      className="w-full overflow-x-hidden"
-                    >
-                      <SidebarMenuButton
-                        onClick={() => handleProjectNavigation(item.tab)}
-                        className={cn(
-                          'relative w-full min-w-0 cursor-pointer justify-start pr-2 pl-6 text-blue-100 hover:bg-blue-700/50 hover:text-white',
-                          isActive &&
-                            'border border-blue-300/50 bg-blue-500/30 font-medium text-white shadow-sm hover:bg-blue-500/30 data-[state=open]:hover:bg-blue-500/30 data-[state=open]:hover:text-white',
-                        )}
-                      >
-                        <Icon
-                          className={cn(
-                            'mr-2 h-4 w-4 flex-shrink-0',
-                            isActive ? 'text-white' : 'text-blue-200',
-                          )}
-                        />
-                        <span className="flex-1 truncate">{item.title}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </>
+    <>
+      <Sidebar
+        collapsible="icon"
+        {...props}
+        className="overflow-x-hidden md:max-lg:hidden"
+      >
+        <SidebarHeader className="overflow-x-hidden p-3">
+          {/* Logo */}
+          <div className="flex min-w-0 items-center gap-2 px-2 py-1">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-white font-semibold text-blue-600">
+              R
+            </div>
+            {!isCollapsed && (
+              <span className="truncate font-semibold text-white">
+                Retro App
+              </span>
             )}
-          </SidebarMenu>
-        </SidebarGroup>
+          </div>
+        </SidebarHeader>
 
-        {/* Data Insight Section */}
-        <SidebarGroup className="overflow-x-hidden p-0">
+        <SidebarContent className="overflow-x-hidden px-2 py-3">
+          {/* Workspace Section */}
+          <SidebarGroup className="mb-4 overflow-x-hidden p-0">
+            <SidebarGroupLabel className="truncate px-1 font-medium text-blue-200">
+              Workspace
+            </SidebarGroupLabel>
+            <div className="px-1">
+              <WorkspaceSwitcher
+                workspaces={workspaces}
+                currentWorkspace={currentWorkspace}
+                onNavigate={handleNavigationWithClose}
+              />
+            </div>
+          </SidebarGroup>
+
+          {/* Project Section */}
+          <SidebarGroup className="mb-4 overflow-x-hidden p-0">
+            <SidebarGroupLabel className="truncate px-1 font-medium text-blue-200">
+              Project
+            </SidebarGroupLabel>
+            <SidebarMenu className="px-1">
+              {/* Project Switcher - Only render when currentTeam exists */}
+              <ProjectSwitcher
+                teams={teams}
+                currentTeam={currentTeam}
+                onNavigate={handleNavigationWithClose}
+              />
+
+              {/* Project Navigation Items - Only show when currentTeam exists */}
+              {currentTeam && (
+                <>
+                  {projectNavItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = isProjectItemActive(item.tab);
+
+                    return (
+                      <SidebarMenuItem
+                        key={item.title}
+                        className="w-full overflow-x-hidden"
+                      >
+                        <SidebarMenuButton
+                          onClick={() => handleProjectNavigation(item.tab)}
+                          className={cn(
+                            'relative w-full min-w-0 cursor-pointer justify-start pr-2 pl-6 text-blue-100 hover:bg-blue-700/50 hover:text-white',
+                            isActive &&
+                              'border border-blue-300/50 bg-blue-500/30 font-medium text-white shadow-sm hover:bg-blue-500/30 data-[state=open]:hover:bg-blue-500/30 data-[state=open]:hover:text-white',
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              'mr-2 h-4 w-4 flex-shrink-0',
+                              isActive ? 'text-white' : 'text-blue-200',
+                            )}
+                          />
+                          <span className="flex-1 truncate">{item.title}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </>
+              )}
+            </SidebarMenu>
+          </SidebarGroup>
+
+          {/* Data Insight Section */}
+          <SidebarGroup className="overflow-x-hidden p-0">
+            <SidebarMenu className="px-1">
+              <SidebarMenuItem className="w-full overflow-x-hidden">
+                <SidebarMenuButton
+                  onClick={handleDataInsightNavigation}
+                  className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
+                >
+                  <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
+                  <span className="flex-1 truncate">Data Insight</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+
+          {/* Users Section */}
+          <SidebarGroup className="overflow-x-hidden p-0">
+            <SidebarMenu className="px-1">
+              <SidebarMenuItem className="w-full overflow-x-hidden">
+                <SidebarMenuButton
+                  onClick={handleUsersNavigation}
+                  className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
+                >
+                  <Users className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
+                  <span className="flex-1 truncate">Users</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+
+        {/* Settings Footer */}
+        <SidebarFooter className="overflow-x-hidden border-t border-blue-700/50 px-2 py-3">
           <SidebarMenu className="px-1">
             <SidebarMenuItem className="w-full overflow-x-hidden">
               <SidebarMenuButton
-                onClick={handleDataInsightNavigation}
+                onClick={() => {}}
                 className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
               >
-                <BarChart3 className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
-                <span className="flex-1 truncate">Data Insight</span>
+                <Settings className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
+                <span className="flex-1 truncate">Settings</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-        </SidebarGroup>
+        </SidebarFooter>
 
-        {/* Users Section */}
-        <SidebarGroup className="overflow-x-hidden p-0">
-          <SidebarMenu className="px-1">
-            <SidebarMenuItem className="w-full overflow-x-hidden">
-              <SidebarMenuButton
-                onClick={handleUsersNavigation}
-                className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
-              >
-                <Users className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
-                <span className="flex-1 truncate">Users</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
+        <SidebarRail />
+      </Sidebar>
 
-      {/* Settings Footer */}
-      <SidebarFooter className="overflow-x-hidden border-t border-blue-700/50 px-2 py-3">
-        <SidebarMenu className="px-1">
-          <SidebarMenuItem className="w-full overflow-x-hidden">
-            <SidebarMenuButton
-              onClick={() => {}}
-              className="w-full min-w-0 cursor-pointer justify-start px-2 text-blue-100 hover:bg-blue-700/50 hover:text-white"
-            >
-              <Settings className="mr-2 h-4 w-4 flex-shrink-0 text-blue-200" />
-              <span className="flex-1 truncate">Settings</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-
-      <SidebarRail />
-    </Sidebar>
+      {latestHealthCheckId && (
+        <FloatingButton
+          name="FLOATING_HEALTH_CHECK_BUTTON_POSITION"
+          title="Return to Latest Health Check"
+          onClick={onClickFloatingHealthCheckBtn}
+          IconComponent={CalendarArrowUp}
+        />
+      )}
+    </>
   );
 }

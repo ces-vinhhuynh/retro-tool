@@ -11,6 +11,7 @@ import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { ChartDialog } from '@/features/health-check/components/chart-dialog';
 import { ClosePhase } from '@/features/health-check/components/close-phase';
 import { DiscussPhase } from '@/features/health-check/components/discuss-phase';
+import { TeamMember } from '@/features/health-check/components/invite-table/columns';
 import { OpenActionsPhase } from '@/features/health-check/components/open-actions-phase';
 import { ReviewPhase } from '@/features/health-check/components/review-phase';
 import { WelcomeModal } from '@/features/health-check/components/sessions/welcome-modal';
@@ -42,6 +43,10 @@ import {
 import { useResponsesSubscription } from '@/features/health-check/hooks/use-response-subcription';
 import { useScrumHealthCheckSubscription } from '@/features/health-check/hooks/use-scrum-health-check-subscription';
 import { useUpdateAverageScores } from '@/features/health-check/hooks/use-update-average-scores';
+import {
+  removeLatestHealthCheck,
+  saveLatestHealthCheck,
+} from '@/features/health-check/stores/latest-health-check-storage';
 import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
 import {
   HealthCheckSettings,
@@ -52,6 +57,8 @@ import {
   Score,
   User,
   Section,
+  HealthCheckWithTeam,
+  ParticipantWithUser,
 } from '@/features/health-check/types/health-check';
 import { getCommentsByQuestionId } from '@/features/health-check/utils/comment';
 import {
@@ -185,6 +192,11 @@ export default function HealthCheckPage() {
   const { updateHealthCheck } = useHealthCheckMutations();
   const { mutate: createResponse, isPending } = useCreateResponse();
   const { mutate: updateAverageScores } = useUpdateAverageScores();
+  const saveHealthCheckActivity = (healthCheckId: string, userId: string) => {
+    if (healthCheckId && userId) {
+      saveLatestHealthCheck(healthCheckId, userId);
+    }
+  };
 
   const questions: Question[] = (template?.questions as Question[]) || [];
   const grouped = _groupBy(questions, 'section');
@@ -326,6 +338,26 @@ export default function HealthCheckPage() {
     healthCheckId,
   ]);
 
+  useEffect(() => {
+    if (
+      !isLoadingUser &&
+      !isLoadingHealthCheck &&
+      currentUser?.id &&
+      healthCheckId &&
+      healthCheck?.status === 'in progress' &&
+      isFacilitator
+    ) {
+      saveHealthCheckActivity(healthCheckId, currentUser.id);
+    }
+  }, [
+    isLoadingUser,
+    isLoadingHealthCheck,
+    currentUser?.id,
+    healthCheckId,
+    isFacilitator,
+    healthCheck?.status,
+  ]);
+
   const handleCompleteHealthCheck = () => {
     if (isFacilitator && !isCompleted) {
       updateHealthCheck({
@@ -351,6 +383,16 @@ export default function HealthCheckPage() {
   };
 
   const handleChangePhase = () => {
+    // Update last_active before changing phase (if isFacilitator)
+    if (
+      isFacilitator &&
+      currentUser?.id &&
+      healthCheckId &&
+      healthCheck?.status === 'in progress'
+    ) {
+      saveHealthCheckActivity(healthCheckId, currentUser.id);
+    }
+
     if (healthCheck?.current_step === FIRST_STEP.key) {
       updateAverageScores({ healthCheckId: healthCheck.id });
       updateHealthCheck({
@@ -368,6 +410,7 @@ export default function HealthCheckPage() {
         },
       });
     }
+    removeLatestHealthCheck();
     handleCompleteHealthCheck();
     router.push(`/teams/${healthCheck.team_id}`);
   };
@@ -453,7 +496,7 @@ export default function HealthCheckPage() {
                   teamSize={participants?.length || 0}
                   //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
                   teamMembers={teamMembers as unknown as User[]}
-                  isFacilitator={isFacilitator}
+                  isFacilitator={isFacilitator || false}
                   isAdmin={isAdmin}
                 />
               )}
@@ -480,11 +523,11 @@ export default function HealthCheckPage() {
             <WelcomeModal
               isOpen={isWelcomeModalOpen}
               onClose={closeWelcomeModal}
-              healthCheck={healthCheck}
+              healthCheck={healthCheck as HealthCheckWithTeam}
               template={template}
-              teamMembers={teamMembers}
-              facilitatorIds={healthCheck?.facilitator_ids}
-              participants={participants}
+              teamMembers={teamMembers as TeamMember[]}
+              facilitatorIds={healthCheck?.facilitator_ids || []}
+              participants={participants as ParticipantWithUser[]}
               handleInviteUser={handleInviteUser}
               isInviting={isInviting}
               healthCheckId={healthCheckId}
