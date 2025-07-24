@@ -3,6 +3,7 @@
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,16 +22,20 @@ import { ProjectLogo } from '@/features/workspace/components/project-logo';
 import { Team } from '@/types/team';
 import { cn } from '@/utils/cn';
 
+import { CreateTeamDialog } from './create-team-dialog';
+
 interface ProjectSwitcherProps {
   teams: Team[];
   currentTeam?: Team;
   onNavigate?: (navigationFn: () => void) => void;
+  workspaceId: string;
 }
 
 export function ProjectSwitcher({
   teams,
   currentTeam,
   onNavigate,
+  workspaceId,
 }: ProjectSwitcherProps) {
   const router = useRouter();
   const { isMobile } = useSidebar();
@@ -115,16 +120,20 @@ export function ProjectSwitcher({
               );
             })}
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
-              onClick={handleCreateProject}
-            >
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
-                <Plus className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">
-                Add project
-              </div>
+            <DropdownMenuItem asChild>
+              <CreateTeamDialog workspaceId={workspaceId}>
+                <Button
+                  variant="ghost"
+                  className="flex justify-start gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
+                >
+                  <div className="bg-background flex size-6 items-center justify-center rounded-md border">
+                    <Plus className="size-4" />
+                  </div>
+                  <div className="text-muted-foreground font-medium">
+                    Add project
+                  </div>
+                </Button>
+              </CreateTeamDialog>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

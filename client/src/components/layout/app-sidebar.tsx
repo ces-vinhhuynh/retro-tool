@@ -215,6 +215,7 @@ export function AppSidebar({
                 teams={teams}
                 currentTeam={currentTeam}
                 onNavigate={handleNavigationWithClose}
+                workspaceId={currentWorkspace?.workspace_id}
               />
 
               {/* Project Navigation Items - Only show when currentTeam exists */}

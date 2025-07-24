@@ -19,9 +19,13 @@ import { TeamFormValues, teamSchema } from '../schema/team.schema';
 
 interface CreateTeamDialogProps {
   workspaceId: string;
+  children?: React.ReactNode;
 }
 
-export const CreateTeamDialog = ({ workspaceId }: CreateTeamDialogProps) => {
+export const CreateTeamDialog = ({
+  workspaceId,
+  children,
+}: CreateTeamDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const { mutate: createTeam, isPending } = useCreateTeam();
@@ -57,10 +61,14 @@ export const CreateTeamDialog = ({ workspaceId }: CreateTeamDialogProps) => {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="primary h-8 w-full rounded-md sm:w-fit md:h-10 md:text-base">
-          <Plus className="h-4 w-4" />
-          New Team
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button className="primary h-8 w-full rounded-md sm:w-fit md:h-10 md:text-base">
+            <Plus className="h-4 w-4" />
+            New Team
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="rounded-lg sm:max-w-md">
         <DialogHeader>

@@ -59,11 +59,13 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
 
   // Fetch teams for current workspace
   const { data: teamsByMember = [], isLoading: isLoadingTeamsByMember } =
-    useGetTeamsByWorkspaceAndUser(String(workspaceId), currentUser?.id || '');
+    useGetTeamsByWorkspaceAndUser(workspaceId || '', currentUser?.id || '');
   const { data: teamsByAdmin = [], isLoading: isLoadingTeamsByAdmin } =
-    useGetTeamsByWorkspace(String(workspaceId));
+    useGetTeamsByWorkspace(workspaceId || '', {
+      enabled: !!workspaceId,
+    });
   const { data: workspaceUser, isLoading: isLoadingWorkspaceUser } =
-    useGetWorkspaceUser(String(workspaceId), currentUser?.id || '');
+    useGetWorkspaceUser(workspaceId || '', currentUser?.id || '');
 
   const isOwnerOrAdmin =
     workspaceUser?.role === WORKSPACE_ROLES.owner ||
@@ -130,7 +132,7 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
 
   if (isLoading) return <div>Loading...</div>;
 
-  if (isWorkspaceRoute && !workspaceUser) {
+  if (isWorkspaceRoute && !workspaceUser && !isCreateWorkspaceRoute) {
     return (
       <AccessDenied
         message="You don't have permission to view this workspace. Please contact your admin(s) or your workspace owner(s) to request access."
