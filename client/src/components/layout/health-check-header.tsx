@@ -1,10 +1,11 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Settings, UserPlus } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import { SettingDialog } from '@/features/health-check/components/setting-dialog';
 import { Timer } from '@/features/health-check/components/timer';
 import { useGetParticipants } from '@/features/health-check/hooks/use-get-participants';
 import {
@@ -14,7 +15,11 @@ import {
 import { useGetTemplateById } from '@/features/health-check/hooks/use-health-check-templates';
 import { useResponse } from '@/features/health-check/hooks/use-response';
 import { useUpdateAverageScores } from '@/features/health-check/hooks/use-update-average-scores';
-import { Question } from '@/features/health-check/types/health-check';
+import { useWelcomeModalStore } from '@/features/health-check/stores/welcome-modal-store';
+import {
+  Question,
+  HealthCheckSettings,
+} from '@/features/health-check/types/health-check';
 import { FIRST_STEP, STEPS } from '@/features/health-check/utils/constants';
 import { cn } from '@/utils/cn';
 
@@ -46,6 +51,7 @@ export const HealthCheckHeader = () => {
 
   const { updateHealthCheck } = useHealthCheckMutations();
   const { mutate: updateAverageScores } = useUpdateAverageScores();
+  const { open: openWelcomeModal } = useWelcomeModalStore();
 
   const isFacilitator =
     !!currentUser?.id && healthCheck?.facilitator_ids?.includes(currentUser.id);
@@ -58,7 +64,7 @@ export const HealthCheckHeader = () => {
     ({ section }) => section !== 'Additional Questions',
   ).length;
   const ratingCount = Object.values(response?.answers || {}).filter(
-    (answer) => answer?.rating != null,
+    (answer) => (answer as { rating?: number })?.rating != null,
   ).length;
   const progress =
     questionsCount > 0 ? (ratingCount / questionsCount) * 100 : 0;
@@ -81,6 +87,17 @@ export const HealthCheckHeader = () => {
     });
   };
 
+  const handleInviteUser = () => {
+    openWelcomeModal(healthCheckId);
+  };
+
+  const handleUpdateHealthCheckSettings = (settings: HealthCheckSettings) => {
+    updateHealthCheck({
+      id: healthCheck?.id || '',
+      healthCheck: { settings },
+    });
+  };
+
   if (
     isLoadingUser ||
     isLoadingHealthCheck ||
@@ -88,6 +105,36 @@ export const HealthCheckHeader = () => {
     isLoadingResponse
   )
     return <></>;
+
+  const getIcons = (className = '') => (
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        className={`ml-2 flex items-center ${className}`}
+        onClick={handleInviteUser}
+      >
+        <UserPlus className="h-4 w-4" />
+      </Button>
+      {isFacilitator && (
+        <div className="flex items-center gap-2">
+          <SettingDialog
+            settings={healthCheck?.settings as HealthCheckSettings}
+            onChange={handleUpdateHealthCheckSettings}
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                className={`flex items-center ${className}`}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            }
+          />
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div className="lg:max-w-screen-3xl flex w-full flex-wrap items-center justify-end gap-5 px-3 pb-3 md:flex-nowrap md:justify-center">
@@ -146,13 +193,25 @@ export const HealthCheckHeader = () => {
         healthCheckId={healthCheckId}
         endTime={healthCheck?.end_time || ''}
       />
+
+      {isFacilitator && (
+        <>
+          <div className="hidden items-center gap-3 md:flex">
+            {getIcons('gap-4')}
+          </div>
+          <div className="flex items-center gap-2 md:hidden">
+            {getIcons('gap-2')}
+          </div>
+        </>
+      )}
+
       <div className="flex w-full items-center justify-end gap-3 md:ml-auto md:w-[30%]">
         {currentStep === 1 && (
           <div className="flex w-full flex-col">
             <p className="text-secondary-text text-right text-sm">
               {ratingCount} / {questionsCount}
             </p>
-            <Progress value={progress} />
+            <Progress value={progress} className="min-w-20" />
           </div>
         )}
         <Popover>
