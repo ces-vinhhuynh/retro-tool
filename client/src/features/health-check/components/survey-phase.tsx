@@ -274,7 +274,7 @@ export const SurveyPhase = ({
   };
 
   return (
-    <CardContent className="p-3 sm:p-4 md:p-5 lg:p-6">
+    <CardContent className="p-0">
       {settings.display_mode === DisplayMode.SINGLE && (
         <OneQuestionMode {...sharedProps} questions={questions} />
       )}

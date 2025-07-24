@@ -448,76 +448,77 @@ export default function HealthCheckPage() {
       <div className="flex w-full flex-col">
         <div className="flex w-full">
           <div className="mx-auto w-full p-2 md:p-4 lg:p-8">
-            <Card className="mx-auto w-full flex-shrink-0 overflow-hidden px-2 sm:px-4 md:px-6">
-              {healthCheck.current_step === STEPS['survey'].key && (
-                <SurveyPhase
-                  healthCheck={healthCheck as HealthCheckWithTemplate}
-                  sections={sections}
-                  currentUser={currentUser as unknown as User}
-                  groupedQuestions={grouped}
-                  minScore={template?.min_value as Score}
-                  maxScore={template?.max_value as Score}
-                  response={response}
-                  settings={healthCheck.settings as HealthCheckSettings}
-                  questions={questions}
-                />
-              )}
-              {healthCheck.current_step === STEPS['openActions'].key && (
-                <OpenActionsPhase
-                  agreements={agreements || []}
-                  issues={issues || []}
-                  healthCheck={healthCheck as HealthCheckWithTemplate}
-                  actionItems={actionItems || []}
-                  teamId={healthCheck?.team_id || ''}
-                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                  teamMembers={teamMembers as unknown as User[]}
-                  isAdmin={isAdmin}
-                />
-              )}
-              {healthCheck.current_step === STEPS['discuss'].key && (
-                <DiscussPhase
-                  healthCheck={healthCheck as HealthCheckWithTemplate}
-                  questions={questions}
-                  responses={responses ?? []}
-                  actionItems={actionItems ?? []}
-                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                  teamMembers={teamMembers as unknown as User[]}
-                  handleQuestionClick={handleQuestionClick}
-                  isAdmin={isAdmin}
-                />
-              )}
-              {healthCheck.current_step === STEPS['review'].key && (
-                <ReviewPhase
-                  agreements={agreements || []}
-                  issues={issues || []}
-                  healthCheck={healthCheck as HealthCheckWithTemplate}
-                  actionItems={actionItems || []}
-                  teamId={healthCheck?.team_id || ''}
-                  teamSize={participants?.length || 0}
-                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                  teamMembers={teamMembers as unknown as User[]}
-                  isFacilitator={isFacilitator || false}
-                  isAdmin={isAdmin}
-                />
-              )}
-              {healthCheck.current_step === STEPS['close'].key && (
-                <ClosePhase
-                  //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
-                  teamMembers={teamMembers as unknown as User[]}
-                  healthCheck={healthCheck as HealthCheckWithTemplate}
-                  questions={questions}
-                  responses={responses as ResponseWithUser[]}
-                  actionItems={actionItems || []}
-                  scrumHealthChecks={
-                    scrumHealthChecks as HealthCheckWithTemplate[]
-                  }
-                  teamSize={participants?.length || 0}
-                  //TODO: remove cast type as unknown as User[] when we have exact the type for currentUser
-                  currentUser={currentUser as unknown as User}
-                  isAdmin={isAdmin}
-                />
-              )}
-            </Card>
+            {healthCheck.current_step === STEPS['survey'].key ? (
+              <SurveyPhase
+                healthCheck={healthCheck as HealthCheckWithTemplate}
+                sections={sections}
+                currentUser={currentUser as unknown as User}
+                groupedQuestions={grouped}
+                minScore={template?.min_value as Score}
+                maxScore={template?.max_value as Score}
+                response={response}
+                settings={healthCheck.settings as HealthCheckSettings}
+                questions={questions}
+              />
+            ) : (
+              <Card className="mx-auto w-full flex-shrink-0 overflow-hidden px-2 sm:px-4 md:px-6">
+                {healthCheck.current_step === STEPS['openActions'].key && (
+                  <OpenActionsPhase
+                    agreements={agreements || []}
+                    issues={issues || []}
+                    healthCheck={healthCheck as HealthCheckWithTemplate}
+                    actionItems={actionItems || []}
+                    teamId={healthCheck?.team_id || ''}
+                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                    teamMembers={teamMembers as unknown as User[]}
+                    isAdmin={isAdmin}
+                  />
+                )}
+                {healthCheck.current_step === STEPS['discuss'].key && (
+                  <DiscussPhase
+                    healthCheck={healthCheck as HealthCheckWithTemplate}
+                    questions={questions}
+                    responses={responses ?? []}
+                    actionItems={actionItems ?? []}
+                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                    teamMembers={teamMembers as unknown as User[]}
+                    handleQuestionClick={handleQuestionClick}
+                    isAdmin={isAdmin}
+                  />
+                )}
+                {healthCheck.current_step === STEPS['review'].key && (
+                  <ReviewPhase
+                    agreements={agreements || []}
+                    issues={issues || []}
+                    healthCheck={healthCheck as HealthCheckWithTemplate}
+                    actionItems={actionItems || []}
+                    teamId={healthCheck?.team_id || ''}
+                    teamSize={participants?.length || 0}
+                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                    teamMembers={teamMembers as unknown as User[]}
+                    isFacilitator={isFacilitator || false}
+                    isAdmin={isAdmin}
+                  />
+                )}
+                {healthCheck.current_step === STEPS['close'].key && (
+                  <ClosePhase
+                    //TODO: remove cast type as unknown as User[] when we have exact the type for teamMembers
+                    teamMembers={teamMembers as unknown as User[]}
+                    healthCheck={healthCheck as HealthCheckWithTemplate}
+                    questions={questions}
+                    responses={responses as ResponseWithUser[]}
+                    actionItems={actionItems || []}
+                    scrumHealthChecks={
+                      scrumHealthChecks as HealthCheckWithTemplate[]
+                    }
+                    teamSize={participants?.length || 0}
+                    //TODO: remove cast type as unknown as User[] when we have exact the type for currentUser
+                    currentUser={currentUser as unknown as User}
+                    isAdmin={isAdmin}
+                  />
+                )}
+              </Card>
+            )}
           </div>
           {healthCheck && (
             <WelcomeModal

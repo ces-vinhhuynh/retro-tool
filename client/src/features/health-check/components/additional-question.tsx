@@ -46,8 +46,8 @@ export const AdditionalQuestion = ({
     <div className="space-y-6 px-2 py-2 sm:gap-4 sm:px-3 sm:py-3 md:px-4 md:py-4 lg:px-6 lg:py-4">
       <h3 className="mb-1 text-lg font-bold text-[#222] sm:text-xl">{title}</h3>
       <p className="text-muted-foreground text-sm">{description}</p>
-      <div className="flex items-center gap-2 p-1">
-        <div className="relative flex-1">
+      <div className="flex flex-col items-center gap-7 p-1 sm:flex-row sm:gap-2">
+        <div className="relative w-full flex-1">
           <Input
             type="text"
             placeholder={`Answer ${comments.length + 1}`}
@@ -75,7 +75,7 @@ export const AdditionalQuestion = ({
           size="sm"
           disabled={!newComment}
           onClick={addNewComment}
-          className="whitespace-nowrap"
+          className="self-end whitespace-nowrap sm:self-center"
         >
           <Plus size={14} className="mr-1" />
           Add

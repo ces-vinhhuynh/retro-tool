@@ -124,16 +124,16 @@ export const TopChallenges = ({
                 return (
                   <li
                     key={challengeKey}
-                    className="flex items-center justify-between rounded bg-orange-50 px-3 py-2 text-gray-700"
+                    className="flex flex-col items-center justify-between rounded bg-orange-50 px-3 py-2 text-gray-700 sm:flex-row"
                   >
                     <Button
                       variant="ghost"
-                      className="max-w-7xl flex-1 justify-start truncate hover:bg-transparent"
+                      className="w-full max-w-7xl flex-1 justify-start truncate hover:bg-transparent"
                       onClick={() => handleChallengeClick(challenge)}
                     >
                       <span className="truncate">{challenge.text}</span>
                     </Button>
-                    <span className="ml-4">
+                    <span className="ml-4 self-end sm:self-center">
                       <TagDropdown
                         tags={tags}
                         onTagChange={(_, questionId) =>
