@@ -106,152 +106,150 @@ export const HealthCheckHeader = () => {
   )
     return <></>;
 
-  const getIcons = (className = '') => (
-    <>
-      <Button
-        variant="outline"
-        size="sm"
-        className={`ml-2 flex items-center ${className}`}
-        onClick={handleInviteUser}
-      >
-        <UserPlus className="h-4 w-4" />
-      </Button>
-      {isFacilitator && (
-        <div className="flex items-center gap-2">
-          <SettingDialog
-            settings={healthCheck?.settings as HealthCheckSettings}
-            onChange={handleUpdateHealthCheckSettings}
-            trigger={
-              <Button
-                variant="outline"
-                size="sm"
-                className={`flex items-center ${className}`}
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            }
+  return (
+    <div className="lg:max-w-screen-3xl w-full px-3 pb-3">
+      <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5">
+        {/* Desktop */}
+        <div className="hidden items-center gap-3 md:flex xl:flex-1 xl:justify-start">
+          <ol className="flex gap-1">
+            {Object.values(STEPS).map(({ key }, index) => (
+              <li key={key}>
+                <Button
+                  className={cn('h-5 w-13 rounded-full bg-gray-200', {
+                    'bg-rhino-500 text-primary': key === currentStep,
+                    'cursor-pointer': isFacilitator,
+                  })}
+                  onClick={() => {
+                    handleChangeStep(
+                      Object.keys(STEPS)[index] as keyof typeof STEPS,
+                    );
+                  }}
+                  disabled={!isFacilitator || key === currentStep}
+                />
+              </li>
+            ))}
+          </ol>
+          <div className="flex flex-col">
+            <p className="text-primary-text font-bold">
+              {currentStepObj?.value}
+            </p>
+            <p className="text-secondary-text">
+              Step{' '}
+              <span className="text-primary-text font-bold">{currentStep}</span>{' '}
+              of 5
+            </p>
+          </div>
+        </div>
+
+        {/* Mobile select */}
+        <div className="md:hidden">
+          <Select
+            value={(currentStep - 1).toString()}
+            onValueChange={(value) => {
+              handleChangeStep(
+                Object.keys(STEPS)[parseInt(value)] as keyof typeof STEPS,
+              );
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Theme" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(STEPS).map(({ key, value }, index) => (
+                <SelectItem key={key} value={index.toString()}>
+                  {value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex-shrink-0">
+          <Timer
+            isFacilitator={!!isFacilitator}
+            healthCheckId={healthCheckId}
+            endTime={healthCheck?.end_time || ''}
           />
         </div>
-      )}
-    </>
-  );
 
-  return (
-    <div className="lg:max-w-screen-3xl flex w-full flex-wrap items-center justify-end gap-5 px-3 pb-3 md:flex-nowrap md:justify-center">
-      <div className="hidden items-center gap-3 md:flex">
-        <ol className="flex gap-1">
-          {Object.values(STEPS).map(({ key }, index) => (
-            <li key={key}>
-              <Button
-                className={cn('h-5 w-15 rounded-full bg-gray-200', {
-                  'bg-rhino-500 text-primary': key === currentStep,
-                  'cursor-pointer': isFacilitator,
-                })}
-                onClick={() => {
-                  handleChangeStep(
-                    Object.keys(STEPS)[index] as keyof typeof STEPS,
-                  );
-                }}
-                disabled={!isFacilitator || key === currentStep}
-              />
-            </li>
-          ))}
-        </ol>
-        <div className="flex flex-col">
-          <p className="text-primary-text font-bold">{currentStepObj?.value}</p>
-          <p className="text-secondary-text">
-            Step{' '}
-            <span className="text-primary-text font-bold">{currentStep}</span>{' '}
-            of 5
-          </p>
-        </div>
-      </div>
-      <div className="md:hidden">
-        <Select
-          value={(currentStep - 1).toString()}
-          onValueChange={(value) => {
-            handleChangeStep(
-              Object.keys(STEPS)[parseInt(value)] as keyof typeof STEPS,
-            );
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Theme" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.values(STEPS).map(({ key, value }, index) => (
-              <SelectItem key={key} value={index.toString()}>
-                {value}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <Timer
-        className="md:ml-auto"
-        isFacilitator={!!isFacilitator}
-        healthCheckId={healthCheckId}
-        endTime={healthCheck?.end_time || ''}
-      />
-
-      {isFacilitator && (
-        <>
-          <div className="hidden items-center gap-3 md:flex">
-            {getIcons('gap-4')}
-          </div>
-          <div className="flex items-center gap-2 md:hidden">
-            {getIcons('gap-2')}
-          </div>
-        </>
-      )}
-
-      <div className="flex w-full items-center justify-end gap-3 md:ml-auto md:w-[30%]">
-        {currentStep === 1 && (
-          <div className="flex w-full flex-col">
-            <p className="text-secondary-text text-right text-sm">
-              {ratingCount} / {questionsCount}
-            </p>
-            <Progress value={progress} className="min-w-20" />
+        {isFacilitator && (
+          <div className="flex flex-shrink-0 items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-2 flex items-center"
+              onClick={handleInviteUser}
+            >
+              <UserPlus className="h-4 w-4" />
+            </Button>
+            {isFacilitator && (
+              <div className="flex items-center gap-2">
+                <SettingDialog
+                  settings={healthCheck?.settings as HealthCheckSettings}
+                  onChange={handleUpdateHealthCheckSettings}
+                  trigger={
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center"
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  }
+                />
+              </div>
+            )}
           </div>
         )}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost">
-              Detail <ChevronDown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <ul className="flex flex-col gap-2">
-              {participants?.map((participant) => (
-                <div key={participant.user_id} className="flex gap-3">
-                  <Avatar>
-                    <AvatarImage
-                      src={participant.user.avatar_url ?? ''}
-                      alt={participant.user.full_name ?? 'User'}
-                      className="h-8 w-8 bg-gray-300"
-                    />
-                    <AvatarFallback>
-                      {participant.user.full_name?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="truncate text-sm font-medium">
-                        {participant.user.full_name}
-                      </p>
-                    </div>
-                    <div className="mt-1 w-full">
-                      <Progress
-                        value={participant.progress}
-                        className="h-1.5"
+
+        <div className="flex w-full items-center justify-end gap-3 md:w-auto md:min-w-0 xl:flex-1 xl:justify-end">
+          {currentStep === 1 && (
+            <div className="flex w-full flex-col md:w-32 lg:w-48 xl:w-56">
+              <p className="text-secondary-text text-right text-sm">
+                {ratingCount} / {questionsCount}
+              </p>
+              <Progress value={progress} className="w-full" />
+            </div>
+          )}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" className="flex-shrink-0">
+                Detail <ChevronDown />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <ul className="flex flex-col gap-2">
+                {participants?.map((participant) => (
+                  <div key={participant.user_id} className="flex gap-3">
+                    <Avatar>
+                      <AvatarImage
+                        src={participant.user.avatar_url ?? ''}
+                        alt={participant.user.full_name ?? 'User'}
+                        className="h-8 w-8 bg-gray-300"
                       />
+                      <AvatarFallback>
+                        {participant.user.full_name?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="truncate text-sm font-medium">
+                          {participant.user.full_name}
+                        </p>
+                      </div>
+                      <div className="mt-1 w-full">
+                        <Progress
+                          value={participant.progress}
+                          className="h-1.5"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </ul>
-          </PopoverContent>
-        </Popover>
+                ))}
+              </ul>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
   );
