@@ -143,25 +143,32 @@ export const HealthCheckHeader = () => {
 
         {/* Mobile select */}
         <div className="md:hidden">
-          <Select
-            value={(currentStep - 1).toString()}
-            onValueChange={(value) => {
-              handleChangeStep(
-                Object.keys(STEPS)[parseInt(value)] as keyof typeof STEPS,
-              );
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Theme" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.values(STEPS).map(({ key, value }, index) => (
-                <SelectItem key={key} value={index.toString()}>
-                  {value}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {isFacilitator ? (
+            <Select
+              disabled={!isFacilitator}
+              value={(currentStep - 1).toString()}
+              onValueChange={(value) => {
+                handleChangeStep(
+                  Object.keys(STEPS)[parseInt(value)] as keyof typeof STEPS,
+                );
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Theme" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(STEPS).map(({ key, value }, index) => (
+                  <SelectItem key={key} value={index.toString()}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <div className="border-input bg-background flex h-10 w-[180px] items-center rounded-md border px-3 py-2 text-sm">
+              {currentStepObj?.value}
+            </div>
+          )}
         </div>
 
         <div className="flex-shrink-0">

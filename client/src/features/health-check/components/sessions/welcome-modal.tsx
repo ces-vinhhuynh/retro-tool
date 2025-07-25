@@ -67,7 +67,9 @@ export const WelcomeModal = ({
   useEffect(() => {
     // Use the current URL as the session link
     if (typeof window !== 'undefined') {
-      setSessionLink(window.location.origin + pathname);
+      setSessionLink(
+        window.location.origin + '/invite/health-check/' + healthCheckId,
+      );
     }
   }, [pathname]);
 

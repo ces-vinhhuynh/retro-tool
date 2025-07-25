@@ -34,7 +34,7 @@ export const ScrumHealthCheck = ({
     scrumHealthChecks?.map((check) => check.id) || [],
   );
 
-  const { deleted_at, name: title } = scrumHealthChecks[0].template;
+  const { deleted_at, name: title } = scrumHealthChecks?.[0]?.template || {};
 
   const canStartNewHealthCheck = isShowAddNew && deleted_at === null;
 

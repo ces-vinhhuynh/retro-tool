@@ -88,6 +88,7 @@ class WorkspaceUsersService {
       teams: users?.team_users
         .filter((tu) => tu.teams?.workspace_id === workspaceId)
         .map((tu) => tu.teams?.name),
+      user_id: users?.id,
     }));
   }
 

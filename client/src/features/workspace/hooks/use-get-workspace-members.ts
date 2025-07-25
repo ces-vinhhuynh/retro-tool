@@ -6,7 +6,7 @@ export function useGetWorkspaceMembers(id: string) {
   const { data, isLoading } = useQuery({
     queryKey: ['workspace-users', id],
     queryFn: () => workspaceUsersService.getWorkspaceUsersByWorkspaceId(id),
-    placeholderData: [],
+    enabled: !!id,
   });
 
   return { data, isLoading };
