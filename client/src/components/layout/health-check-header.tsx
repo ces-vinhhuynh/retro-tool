@@ -107,7 +107,7 @@ export const HealthCheckHeader = () => {
     return <></>;
 
   return (
-    <div className="lg:max-w-screen-3xl w-full px-3 pb-3">
+    <div className="lg:max-w-screen-3xl w-full px-5 pb-3">
       <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5">
         {/* Desktop */}
         <div className="hidden items-center gap-3 md:flex xl:flex-1 xl:justify-start">

@@ -171,6 +171,7 @@ const PrivateLayout = ({ children }: PrivateLayoutProps) => {
           currentWorkspace={currentWorkspace as WorkspaceUserWithWorkspace}
           teams={teams as unknown[] as Team[]}
           currentTeam={currentTeam as Team}
+          isOwnerOrAdmin={isOwnerOrAdmin}
         />
       )}
       <SidebarInset>

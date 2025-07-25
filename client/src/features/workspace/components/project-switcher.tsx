@@ -29,6 +29,7 @@ interface ProjectSwitcherProps {
   currentTeam?: Team;
   onNavigate?: (navigationFn: () => void) => void;
   workspaceId: string;
+  isOwnerOrAdmin: boolean;
 }
 
 export function ProjectSwitcher({
@@ -36,22 +37,13 @@ export function ProjectSwitcher({
   currentTeam,
   onNavigate,
   workspaceId,
+  isOwnerOrAdmin,
 }: ProjectSwitcherProps) {
   const router = useRouter();
   const { isMobile } = useSidebar();
 
   const handleProjectChange = (projectId: string) => {
     const navigationFn = () => router.push(`/teams/${projectId}`);
-
-    if (onNavigate) {
-      onNavigate(navigationFn);
-    } else {
-      navigationFn();
-    }
-  };
-
-  const handleCreateProject = () => {
-    const navigationFn = () => router.push('/projects/create');
 
     if (onNavigate) {
       onNavigate(navigationFn);
@@ -119,22 +111,27 @@ export function ProjectSwitcher({
                 </DropdownMenuItem>
               );
             })}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <CreateTeamDialog workspaceId={workspaceId}>
-                <Button
-                  variant="ghost"
-                  className="flex justify-start gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
-                >
-                  <div className="bg-background flex size-6 items-center justify-center rounded-md border">
-                    <Plus className="size-4" />
-                  </div>
-                  <div className="text-muted-foreground font-medium">
-                    Add project
-                  </div>
-                </Button>
-              </CreateTeamDialog>
-            </DropdownMenuItem>
+
+            {isOwnerOrAdmin && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <CreateTeamDialog workspaceId={workspaceId}>
+                    <Button
+                      variant="ghost"
+                      className="flex justify-start gap-2 p-2 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-800"
+                    >
+                      <div className="bg-background flex size-6 items-center justify-center rounded-md border">
+                        <Plus className="size-4" />
+                      </div>
+                      <div className="text-muted-foreground font-medium">
+                        Add project
+                      </div>
+                    </Button>
+                  </CreateTeamDialog>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

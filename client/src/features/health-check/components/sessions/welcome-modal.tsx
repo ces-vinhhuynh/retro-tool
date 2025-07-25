@@ -134,7 +134,7 @@ export const WelcomeModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-screen max-w-4xl overflow-y-scroll lg:max-w-screen-lg">
+      <DialogContent className="flex max-h-screen w-full max-w-4xl flex-col overflow-y-scroll lg:max-w-screen-lg">
         <DialogHeader>
           <DialogTitle className="max-w-3xl truncate text-2xl font-bold">
             Welcome to {healthCheck.title}

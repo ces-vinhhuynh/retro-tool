@@ -41,6 +41,7 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   currentWorkspace: WorkspaceUserWithWorkspace;
   teams: Team[];
   currentTeam: Team;
+  isOwnerOrAdmin: boolean;
 };
 
 export function AppSidebar({
@@ -48,6 +49,7 @@ export function AppSidebar({
   currentWorkspace,
   teams,
   currentTeam,
+  isOwnerOrAdmin,
   ...props
 }: AppSidebarProps) {
   const router = useRouter();
@@ -195,6 +197,7 @@ export function AppSidebar({
                 currentTeam={currentTeam}
                 onNavigate={handleNavigationWithClose}
                 workspaceId={currentWorkspace?.workspace_id}
+                isOwnerOrAdmin={isOwnerOrAdmin}
               />
 
               {/* Project Navigation Items - Only show when currentTeam exists */}
