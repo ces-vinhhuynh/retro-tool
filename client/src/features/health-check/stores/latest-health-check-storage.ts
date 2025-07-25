@@ -6,6 +6,7 @@ const EXPIRATION_HOURS = 1;
 
 export interface LatestHealthCheckData {
   healthCheckId: string;
+  teamId: string;
   userId: string;
   timestamp: string;
   expiresAt: string;
@@ -13,7 +14,11 @@ export interface LatestHealthCheckData {
 
 interface HealthCheckStore {
   data: LatestHealthCheckData | null;
-  saveLatestHealthCheck: (healthCheckId: string, userId: string) => void;
+  saveLatestHealthCheck: (
+    healthCheckId: string,
+    teamId: string,
+    userId: string,
+  ) => void;
   removeLatestHealthCheck: () => void;
   getLatestHealthCheck: () => LatestHealthCheckData | null;
 }
@@ -23,7 +28,11 @@ const useHealthCheckStore = create<HealthCheckStore>()(
     (set, get) => ({
       data: null,
 
-      saveLatestHealthCheck: (healthCheckId: string, userId: string) => {
+      saveLatestHealthCheck: (
+        healthCheckId: string,
+        teamId: string,
+        userId: string,
+      ) => {
         try {
           const now = new Date();
           const expiresAt = new Date(
@@ -32,6 +41,7 @@ const useHealthCheckStore = create<HealthCheckStore>()(
 
           const data: LatestHealthCheckData = {
             healthCheckId,
+            teamId,
             userId,
             timestamp: now.toISOString(),
             expiresAt: expiresAt.toISOString(),
@@ -79,9 +89,12 @@ const useHealthCheckStore = create<HealthCheckStore>()(
 
 export const saveLatestHealthCheck = (
   healthCheckId: string,
+  teamId: string,
   userId: string,
 ) => {
-  useHealthCheckStore.getState().saveLatestHealthCheck(healthCheckId, userId);
+  useHealthCheckStore
+    .getState()
+    .saveLatestHealthCheck(healthCheckId, teamId, userId);
 };
 
 export const removeLatestHealthCheck = () => {

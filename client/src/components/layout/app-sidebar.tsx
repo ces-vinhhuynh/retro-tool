@@ -1,16 +1,6 @@
 'use client';
 
-import {
-  BadgeAlert,
-  BarChart3,
-  CalendarArrowUp,
-  CalendarCheck,
-  Handshake,
-  LineChart,
-  Settings,
-  SquareCheckBig,
-  Users,
-} from 'lucide-react';
+import { BarChart3, CalendarArrowUp, Settings, Users } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import type * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -29,13 +19,21 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
-import { getLatestHealthCheck } from '@/features/health-check/stores/latest-health-check-storage';
+import {
+  getLatestHealthCheck,
+  LatestHealthCheckData,
+  removeLatestHealthCheck,
+} from '@/features/health-check/stores/latest-health-check-storage';
 import { ProjectSwitcher } from '@/features/workspace/components/project-switcher';
 import { WorkspaceSwitcher } from '@/features/workspace/components/workspace-switcher';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { Team } from '@/types/team';
 import { cn } from '@/utils/cn';
 
+import {
+  FLOATING_HEALTH_CHECK_BUTTON,
+  PROJECT_NAVIGATION_ITEMS,
+} from '../constants';
 import { FloatingButton } from '../ui/floating-button';
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
@@ -71,54 +69,24 @@ export function AppSidebar({
     setTimeout(navigationFn, 0);
   };
 
-  const [latestHealthCheckId, setLatestHealthCheckId] = useState<string | null>(
-    null,
-  );
+  const [latestHealthCheck, setLatestHealthCheck] =
+    useState<LatestHealthCheckData | null>(null);
 
-  // Project navigation items
-  const projectNavItems = [
-    {
-      title: 'Health Checks',
-      icon: CalendarCheck,
-      tab: 'health-checks',
-    },
-    {
-      title: 'Data Track',
-      icon: LineChart,
-      tab: 'data-track',
-    },
-    {
-      title: 'Team Actions',
-      icon: SquareCheckBig,
-      tab: 'actions',
-    },
-    {
-      title: 'Long Term Issues',
-      icon: BadgeAlert,
-      tab: 'long-term-issues',
-    },
-    {
-      title: 'Team Agreements',
-      icon: Handshake,
-      tab: 'agreements',
-    },
-    {
-      title: 'Team Members',
-      icon: Users,
-      tab: 'members',
-    },
-  ];
+  const [shouldShowFloatingButton, setShouldShowFloatingButton] =
+    useState(false);
 
   useEffect(() => {
     if (isLoadingUser) return;
 
     // Check if should show based on currentTab
-    const projectTabs = projectNavItems.map((item) => item.tab);
+    const projectTabs = PROJECT_NAVIGATION_ITEMS.map((item) => item.tab);
     const shouldShowBasedOnTab =
       currentTab === 'dashboard' || projectTabs.includes(currentTab);
 
     if (!shouldShowBasedOnTab) {
-      setLatestHealthCheckId(null);
+      // Use shouldShowFloatingButton separately from latestHealthCheck because we want
+      // latestHealthCheck to remain available after the user returns to working on the previous team
+      setShouldShowFloatingButton(false);
       return;
     }
 
@@ -126,10 +94,15 @@ export function AppSidebar({
     const checkLatestHealthCheck = () => {
       const latest = getLatestHealthCheck();
 
-      if (latest && latest.userId === currentUser?.id) {
-        setLatestHealthCheckId(latest.healthCheckId);
+      if (
+        latest &&
+        latest.userId === currentUser?.id &&
+        latest?.teamId === currentTeam.id
+      ) {
+        setLatestHealthCheck(latest);
+        setShouldShowFloatingButton(true);
       } else {
-        setLatestHealthCheckId(null);
+        setShouldShowFloatingButton(false);
       }
     };
 
@@ -139,10 +112,16 @@ export function AppSidebar({
   }, [currentUser?.id, pathname, currentTab]);
 
   const onClickFloatingHealthCheckBtn = () => {
-    if (latestHealthCheckId) {
-      router.push(`/health-checks/${latestHealthCheckId}`);
+    if (latestHealthCheck) {
+      router.push(`/health-checks/${latestHealthCheck.healthCheckId}`);
     }
   };
+
+  const onCloseFloatingButton = () => {
+    setLatestHealthCheck(null);
+    removeLatestHealthCheck();
+  };
+
   // Check if current route is active
   const isProjectItemActive = (tab: string) => {
     return currentTab === tab;
@@ -221,7 +200,7 @@ export function AppSidebar({
               {/* Project Navigation Items - Only show when currentTeam exists */}
               {currentTeam && (
                 <>
-                  {projectNavItems.map((item) => {
+                  {PROJECT_NAVIGATION_ITEMS.map((item) => {
                     const Icon = item.icon;
                     const isActive = isProjectItemActive(item.tab);
 
@@ -303,11 +282,12 @@ export function AppSidebar({
         <SidebarRail />
       </Sidebar>
 
-      {latestHealthCheckId && (
+      {shouldShowFloatingButton && latestHealthCheck && (
         <FloatingButton
-          name="FLOATING_HEALTH_CHECK_BUTTON_POSITION"
-          title="Return to Latest Health Check"
+          name={FLOATING_HEALTH_CHECK_BUTTON.name}
+          title={FLOATING_HEALTH_CHECK_BUTTON.title}
           onClick={onClickFloatingHealthCheckBtn}
+          onClose={onCloseFloatingButton}
           IconComponent={CalendarArrowUp}
         />
       )}

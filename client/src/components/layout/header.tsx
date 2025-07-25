@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,11 +13,16 @@ import {
 } from '@/components/ui/popover';
 import { authService } from '@/features/auth/api/auth';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
+import { useLocalStorageUtils } from '@/features/health-check/stores/handle-storage';
 import { WorkspaceUserWithWorkspace } from '@/features/workspace/types/workspace-users';
 import { cn } from '@/lib/utils';
 import { Team } from '@/types/team';
 import { getAvatarCharacters } from '@/utils/user';
 
+import {
+  FLOATING_HEALTH_CHECK_BUTTON,
+  LATEST_HEALTH_CHECK_STORAGE_KEY,
+} from '../constants';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,7 +40,6 @@ interface HeaderProps {
 }
 
 export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
-  const router = useRouter();
   const pathname = usePathname();
 
   const { data: currentUser, isLoading } = useCurrentUser();
@@ -45,11 +49,18 @@ export function Header({ currentWorkspace, currentTeam }: HeaderProps) {
     pathname.startsWith('/teams/') || pathname.startsWith('/health-checks/');
   const isHealthCheckRoute = pathname.startsWith('/health-checks/');
 
+  const { deleteLocalStoreItems } = useLocalStorageUtils();
+
   const handleSignOut = async () => {
     try {
       setIsLoggingOut(true);
+      deleteLocalStoreItems([
+        FLOATING_HEALTH_CHECK_BUTTON.name,
+        LATEST_HEALTH_CHECK_STORAGE_KEY,
+      ]);
       await authService.logout();
-      router.push('/auth/signin');
+      // Hard redirects and clears ALL React state automatically
+      window.location.href = '/auth/signin';
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {

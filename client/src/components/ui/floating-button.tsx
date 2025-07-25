@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleChevronUp } from 'lucide-react';
+import { CircleChevronUp, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -10,13 +10,13 @@ interface FloatingButtonProps {
   name: string;
   title: string;
   onClick: () => void;
+  onClose?: () => void;
   IconComponent?: React.ComponentType<{
     className?: string;
     style?: React.CSSProperties;
   }>;
 }
 
-const DEFAULT_POSITION = { x: 20, y: 100 };
 const DRAG_THRESHOLD = 5;
 const CLICK_DELAY_AFTER_DRAG = 100;
 
@@ -24,11 +24,16 @@ export function FloatingButton({
   name,
   title,
   onClick,
+  onClose,
   IconComponent,
 }: FloatingButtonProps) {
-  const [position, setPosition] = useState(DEFAULT_POSITION);
+  const [position, setPosition] = useState({ x: 20, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [hasJustDragged, setHasJustDragged] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Real-time position for smooth dragging - button close will follow this
+  const currentPositionRef = useRef({ x: 20, y: 100 });
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dragStateRef = useRef({
@@ -42,26 +47,49 @@ export function FloatingButton({
 
   // Better viewport size calculation for mobile
   const getViewportSize = useCallback(() => {
+    const height =
+      window.visualViewport?.height ||
+      window.innerHeight ||
+      document.documentElement.clientHeight;
+    const width =
+      window.visualViewport?.width ||
+      window.innerWidth ||
+      document.documentElement.clientWidth;
+
     return {
-      width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-      height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+      width: width,
+      height: height,
     };
   }, []);
 
-  // Bound position within viewport with safe margins for mobile
-  const getBoundedPosition = useCallback((x: number, y: number) => {
+  // Calculate default position (center horizontally, 40px from bottom)
+  const getDefaultPosition = useCallback(() => {
     const viewport = getViewportSize();
     const buttonSize = 56; // 14 * 4 = 56px (h-14 w-14)
-    const safeMargin = 10; // Extra margin for safe areas
-    
-    const maxX = viewport.width - buttonSize - safeMargin;
-    const maxY = viewport.height - buttonSize - safeMargin;
-    
+
     return {
-      x: Math.max(safeMargin, Math.min(x, maxX)),
-      y: Math.max(safeMargin, Math.min(y, maxY)),
+      x: (viewport.width - buttonSize) / 2,
+      y: viewport.height - buttonSize - 40,
     };
   }, [getViewportSize]);
+
+  // Bound position within viewport with safe margins for mobile
+  const getBoundedPosition = useCallback(
+    (x: number, y: number) => {
+      const viewport = getViewportSize();
+      const buttonSize = 56; // 14 * 4 = 56px (h-14 w-14)
+      const safeMargin = 10; // Extra margin for safe areas
+
+      const maxX = viewport.width - buttonSize - safeMargin;
+      const maxY = viewport.height - buttonSize - safeMargin;
+
+      return {
+        x: Math.max(safeMargin, Math.min(x, maxX)),
+        y: Math.max(safeMargin, Math.min(y, maxY)),
+      };
+    },
+    [getViewportSize],
+  );
 
   // Load saved position on mount and ensure it's visible
   useEffect(() => {
@@ -72,18 +100,52 @@ export function FloatingButton({
         // Ensure loaded position is still within bounds
         const boundedPos = getBoundedPosition(parsed.x, parsed.y);
         setPosition(boundedPos);
+        currentPositionRef.current = boundedPos;
       } else {
-        // Ensure default position is within bounds
-        const boundedPos = getBoundedPosition(DEFAULT_POSITION.x, DEFAULT_POSITION.y);
+        // Use calculated default position (center horizontally, 40px from bottom)
+        const defaultPos = getDefaultPosition();
+        const boundedPos = getBoundedPosition(defaultPos.x, defaultPos.y);
         setPosition(boundedPos);
+        currentPositionRef.current = boundedPos;
       }
     } catch (error) {
       console.error('Failed to load button position:', error);
       // Fallback to bounded default position
-      const boundedPos = getBoundedPosition(DEFAULT_POSITION.x, DEFAULT_POSITION.y);
+      const defaultPos = getDefaultPosition();
+      const boundedPos = getBoundedPosition(defaultPos.x, defaultPos.y);
       setPosition(boundedPos);
+      currentPositionRef.current = boundedPos;
     }
-  }, [name, getBoundedPosition]);
+  }, [name, getBoundedPosition, getDefaultPosition]);
+
+  // Handle viewport changes (like orientation change)
+  useEffect(() => {
+    const handleResize = () => {
+      // Only reset to default position if no saved position exists
+      const savedPosition = localStorage.getItem(name);
+      if (!savedPosition) {
+        const defaultPos = getDefaultPosition();
+        const boundedPos = getBoundedPosition(defaultPos.x, defaultPos.y);
+        setPosition(boundedPos);
+        currentPositionRef.current = boundedPos;
+      } else {
+        // Ensure current position is still within bounds after resize
+        setPosition((prev) => {
+          const newPos = getBoundedPosition(prev.x, prev.y);
+          currentPositionRef.current = newPos;
+          return newPos;
+        });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, [name, getDefaultPosition, getBoundedPosition]);
 
   // Save position to localStorage
   const savePosition = useCallback(
@@ -145,7 +207,8 @@ export function FloatingButton({
 
       const boundedPos = getBoundedPosition(newX, newY);
 
-      // Update position immediately (this will trigger React re-render but that's ok)
+      // Update both position state and current position ref for real-time updates
+      currentPositionRef.current = boundedPos;
       setPosition(boundedPos);
     },
     [getBoundedPosition],
@@ -262,40 +325,94 @@ export function FloatingButton({
     [isDragging, hasJustDragged, onClick],
   );
 
+  // Handle close button click
+  const handleClose = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsVisible(false);
+
+      // Clear saved position data
+      try {
+        localStorage.removeItem(name);
+      } catch (error) {
+        console.error('Failed to clear button position data:', error);
+      }
+
+      onClose?.();
+    },
+    [name, onClose],
+  );
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <Button
-      ref={buttonRef}
-      onClick={handleClick}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-      className={cn(
-        // Fixed positioning
-        'fixed z-50 h-14 w-14 rounded-full shadow-lg',
-        // Colors and styling
-        'border-2 border-white/20 bg-blue-600 text-white hover:bg-blue-700',
-        // Drag states
-        isDragging
-          ? 'scale-110 cursor-grabbing shadow-2xl'
-          : 'cursor-grab hover:scale-105 hover:cursor-pointer',
-        // Smooth transitions when not dragging
-        !isDragging && 'transition-all duration-200',
-        // Focus states
-        'focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none',
-        // Disable pointer events briefly after drag
-        hasJustDragged && 'pointer-events-none',
+    <>
+      {/* Main floating button */}
+      <Button
+        ref={buttonRef}
+        onClick={handleClick}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+        className={cn(
+          // Fixed positioning
+          'fixed z-50 h-14 w-14 rounded-full shadow-lg',
+          // Colors and styling
+          'border-2 border-white/20 bg-blue-600 text-white hover:bg-blue-700',
+          // Drag states
+          isDragging
+            ? 'scale-110 cursor-grabbing shadow-2xl'
+            : 'cursor-grab hover:scale-105 hover:cursor-pointer',
+          // Smooth transitions when not dragging
+          !isDragging && 'transition-all duration-200',
+          // Focus states
+          'focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none',
+          // Disable pointer events briefly after drag
+          hasJustDragged && 'pointer-events-none',
+        )}
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          touchAction: 'none',
+          // Ensure button is above mobile UI elements
+          zIndex: 19,
+        }}
+        title={title}
+      >
+        <div className="flex items-center justify-center">
+          <Icon className="!h-6 !w-6" />
+        </div>
+      </Button>
+
+      {/* Close button (X) - positioned to the right of main button */}
+      {onClose && (
+        <Button
+          onClick={handleClose}
+          className={cn(
+            // Fixed positioning
+            'fixed z-50 h-6 w-6 rounded-full shadow-md',
+            // Colors and styling - smaller and more subtle gray
+            'border border-white/30 bg-gray-500 text-white hover:bg-gray-600',
+            // Smooth transitions - disable during drag for smoother movement
+            !isDragging && 'transition-all duration-200 hover:scale-105',
+            // Focus states
+            'focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none',
+            // Ensure proper centering
+            'flex items-center justify-center p-0',
+          )}
+          style={{
+            left: `${position.x + 48}px`, // Follow main button position
+            top: `${position.y - 2}px`, // Follow main button position
+            touchAction: 'none',
+            zIndex: 20, // Above main button
+          }}
+          title="Close"
+        >
+          <X className="!h-3 !w-3" />
+        </Button>
       )}
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        touchAction: 'none',
-        // Ensure button is above mobile UI elements
-        zIndex: 9999,
-      }}
-      title={title}
-    >
-      <div className="flex items-center justify-center">
-        <Icon className="!h-6 !w-6" />
-      </div>
-    </Button>
+    </>
   );
 }

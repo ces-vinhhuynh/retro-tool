@@ -192,9 +192,13 @@ export default function HealthCheckPage() {
   const { updateHealthCheck } = useHealthCheckMutations();
   const { mutate: createResponse, isPending } = useCreateResponse();
   const { mutate: updateAverageScores } = useUpdateAverageScores();
-  const saveHealthCheckActivity = (healthCheckId: string, userId: string) => {
+  const saveHealthCheckActivity = (
+    healthCheckId: string,
+    teamId: string,
+    userId: string,
+  ) => {
     if (healthCheckId && userId) {
-      saveLatestHealthCheck(healthCheckId, userId);
+      saveLatestHealthCheck(healthCheckId, teamId, userId);
     }
   };
 
@@ -344,10 +348,15 @@ export default function HealthCheckPage() {
       !isLoadingHealthCheck &&
       currentUser?.id &&
       healthCheckId &&
+      healthCheck?.team_id &&
       healthCheck?.status === 'in progress' &&
       isFacilitator
     ) {
-      saveHealthCheckActivity(healthCheckId, currentUser.id);
+      saveHealthCheckActivity(
+        healthCheckId,
+        healthCheck.team_id,
+        currentUser.id,
+      );
     }
   }, [
     isLoadingUser,
@@ -355,7 +364,7 @@ export default function HealthCheckPage() {
     currentUser?.id,
     healthCheckId,
     isFacilitator,
-    healthCheck?.status,
+    healthCheck,
   ]);
 
   const handleCompleteHealthCheck = () => {
@@ -388,9 +397,14 @@ export default function HealthCheckPage() {
       isFacilitator &&
       currentUser?.id &&
       healthCheckId &&
+      healthCheck?.team_id &&
       healthCheck?.status === 'in progress'
     ) {
-      saveHealthCheckActivity(healthCheckId, currentUser.id);
+      saveHealthCheckActivity(
+        healthCheckId,
+        healthCheck.team_id,
+        currentUser.id,
+      );
     }
 
     if (healthCheck?.current_step === FIRST_STEP.key) {
